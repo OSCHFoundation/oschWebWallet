@@ -216,7 +216,7 @@ export default {
                 pagesize: 10,
                 activeName: 'second',
                 wPage: "",
-                wArrPage: []
+                wArrPage: [],
         }
     },
     methods: {
@@ -240,19 +240,22 @@ export default {
             window.location.href =  'http://coast.oschain.io/transactions/' + event.target.innerHTML
             console.log(event.target.innerHTML)
         },
-        incomeTransaction (){
+        incomeTransaction (){   
 
         },
         //点击事件，每次点击获取1page
         getPage: async function(){
             this.wPage = await this.wPage.next();
-            console.log(this.wPage.records)
+            // console.log(this.wPage.records)
             this.render(this.wPage.records)
             console.log(this.wArrPage)
-            this.wArrPage = [...this.wArrPage, ...this.wPage.records]
+            // this.wArrPage = [...this.wArrPage, ...this.wPage.records]
+            // this.wArrPage.concat(this.wPage.records)
+            for(var i=0; i<this.wPage.length;i++){
+            this.wArrPage.splice(0,0,this.wPage.records[i])
+
+            }
             // console.log(this.wArrPage);
-            this.$forceUpdate()
-            // window.location.reload()
         },
         render(page){
             var _this = this
@@ -273,11 +276,11 @@ export default {
                                 ob.asset = "Osch"
                             }
                             //账单号缩写
-                            let op = ob.transaction
-                            let rep1 = op.substr(0,10)    
-                            let rep2 = op.substr(op.length-10)
-                            ob.transaction = rep1 + "·····" + rep2
-                            _this.wArrPage.push(ob)
+                            // let op = ob.transaction
+                            // let rep1 = op.substr(0,10)    
+                            // let rep2 = op.substr(op.length-10)
+                            // ob.transaction = rep1 + "·····" + rep2
+                            return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
                         }else if(res.records[0].type=="create_account"){
                             var ob = {
@@ -292,11 +295,11 @@ export default {
                                 ob.asset = "Osch"
                             }
                             //账单号缩写
-                            let op = ob.transaction
-                            let rep1 = op.substr(0,10)    
-                            let rep2 = op.substr(op.length-10)
-                            ob.transaction = rep1 + "·····" + rep2
-                            _this.wArrPage.push(ob)
+                            // let op = ob.transaction
+                            // let rep1 = op.substr(0,10)    
+                            // let rep2 = op.substr(op.length-10)
+                            // ob.transaction = rep1 + "·····" + rep2
+                            return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
                         }else{
                             var ob = {
@@ -311,7 +314,8 @@ export default {
                             if(ob.asset == "native") {
                                 ob.asset = "Osch"
                             }
-                            _this.wArrPage.push(ob)
+                            return _this.wArrPage.push(ob)
+                            console.log(ob)
                             console.log(_this.wArrPage)
 
                         } 
@@ -330,6 +334,7 @@ export default {
         VNav
     },
     mounted(){
+        console.log(this.wArrPage)
         var _this = this;
         StellarSdk.Config.setAllowHttp(true);
         StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
@@ -343,7 +348,7 @@ export default {
             type: "ed25519",
             secretKey: arrPrivate 
         });
-        console.log(keypair)
+        // console.log(keypair)
         _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
         //找到账户信息
         _this.server
@@ -363,13 +368,13 @@ export default {
             .call()
             .then(function(page) {
                 _this.wPage = page
-                console.log(page.records)
+                // console.log(_this.wArrPage)
                 //拿到第一个page10条数据
                 _this.render(_this.wPage.records)
-                console.log(_this.wPage)
             })
             
     // console.log(this.account)
+    console.log(this.wArrPage)
   }
 }
 </script>
