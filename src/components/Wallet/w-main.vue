@@ -243,6 +243,7 @@ export default {
         incomeTransaction (){
 
         },
+        //点击事件，每次点击获取1page
         getPage: async function(){
             this.wPage = await this.wPage.next();
             console.log(this.wPage.records)
