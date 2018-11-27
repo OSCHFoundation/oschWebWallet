@@ -29,6 +29,16 @@
                                 <input type="text" placeholder="Amount in stroops (1 lumen = 10,000,000 stroops)" class="inp">
                         </div>
                     </div>
+                   <div class="dis-list">
+                        <div class="dis-left">
+                        <span>
+                    备忘录
+                        </span>
+                        </div>
+                        <div class="dis-right">
+                                <input type="text" placeholder=默认为text class="inp">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="action-type">
@@ -58,7 +68,7 @@
                                         <span>激活目标账户：</span>
                                     </div>
                                     <div class=" dis-right">
-                                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="activtionAccount">
+                                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="memo">
                                     </div>
                                 </div>
                                 <div class="dis-list">
@@ -130,6 +140,7 @@ export default {
             activtionAccount: "",
             activtionNum: "",
             stellarServer: "",
+            memo: ''
         }
     },
     components: {
@@ -152,6 +163,7 @@ export default {
             let _this = this;
             //点击发送交易
             if (this.transactionType == '转账') {
+
                 var transaction = new StellarSdk.TransactionBuilder(this.account,{
                     fee: "100000000"    
                 })

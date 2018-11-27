@@ -14,6 +14,11 @@ export default {
     },
     components: {
         VNav
+    },
+    mounted(){
+        // this.$axios.get('https://api.btctrade.com/api/ticker?coin=etc').then((res)=> {
+        //     console.log(res)
+        // })
     }
 }
 </script>
