@@ -21,12 +21,12 @@
                     <div class="img" id="qrcode"></div>
             </div>
         </div>
-        <div>
+        <div class="dvInner" v-show="validType">
             <div class="main-left clear">
             <div class="leftMenu">
                 <div>
-                <h4 class="menu" @click="changtab">所持代币</h4>
-                <p class="menuBranch" v-for="(item,index) of select" :key="index">{{item.desc}}</p>
+                <h4 class="menu" >所持代币</h4>
+                <p class="menuBranch" v-for="(item,index) of tabList" :key="index"  @click="changtab">{{item}}</p>
             </div>
             <div class="menu" @click="changtab">添加代币</div>
             <div class="menu" @click="changtab">代币余额</div>
@@ -174,7 +174,7 @@
                 </el-tabs>
                 <div class="addCoin" v-show="show == 2">
                     <h1>添加代币</h1>
-                    <el-transfer v-model="value1" :data="data2"></el-transfer>
+                    <el-transfer v-model="value1" :data="data2" @change="handleChange"></el-transfer>
                 </div>
                 <div class="otherBalance" v-show="show==3">
                     <div class="balanceBlock">
@@ -202,12 +202,12 @@ import QRCode from 'qrcodejs2'
 export default {
     data () {
         const generateData = _ => {
-        const data1 = [];
-        for (let i = 1; i <= 15; i++) {
+        const data1 = [{disabled: true ,key: 0,label:'Osch'},{disabled: true ,key: 1,label:'Time'},{disabled: true ,key: 2,label:'Ccc'}];
+        for (let i = 4; i <= 15; i++) {
           data1.push({
             key: i,
-            label: `备选项 ${ i }`,
-            disabled: i % 4 === 0
+            label: `代币 ${ i }`,
+            // disabled: i % 4 === 0
           });
         }
         return data1;
@@ -216,8 +216,8 @@ export default {
             activeName: 'second',
             server: "",
             sercet: this.$route.params.id,
-            publicKey: "13212",
-            oschNum: "123",
+            publicKey: "XXX",
+            oschNum: "0",
             toPublic: "",
             toOschNum: "",
             account: "",
@@ -231,14 +231,27 @@ export default {
             output: [],
             tab: 10,
             show: 1,
-            select:[{desc:'Osch'}, {desc:'Time'}, {desc:'Ccc'}],
             //element 穿梭框
-            data2: generateData(),
-            value1: [1, 4]
-            // value5: [{desc:'Osch'}, {desc:'Time'}, {desc:'Ccc'}]
+            data2: generateData(),  //穿梭框的源数据
+            value1: [0,1,2,], //穿梭框的key值
+            tabList: [], //添加代币数据列表
+            validType: true
+
         }
     },
     methods: {
+        //点击穿梭框事件
+         handleChange(value, direction, movedKeys) {
+           this.value1 = value
+           console.log(this.value1)
+           this.tabList = []
+            for(var i=0; i<this.value1.length;i++){
+                let val = this.value1[i]
+                console.log(val)
+                this.tabList.push(this.data2[val].label)
+        }
+        },
+        //自动生成二维码
         qrcode() {
             let qrcode = new QRCode('qrcode', {
                 width:150,
@@ -377,7 +390,7 @@ export default {
         },
         //切换状态栏
         changtab(event) {
-            if(event.target.innerHTML == "所持代币"){
+            if(event.target.innerHTML == "Osch"){
                 this.show = 1
             } else if (event.target.innerHTML == "添加代币") {
                 this.show = 2
@@ -403,7 +416,8 @@ export default {
             });
             // console.log(keypair)
             _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
-            //找到账户信息
+            
+                //找到账户信息
             _this.server
                 .loadAccount(this.publicKey)
                 .then(function(account){
@@ -415,6 +429,15 @@ export default {
                         }
                     }
                 })
+            //判断账户是否激活, 如果未激活,则不现实交易记录
+            _this.server
+                .loadAccount(this.publicKey)
+                .then(function(account){
+                })
+                .catch( (err) => {
+                    console.log(err)
+                    _this.validType = false
+                })    
             // 获取历史交易
            await  _this.server.transactions()
                 .forAccount(this.publicKey)
@@ -437,13 +460,20 @@ export default {
         VNav
     },
     created(){
+       for(var i=0; i<this.value1.length;i++){
+                let val = this.value1[i]
+                console.log(val)
+                this.tabList.push(this.data2[val].label)
+                    
+       }
     },
     mounted () {
         this.init()
         this.qrcode()
-        console.log(this.select)
+        
         console.log(this.data2)
         console.log(this.value1)
+        console.log(this.tabList)
     }
 }
 </script>
@@ -563,5 +593,7 @@ export default {
         min-height: 600px;
         text-align: center; 
     }
- 
+    .el-checkbox__inner {
+        float: left;
+    }
 </style>

@@ -42,9 +42,10 @@
                 </div>
             </div>
             <div class="action-type">
-                <div class="type-inner">
-                    <div class="choseType">
-                        <div class="dis-list">
+                <div class="type-inner"> 
+                    <!-- 转账类型 -->
+                    <!-- <div class="choseType"  v-show="false">
+                        <div class="dis-list" >
                             <div class="dis-left">
                             <span>
                                 请选择交易操作:
@@ -59,8 +60,9 @@
                             </div>
                         </div>
                         
-                    </div>
-                    <div class="typeShow" v-show="transactionType == '激活子账户'">
+                    </div> -->
+                    <!-- 激活子账户 -->
+                    <!-- <div class="typeShow" v-show="transactionType == '激活子账户'">
                         <div class="pay">
                             <div class="distination">
                                 <div class="dis-list">
@@ -68,7 +70,7 @@
                                         <span>激活目标账户：</span>
                                     </div>
                                     <div class=" dis-right">
-                                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="memo">
+                                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="activtionAccount">
                                     </div>
                                 </div>
                                 <div class="dis-list">
@@ -81,8 +83,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="typeShow" v-show="transactionType == '转账'">
+                    </div> -->
+
+                    <!-- <div class="typeShow" v-show="transactionType == '转账'"> -->
+                    <div class="typeShow" v-show="true">
                         <div class="pay">
                             <div class="distination">
                                 <div class="dis-list">
@@ -138,9 +142,7 @@ export default {
             selectType: "",
             transactionType: "",
             activtionAccount: "",
-            activtionNum: "",
-            stellarServer: "",
-            memo: ''
+            valid: 1, //判断目的地地址
         }
     },
     components: {
@@ -161,8 +163,19 @@ export default {
         },
         sendClick () {
             let _this = this;
+            //判断目的地址是否有效
+            this.stellarServer
+                    .loadAccount(_this.toPublic)
+                    .then(function(account){
+                        _this.valid = 1
+                    })
+                    .catch( (err) => {
+                        console.log(err)
+                        _this.valid = 2
+
+                    })
             //点击发送交易
-            if (this.transactionType == '转账') {
+            if (_this.valid == 1 ) {
 
                 var transaction = new StellarSdk.TransactionBuilder(this.account,{
                     fee: "100000000"    
@@ -178,12 +191,12 @@ export default {
                     alert("发送成功");
                     location.reload() 
                 })
-            } else if (this.transactionType == '激活子账户') {
+            } else if( _this.valid == 2){
                 //激活子账户事件
-                console.log(this.sourceId)
-                console.log(this.secret)
-                console.log(this.account)
-                console.log(this.activtionAccount)
+                // console.log(this.sourceId)
+                // console.log(this.secret)
+                // console.log(this.account)
+                // console.log(this.activtionAccount)
                 this.stellarServer
                     .loadAccount(this.sourceId)
                     .then(function(account){
@@ -192,13 +205,17 @@ export default {
                                 fee: 100000000    
                             })
                             .addOperation(StellarSdk.Operation.createAccount({
-                                destination: _this.activtionAccount, //需要激活的账户
-                                startingBalance: _this.activtionNum  //激活账户最低余额 in XLM
+                                destination: _this.toPublic, //需要激活的账户
+                                startingBalance: _this.toOschNum  //激活账户最低余额 in XLM
                                 }))
                             .build();
                         transaction.sign(StellarSdk.Keypair.fromSecret(_this.secret));
                         _this.stellarServer.submitTransaction(transaction).then(function(res){
-                            alert("账户初始化成功");
+                            alert("目标账户初始化成功");
+                            location.reload()
+                        })
+                        .catch( (e) => {
+                            console.log(e)
                         })
                        
                     })
