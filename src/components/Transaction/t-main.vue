@@ -1,5 +1,44 @@
 <template>
     <div class="t-main">
+        <!-- 确认交易遮罩层 -->
+        <div class="confrimTransaction" v-show="close">
+            <div class="transactionMask">
+                <h2 class="maskTitle  "> 你即将发送...</h2>
+                <div class="maskHeader mBorder ">
+                    <div class="maskAccount">当前账户: {{sourceId}}</div>
+                    <div class="maskAccount">目标账户: {{toPublic}}</div>
+                    <div class="masknum">交易额: {{toOschNum}} Osch</div>
+                </div>
+                <div class="maskInner mBorder ">
+                    <p class="maskInnerList">
+                        <span class="maskListLeft"> 当前账户:</span>
+                        <span class="maskListRight">{{sourceId}}</span>
+                    </p>
+                    <p class="maskInnerList">
+                        <span class="maskListLeft"> 目标账户:</span>
+                        <span class="maskListRight">{{toPublic}}</span>
+                    </p>
+                    <p class="maskInnerList">
+                        <span class="maskListLeft"> 账户余额:</span>
+                        <span class="maskListRight">{{oschNum}} Osch</span>
+                    </p>
+                    <p class="maskInnerList">
+                        <span class="maskListLeft"> 交易额:</span>
+                        <span class="maskListRight">{{toOschNum}}&nbsp Osch</span>
+                    </p>
+                    <p class="maskInnerList">
+                        <span class="maskListLeft"> 币种:</span>
+                        <span class="maskListRight">Osch</span>
+                    </p>
+                </div>
+                <div class="maskFooter mBorder">
+                    <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbspOsh 到： </h1>
+                    <h2>{{toPublic}}</h2>
+                </div>
+                <button class="maskBtn cancel" @click="closeMask" >取消交易(关闭遮罩层)</button>
+                <button class="maskBtn send" @click="sendClick">确认无误,发送交易(关闭遮罩层)</button>
+            </div>
+        </div>
         <v-nav></v-nav>
         <div class="main-inner">
             <div class="action-id">
@@ -120,7 +159,7 @@
                             </div>
                         </div>
                     </div>
-                    <input type="button" class="type-btn" value=" 确认无误" @click="sendClick">
+                    <input type="button" class="type-btn" value=" 确认" @click="openMask">
                 </div>
             </div>
         </div>
@@ -134,15 +173,18 @@ export default {
     data () {
         return {
             sourceId: "",
-            toPublic: "",
-            toOschNum: "",
+            oschNum: "0" ,
+            toPublic: "", // 目标账户
+            toOschNum: "",// 交易数量
             server: "",
+            stellarServer: "",
             account: "",
             secret: this.$route.params.id,
             selectType: "",
             transactionType: "",
             activtionAccount: "",
             valid: 1, //判断目的地地址
+            close: false
         }
     },
     components: {
@@ -151,7 +193,29 @@ export default {
 
     },
     methods: {
-        
+        openMask () {
+            this.close = true
+            var _this = this
+            //判断目的地址是否有效
+            this.stellarServer
+                .loadAccount(_this.toPublic)
+                .then(function(account){
+                    console.log('hahah')
+                    _this.valid = 1
+                    console.log(_this.valid)
+                })
+                .catch( (err) => {
+                    console.log(err)
+                    //报错则认为输入的目标在账户为激活,或输入错误
+                    _this.valid = 2
+                    console.log(_this.valid)
+                    console.log("未激活")
+
+                    })
+        },
+        closeMask() {
+            this.close = false
+        },
         asset1 () {
             this.show = 0
         },
@@ -162,43 +226,39 @@ export default {
             this.show = 3
         },
         sendClick () {
-            let _this = this;
-            //判断目的地址是否有效
-            this.stellarServer
-                    .loadAccount(_this.toPublic)
-                    .then(function(account){
-                        _this.valid = 1
-                    })
-                    .catch( (err) => {
-                        console.log(err)
-                        _this.valid = 2
-
-                    })
+            console.log("hahah")
+            // this.close = true
+            var _this = this;
+            
             //点击发送交易
-            if (_this.valid == 1 ) {
-
-                var transaction = new StellarSdk.TransactionBuilder(this.account,{
+            console.log(_this.toPublic)
+            console.log(_this.toOschNum )
+            console.log(_this.valid)
+            console.log(_this.secret)
+            console.log(_this.account)
+            if (_this.valid == 1 ) { //当valid的值为1是,则进行转账交易
+                var transaction = new StellarSdk.TransactionBuilder(_this.account,{
                     fee: "100000000"    
                 })
                 .addOperation(StellarSdk.Operation.payment({
-                    destination: this.toPublic,
+                    destination: _this.toPublic,
                     asset: StellarSdk.Asset.native(),
-                    amount: this.toOschNum 
+                    amount: _this.toOschNum 
                 }))
                 .build();
                 transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
-                this.server.submitTransaction(transaction).then(function(res){
+                // 提交交易信息
+                _this.stellarServer.submitTransaction(transaction).then(function(res){
+                    console.log("发送交易成功")
                     alert("发送成功");
                     location.reload() 
                 })
-            } else if( _this.valid == 2){
-                //激活子账户事件
-                // console.log(this.sourceId)
-                // console.log(this.secret)
-                // console.log(this.account)
-                // console.log(this.activtionAccount)
+            } else if( _this.valid == 2){  //如果valid 的值为2 则进行激活事件
+                console.log(_this.toPublic + "222")
+                console.log(_this.sourceId + "111")
+                console.log(_this.secret)
                 this.stellarServer
-                    .loadAccount(this.sourceId)
+                    .loadAccount(_this.sourceId)
                     .then(function(account){
                         console.log(account);
                         var transaction = new StellarSdk.TransactionBuilder(account,{
@@ -211,6 +271,7 @@ export default {
                             .build();
                         transaction.sign(StellarSdk.Keypair.fromSecret(_this.secret));
                         _this.stellarServer.submitTransaction(transaction).then(function(res){
+                            console.log('目标账户初始化成功')
                             alert("目标账户初始化成功");
                             location.reload()
                         })
@@ -257,6 +318,17 @@ export default {
             .loadAccount(this.publicKey)
             .then(function(account){
                 _this.account = account;
+            })
+        _this.server
+            .loadAccount(this.publicKey)
+            .then(function(account){
+                _this.account = account;
+                for(var i=0;i<account.balances.length; i++){
+                    if(account.balances[i].asset_type ==  "credit_alphanum4" || "credit_alphanum12"){
+                        _this.oschNum = account.balances[i].balance;
+                        // break; 
+                    }
+                }
             })
   }
 }
@@ -381,5 +453,88 @@ export default {
         width: 150px;
         color: #fff
     }
- 
+    .confrimTransaction {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, .3);
+        z-index: 99999;
+    }
+    .transactionMask {
+        position: relative;
+        padding: 0.75rem;
+        margin: 30px auto;
+        width: 780px;
+        height: 800px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .maskTitle {
+        margin: 0 0 1rem;
+        text-align: center;
+        font-size: 1.9rem;
+        font-weight: 300
+    }
+    .mBorder {
+        border-top: 1px solid #ccc
+
+    }
+    .maskHeader {
+        width: 100%;
+        height: 115px;
+    }
+    .maskInner {
+        padding: 20px;
+        height: 305px;
+
+
+    }
+    .maskFooter {
+        padding: 20px;
+        text-align: center;
+        height: 150px;
+    }
+    .maskBtn {
+        padding: 12px 35px;
+        border: 1px;
+        font-size: 1.07rem;
+        font-weight: 400;
+        margin-left:80px; 
+    }
+    .send {
+        background-color: #0e97c0;
+        color: #fff
+    }
+    .maskAccount {
+        padding: 10px;
+        margin-bottom: 1px;
+        display: inline-block;
+        font-size: 14px;
+        width: 400px;
+        white-space: pre-wrap
+    }
+    .masknum {
+        float:right;
+        font-size: 14px;
+        width: 150px;
+        height: 150px;
+    }
+    .maskInnerList {
+        padding: 8px;
+        margin-bottom: 20px;
+
+    }
+    .maskListLeft {
+        margin-right: 10px;
+        display: inline-block;
+        font-size: 15px;
+        width: 100px;
+        text-align: right;
+    }
+    .mskFooterTitle {
+        padding-bottom: 10px;
+    }
 </style>

@@ -1,6 +1,8 @@
 <template>
     <div class="main">
+        
         <v-nav></v-nav>
+        
         <div class="wallet-info">
             <h2 class="title">我的钱包信息</h2>
             <div class="key-pairs">
@@ -12,7 +14,8 @@
                 <div>
                     <p class="info">我的余额</p>
                     <!-- <input type="text" :value="oschNum" class="w-inp"> -->
-                    <p class="balance"><span>{{oschNum}}</span>&nbsp OSCH</p>
+                    <p class="balance" v-show="validType ==true"><span>{{oschNum}}</span>&nbsp OSCH</p>
+                    <p class="balance" v-show="validType == false"><span>当前账户未激活</span></p>
                 </div>
             </div>
             <div class="key-code">
@@ -21,7 +24,7 @@
                     <div class="img" id="qrcode"></div>
             </div>
         </div>
-        <div class="dvInner" v-show="validType">
+        <div class="dvInner" v-show="validType ==true">
             <div class="main-left clear">
             <div class="leftMenu">
                 <div>
@@ -192,6 +195,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -235,7 +239,7 @@ export default {
             data2: generateData(),  //穿梭框的源数据
             value1: [0,1,2,], //穿梭框的key值
             tabList: [], //添加代币数据列表
-            validType: true
+            validType: false
 
         }
     },
@@ -428,15 +432,19 @@ export default {
                             // break; 
                         }
                     }
+                }).catch((err) => {
+                    console.log(err)
                 })
             //判断账户是否激活, 如果未激活,则不现实交易记录
             _this.server
                 .loadAccount(this.publicKey)
                 .then(function(account){
+                    _this.validType = true
                 })
                 .catch( (err) => {
                     console.log(err)
                     _this.validType = false
+                    console.log(_this.validType)
                 })    
             // 获取历史交易
            await  _this.server.transactions()
@@ -444,8 +452,6 @@ export default {
                 .call()
                 //每次回调只会返回10条数据
                 .then(function(page) {
-                    console.log(page)
-                    console.log(page.records.length)
                     //拿到回调函数中的返回值即10条数据，并赋值给wPage
                     _this.wPage = page  
                     //调用render方法wPage传入进去，然后拿到筛选过后的10条数据
@@ -596,4 +602,5 @@ export default {
     .el-checkbox__inner {
         float: left;
     }
+    
 </style>
