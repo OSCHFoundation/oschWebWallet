@@ -252,6 +252,8 @@ export default {
                     _this.valid = 2
                     console.log(_this.valid)
                     console.log("未激活")
+                    console.log("未激活")
+
                     })
         },
         //关闭遮罩层
