@@ -15,11 +15,11 @@
                     <p class="info">我的余额</p>
                     <!-- <input type="text" :value="oschNum" class="w-inp"> -->
                     <p class="balance" v-show="validType ==true"><span>{{oschNum}}</span>&nbsp OSCH</p>
-                    <p class="balance" v-show="validType == false"><span>当前账户未激活</span></p>
+                    <p class="balance" v-show="validType == false"><span>当前地址未激活</span></p>
                 </div>
             </div>
             <div class="key-code">
-                    <p class="info">账户地址：</p>
+                    <p class="info">当前地址：</p>
                     <span class="info-id">{{publicKey}}</span>
                     <div class="img" id="qrcode"></div>
             </div>
@@ -104,7 +104,7 @@
                             prop="transaction"
                             label="Transaction ID">
                             <template slot-scope="scope">
-                                <el-button-group>
+                                <el-button-group @click.native ="transactionInfo">
                                     <el-button>{{scope.row.transaction}}</el-button>
                                 </el-button-group>
                             </template>
@@ -121,7 +121,7 @@
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
-                    <el-tab-pane label="支出交易">
+                    <el-tab-pane label="支出交易" >
                         <el-table
                             :data="output.slice((currpage - 1) * pagesize, currpage * pagesize)"
                             stripe
@@ -173,7 +173,7 @@
                     @size-change="handleSizeChange" 
                     >
                     </el-pagination>
-                    <button @click="getPage">next</button>
+                    <!-- <button @click="getPage">next</button> -->
                 </el-tabs>
                 <div class="addCoin" v-show="show == 2">
                     <h1>添加代币</h1>
@@ -217,25 +217,23 @@ export default {
         return data1;
       };
         return {
-            activeName: 'second',
-            server: "",
-            sercet: this.$route.params.id,
+            server: "",//Stellar
+            sercet: this.$route.params.id,//私钥
             publicKey: "XXX",
-            oschNum: "0",
-            toPublic: "",
-            toOschNum: "",
-            account: "",
+            oschNum: "0",//Osch余额
+            toPublic: "",//发送地址
+            toOschNum: "",//发送数量
+            account: "",//每次请求stellar返回的账户详情
             tableData: [],
             currpage: 1,
             pagesize: 10,
             activeName: 'second',
             wPage: "",
             wArrPage: [],
-            input: [],
-            output: [],
+            input: [], //正数放入收入
+            output: [],//负数放入支出
             tab: 10,
             show: 1,
-            //element 穿梭框
             data2: generateData(),  //穿梭框的源数据
             value1: [0,1,2,], //穿梭框的key值
             tabList: [], //添加代币数据列表
@@ -253,7 +251,7 @@ export default {
                 let val = this.value1[i]
                 console.log(val)
                 this.tabList.push(this.data2[val].label)
-        }
+            }
         },
         //自动生成二维码
         qrcode() {
@@ -287,31 +285,22 @@ export default {
         getPage: async function(){
             //next（） 是stellar中的一个方法，每次只能获取10条数据
             console.log(this.wPage)
-            // for(let i=0; i<=5; i++){
+            for(let i=0; i<=5; i++){
                 console.log(i)
                 this.wPage = await this.wPage.next();
-                // console.log(this.wPage.records)
                 this.render(this.wPage.records)
-                // console.log(this.wArrPage)
-                // console.log(this.wArrPage.length)
-                // this.wArrPage = [...this.wArrPage, ...this.wPage.records]
-                // this.wArrPage.concat(this.wPage.records)
-            // }
+            }
             //  for循环，拿到wArrPage中num的首位为“+”的添加到input数组中，首位为“-”的添加到output中
-                for(var i=0;i<this.wArrPage.length;i++){
-                    var num = this.wArrPage[i].num
-                    if(num.substr(0,1) == "+"){
-                        this.input.push(this.wArrPage[i])
-                    }
-                    if(num.substr(0,1) == "-"){
-                        this.output.push(this.wArrPage[i])
-                    }
+            for(var i=0;i<this.wArrPage.length;i++){
+                var num = this.wArrPage[i].num
+                if(num.substr(0,1) == "+"){
+                    this.input.push(this.wArrPage[i])
                 }
-                // console.log(this.input)
-                // console.log(this.output)
-           
+                if(num.substr(0,1) == "-"){
+                    this.output.push(this.wArrPage[i])
+                }
+            }
         },
-
         // 循环遍历数组，并抽取6个参数，然后放入wArrPage
         render(page){
             var _this = this
@@ -319,45 +308,33 @@ export default {
                 for(var i=0; i<page.length; i++){
                     page[i].operations().then(function(res){
                     console.log('hahah')
-                        if(res.records[0].from == _this.publicKey){
+                        if(res.records[0].from == _this.publicKey){ //支出交易
                             var ob = {
-                                time: res.records[0].created_at,
-                                transaction: res.records[0].transaction_hash, 
-                                num: "-"+res.records[0].amount,
-                                to: res.records[0].to,
-                                asset:res.records[0].asset_type,
-                                activeType:res.records[0].type
+                                time: res.records[0].created_at, //交易时间
+                                transaction: res.records[0].transaction_hash, //交易哈希 
+                                num: "-"+res.records[0].amount, //交易数量
+                                to: res.records[0].to, //目标地址
+                                asset:res.records[0].asset_type, //交易币种
+                                activeType:res.records[0].type //交易类型 （交易、创建账户等）
                             };
                             if(ob.asset == "native") {
                                 ob.asset = "Osch"
                             }
-                            //账单号缩写
-                            // let op = ob.transaction
-                            // let rep1 = op.substr(0,10)    
-                            // let rep2 = op.substr(op.length-10)
-                            // ob.transaction = rep1 + "·····" + rep2
                             return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
-                        }else if(res.records[0].type=="create_account"){
+                        }
+                        else if(res.records[0].type=="create_account"){ //创建账户支出交易
                             var ob = {
                                 time: res.records[0].created_at,
                                 transaction: res.records[0].transaction_hash, 
-                                num: "+"+res.records[0].starting_balance,
-                                to: res.records[0].to,
-                                asset:res.records[0].asset_type,
+                                num: "-"+res.records[0].starting_balance,
+                                to: res.records[0].account,
+                                asset:"Osch",  //当操作为创建账户时，激活数量的单位只能为本币Osch
                                 activeType:res.records[0].type
                             };            
-                             if(ob.asset == "native") {
-                                ob.asset = "Osch"
-                            }
-                            //账单号缩写
-                            // let op = ob.transaction
-                            // let rep1 = op.substr(0,10)    
-                            // let rep2 = op.substr(op.length-10)
-                            // ob.transaction = rep1 + "·····" + rep2
                             return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
-                        }else{
+                        }else{ //收入出交易
                             var ob = {
                                 time: res.records[0].created_at,
                                 transaction: res.records[0].transaction_hash, 
@@ -373,14 +350,12 @@ export default {
                             return _this.wArrPage.push(ob)
                             console.log(ob)
                             console.log(_this.wArrPage)
-
                         } 
                     })
                 }
                 return page
             },
         handleClick(res,event) {
-            // console.log(event.target.innerHTML)
             if(event.target.innerHTML == "全部交易记录"){
                 this.tab = this.wArrPage.length
                 console.log(this.tab)
@@ -409,16 +384,12 @@ export default {
             StellarSdk.Config.setAllowHttp(true);
             StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
             _this.server = new StellarSdk.Server(_this.horizonUrl);
-            // console.log(_this.server)
-            
-            //init secret tool
             var strkey = StellarSdk.StrKey;
             var arrPrivate = strkey.decodeEd25519SecretSeed(_this.sercet);
             var keypair = new StellarSdk.Keypair({
                 type: "ed25519",
                 secretKey: arrPrivate 
             });
-            // console.log(keypair)
             _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
             
                 //找到账户信息
@@ -444,7 +415,6 @@ export default {
                 .catch( (err) => {
                     console.log(err)
                     _this.validType = false
-                    console.log(_this.validType)
                 })    
             // 获取历史交易
            await  _this.server.transactions()
@@ -456,10 +426,8 @@ export default {
                     _this.wPage = page  
                     //调用render方法wPage传入进去，然后拿到筛选过后的10条数据
                     _this.render(_this.wPage.records)
-                    // console.log(_this.wPage.records)
                 })
              _this.getPage()
-             console.log(this.wPage)
         }
     },
     components: {   
@@ -467,19 +435,13 @@ export default {
     },
     created(){
        for(var i=0; i<this.value1.length;i++){
-                let val = this.value1[i]
-                console.log(val)
-                this.tabList.push(this.data2[val].label)
-                    
+            let val = this.value1[i]
+            this.tabList.push(this.data2[val].label)
        }
     },
     mounted () {
         this.init()
         this.qrcode()
-        
-        console.log(this.data2)
-        console.log(this.value1)
-        console.log(this.tabList)
     }
 }
 </script>
@@ -553,10 +515,6 @@ export default {
     .img {
         margin-top: 30px;
         padding-left: 15px;
-        /* width: 500px; */
-        /* height: 500px; */
-        /* background-image: url("https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1750833952,2529388352&fm=58&bpow=380&bpoh=380"); */
-        /* background-repeat: no-repeat; */
     }
     .otherBalance {
         padding: 30px;
@@ -569,7 +527,7 @@ export default {
     }
     .leftMenu {
         padding: 20px;
-        background: #000;
+        background: #666;
 
     }
     .menu {

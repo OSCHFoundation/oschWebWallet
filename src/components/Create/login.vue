@@ -26,8 +26,9 @@ export default {
         login () {
             if (this.secret === '' ) {
                 alert('请输入私钥')
-            } else {
+            } else if(this.secret.length >= 50){
             this.$router.push('/wallet/' + this.secret)
+            // console.log(this.secret.length)
             }
         }
     },
