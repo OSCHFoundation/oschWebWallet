@@ -5,6 +5,7 @@
             <v-nav></v-nav>
             <h1 class="title">输入私钥查看钱包信息</h1>
             <input type="text" value="请输入您的私钥" class="inp" v-model="secret">
+            <!-- <p class="tips" v-show="tips">提示:您输入的私钥格式不正确或不符合格式，请确认后输入（私钥的长度为56位）</p> -->
             <input type="submit" value="确认" class="sub" @click="login">
         </div>
         <v-footer></v-footer>
@@ -20,15 +21,29 @@ export default {
     data () {
         return {
             secret: '',
+            tips: false, //提示
+            com: 1
         }
     },
     methods : {
         login () {
+            try{
+                let strkey = StellarSdk.StrKey;
+                let arrPrivate = strkey.decodeEd25519SecretSeed(this.secret)
+            }catch(err){
+                console.log(err)
+                this.tips = true
+            }
+            
             if (this.secret === '' ) {
                 alert('请输入私钥')
-            } else if(this.secret.length >= 50){
-            this.$router.push('/wallet/' + this.secret)
+                location.reload() 
+            } else if(this.tips == true){
+                alert('提示:您输入的私钥格式不正确或不符合格式，请确认后输入（私钥的长度为56位）')
+                location.reload() 
             // console.log(this.secret.length)
+            } else if(this.tips == false) {
+            this.$router.push('/wallet/' + this.secret)
             }
         }
     },

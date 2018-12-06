@@ -4,7 +4,6 @@
             <router-link tag="li" :to="{path:'/create'}">生成新的钱包</router-link>
             <router-link tag="li" :to="{path:'/login'}">钱包信息</router-link>
             <router-link tag="li" :to="{path:'/transactionlogin'}">选择交易</router-link>
-            <router-link tag="li" :to="{path:'/swap'}">当日汇率</router-link>
             <li>帮助</li>
         </ul>
     </div>

@@ -186,11 +186,11 @@
                     </div>
                     <div class="balanceBlock">
                         <h2>Time</h2>
-                        <p>余额为：XXXXX</p>
+                        <p>余额为：{{timeNum}} Time</p>
                     </div>
                     <div class="balanceBlock">
-                        <h2>Ccc</h2>
-                        <p>余额为：XXXXX</p>    
+                        <h2>Hour</h2>
+                        <p>余额为：{{hourNum}} Hour</p>    
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@ import QRCode from 'qrcodejs2'
 export default {
     data () {
         const generateData = _ => {
-        const data1 = [{disabled: true ,key: 0,label:'Osch'},{disabled: true ,key: 1,label:'Time'},{disabled: true ,key: 2,label:'Ccc'}];
+        const data1 = [{disabled: true ,key: 0,label:'Osch'},{disabled: true ,key: 1,label:'Time'},{disabled: true ,key: 2,label:'Hour'}];
         for (let i = 4; i <= 15; i++) {
           data1.push({
             key: i,
@@ -221,6 +221,8 @@ export default {
             sercet: this.$route.params.id,//私钥
             publicKey: "XXX",
             oschNum: "0",//Osch余额
+            timeNum:'0',
+            hourNum:'0',
             toPublic: "",//发送地址
             toOschNum: "",//发送数量
             account: "",//每次请求stellar返回的账户详情
@@ -237,7 +239,10 @@ export default {
             data2: generateData(),  //穿梭框的源数据
             value1: [0,1,2,], //穿梭框的key值
             tabList: [], //添加代币数据列表
-            validType: false
+            validType: false,
+            time:[],//time币
+            hour:[],//huor币
+            osch:[],//osch币
 
         }
     },
@@ -300,6 +305,16 @@ export default {
                     this.output.push(this.wArrPage[i])
                 }
             }
+            //拿到数据列表然后筛选出翻入各自币种之中
+            for await(var osc of this.wArrPage) {
+                    if(osc.asset == 'Osch'){
+                        this.osch.push(osc)
+                    }else if(osc.asset == 'Time'){
+                        this.time.push(osc)
+                    }else if(osc.asset == 'Hour'){
+                        this.hour.push(osc)
+                    }
+                }
         },
         // 循环遍历数组，并抽取6个参数，然后放入wArrPage
         render(page){
@@ -315,11 +330,17 @@ export default {
                                 num: "-"+res.records[0].amount, //交易数量
                                 to: res.records[0].to, //目标地址
                                 asset:res.records[0].asset_type, //交易币种
-                                activeType:res.records[0].type //交易类型 （交易、创建账户等）
+                                activeType:res.records[0].type, //交易类型 （交易、创建账户等）
+                                code:res.records[0].asset_code //交易码：可以取到time跟hour
                             };
                             if(ob.asset == "native") {
                                 ob.asset = "Osch"
+                            }else if(ob.code == 'hour'){
+                                ob.asset = 'Hour'
+                            }else if (ob.code == 'time'){
+                                ob.asset = 'Time'
                             }
+                            console.log(ob)
                             return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
                         }
@@ -330,8 +351,16 @@ export default {
                                 num: "-"+res.records[0].starting_balance,
                                 to: res.records[0].account,
                                 asset:"Osch",  //当操作为创建账户时，激活数量的单位只能为本币Osch
-                                activeType:res.records[0].type
-                            };            
+                                activeType:res.records[0].type,
+                                code:res.records[0].asset_code //交易码：可以取到time跟hour
+                            };    
+                            if(ob.asset == "native") {
+                                ob.asset = "Osch"
+                            }else if(ob.code == 'hour'){
+                                ob.asset = 'Hour'
+                            }else if (ob.code == 'time'){
+                                ob.asset = 'Time'
+                            }        
                             return _this.wArrPage.push(ob)
                             console.log(_this.wArrPage)
                         }else{ //收入出交易
@@ -341,15 +370,20 @@ export default {
                                 num: "+"+res.records[0].amount,
                                 to: res.records[0].to,
                                 asset:res.records[0].asset_type,
-                                activeType:res.records[0].type
+                                activeType:res.records[0].type,
+                                code:res.records[0].asset_code //交易码：可以取到time跟hour
                             };    
                         // 字符串截取        
-                            if(ob.asset == "native") {
-                                ob.asset = "Osch"
-                            }
-                            return _this.wArrPage.push(ob)
-                            console.log(ob)
-                            console.log(_this.wArrPage)
+                        if(ob.asset == "native") {
+                            ob.asset = "Osch"
+                        }else if(ob.code == 'hour'){
+                            ob.asset = 'Hour'
+                        }else if (ob.code == 'time'){
+                            ob.asset = 'Time'
+                        } 
+                        return _this.wArrPage.push(ob)
+                        console.log(ob)
+                        console.log(_this.wArrPage)
                         } 
                     })
                 }
@@ -371,6 +405,15 @@ export default {
         changtab(event) {
             if(event.target.innerHTML == "Osch"){
                 this.show = 1
+                this.wArrPage = this.osch
+                console.log(this.wArrPage)
+            } else if (event.target.innerHTML == "Time") {
+                this.show = 1
+                this.wArrPage = this.time
+            } else if (event.target.innerHTML == "Hour") {
+                this.show = 1
+                this.wArrPage = this.hour
+                console.log(this.wArrPage)
             } else if (event.target.innerHTML == "添加代币") {
                 this.show = 2
             } else if (event.target.innerHTML == "代币余额") {
@@ -397,10 +440,16 @@ export default {
                 .loadAccount(this.publicKey)
                 .then(function(account){
                     _this.account = account;
-                    for(var i=0;i<account.balances.length; i++){
-                        if(account.balances[i].asset_type ==  "credit_alphanum4" || "credit_alphanum12"){
-                            _this.oschNum = account.balances[i].balance;
-                            // break; 
+                    for(var num of account.balances){
+                        if(num.asset_code=='hour'){
+                            _this.hourNum = num.balance
+                            console.log(_this.hourNum)
+                        }else if(num.asset_code == 'time'){
+                            _this.timeNum = num.balance
+                            console.log(_this.timeNum)
+                        }else if(num.asset_type == 'native'){
+                            _this.oschNum = num.balance
+                            console.log(_this.oschNum)
                         }
                     }
                 }).catch((err) => {

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Create from '../components/Create/create.vue'
 import Wallet from '../components/Wallet/wallet.vue'
-import Swap from '../components/Swap/swap.vue'
+// import Swap from '../components/Swap/swap.vue'
 import Transaction from '../components/Transaction/transaction.vue'
 import Loging from '../components/Create/login.vue'
 import TransactionLogin from '../components/Transaction/Tlogin.vue'
@@ -40,11 +40,11 @@ export default new Router({
     //   name: 'wallet',
     //   component: Wallet
     // },
-    {
-      path: '/swap',
-      name: 'swap',
-      component: Swap
-    },
+    // {
+    //   path: '/swap',
+    //   name: 'swap',
+    //   component: Swap
+    // },
     {
       path: '/transaction/:id',
       name: 'transaction',

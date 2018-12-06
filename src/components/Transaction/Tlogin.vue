@@ -19,14 +19,28 @@ import VNav from '../vnav'
 export default {
     data () {
         return {
-            secret: ''
+            secret: '',
+             tips: false, //提示
         }
     },
     methods : {
         login () {
+            try{
+                let strkey = StellarSdk.StrKey;
+                let arrPrivate = strkey.decodeEd25519SecretSeed(this.secret)
+            }catch(err){
+                console.log(err)
+                this.tips = true
+            }
+            
             if (this.secret === '' ) {
                 alert('请输入私钥')
-            } else {
+                location.reload() 
+            } else if(this.tips == true){
+                alert('提示:您输入的私钥格式不正确或不符合格式，请确认后输入（私钥的长度为56位）')
+                location.reload() 
+            // console.log(this.secret.length)
+            } else if(this.tips == false) {
             this.$router.push('/transaction/' + this.secret)
             }
         }

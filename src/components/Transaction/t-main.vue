@@ -5,14 +5,14 @@
             <div class="transactionMask">
                 <h2 class="maskTitle  "> 你即将发送...</h2>
                 <div class="maskHeader mBorder ">
-                    <div class="maskAccount">当前地址: {{sourceId}}</div>
+                    <div class="maskAccount">当前地址: {{publicKey}}</div>
                     <div class="maskAccount">目标地址: {{toPublic}}</div>
                     <div class="masknum">交易额: {{toOschNum}} Osch</div>
                 </div>
                 <div class="maskInner mBorder ">
                     <p class="maskInnerList">
                         <span class="maskListLeft"> 当前地址:</span>
-                        <span class="maskListRight">{{sourceId}}</span>
+                        <span class="maskListRight">{{publicKey}}</span>
                     </p>
                     <p class="maskInnerList">
                         <span class="maskListLeft"> 目标地址:</span>
@@ -32,11 +32,11 @@
                     </p>
                     <p class="maskInnerList">
                         <span class="maskListLeft"> 币种:</span>
-                        <span class="maskListRight">Osch</span>
+                        <span class="maskListRight">{{selectType}}</span>
                     </p>
                 </div>
                 <div class="maskFooter mBorder">
-                    <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbspOsh 到： </h1>
+                    <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbsp {{selectType}} 到： </h1>
                     <h2>{{toPublic}}</h2>
                 </div>
                 <button class="maskBtn cancel" @click="closeMask" >取消交易(关闭遮罩层)</button>
@@ -47,21 +47,21 @@
         <div class="main-inner">
             <div class="action-id">
                 <div class="source-id">
-                    <div class="dis-list">
+                    <!-- <div class="dis-list">
                          <div class="dis-left">
                         <span>
                     来源地址：
                         </span>
                     </div>
                     <div class="dis-right">
-                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="sourceId">
+                        <input type="text" placeholder="例如: GCEXAMPLE5HWNK4AYSTEQ4UWDKHTCKADVS2AHF3UI2ZMO3DPUSM6Q4UG" class="inp" v-model="publicKey">
                     </div>
                     <div class="dis-right">
                          <p class="dis-tips">提示：如果您还没有源钱包，可以
                         <router-link to="/">创建钱包</router-link>
                         </p>
                     </div>
-                    </div>
+                    </div> -->
                    <div class="dis-list">
                         <div class="dis-left">
                         <span>
@@ -72,7 +72,7 @@
                                 <input type="text" placeholder="Amount in stroops (1 lumen = 10,000,000 stroops)" class="inp" v-model="baseFee">
                         </div>
                         <div class="dis-right">
-                            <p class="dis-tips">1本币 = 10,000,000 strops，默认最低交易费用为100本币
+                            <p class="dis-tips">默认最低交易费用为10本币,最低交易费用越多打包的越快。
                             </p>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                                 <input type="text" placeholder=默认为text class="inp" v-model="memo">
                         </div>
                     </div>
-                   <div class="dis-list">
+                   <!-- <div class="dis-list">
                         <div class="dis-left">
                         <span>
                     交易时间 (可选项)
@@ -102,7 +102,7 @@
                             时间戳值。
                             </p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="action-type">
@@ -170,6 +170,7 @@
                                             <option disabled value="">请选择交易类型</option>
                                             <option>Osch</option>
                                             <option>Time</option>
+                                            <option>Hour</option>
                                         </select>
                                     </div>
                                 </div>
@@ -197,20 +198,26 @@ import VNav from '../vnav'
 export default {
     data () {
         return {
-            sourceId: "",//公钥地址
             oschNum: "0" ,//剩余Osch数量
+            hourNum:"0",
+            timeNum:"0",
+            hourCode: "",
+            timeCode: "",
+            hourIssuer:"",
+            timeIssuer: "",
             toPublic: "", // 目标账户
             toOschNum: "",// 交易数量
             server: "",//Stellar
             stellarServer: "",  //Stellar
             account: "",//每次请求stellar返回的账户详情
             secret: this.$route.params.id,//私钥
+            publicKey:'',
             selectType: "",//下拉框类型
             transactionType: "",//交易类型
             valid: 1, //判断目的地地址
             memo: "",//备忘录
             close: false,//遮罩层
-            baseFee: 100, //愿意在此交易中按操作支付的最高费用
+            baseFee: 10, //愿意在此交易中按操作支付的最高费用
             // timebounds: [],//事务有效性的时间范围。
              timebounds: {
                 minTime: '',
@@ -232,9 +239,9 @@ export default {
             this.close = true
             var _this = this
             //做判断基础交易费用
-            if(_this.baseFee>=100){
+            if(_this.baseFee>=10){
                 _this.baseFee = _this.baseFee
-            }else if(_this.baseFee<100) {
+            }else if(_this.baseFee<10) {
                 alert('基础费用不可小于100Stroops')
                 _this.close = false
             }
@@ -250,11 +257,8 @@ export default {
                     console.log(err)
                     //报错则认为输入的目标在账户为激活,或输入错误
                     _this.valid = 2
-                    console.log(_this.valid)
-                    console.log("未激活")
-                    console.log("未激活")
-
                     })
+            
         },
         //关闭遮罩层
         closeMask() {
@@ -283,27 +287,69 @@ export default {
                     fee: _this.baseFee, 
                 }
             }
+            //判断选择类型
+            // let assetType = ""
+            
             //当valid的值为1是,则进行转账交易
             if (_this.valid == 1 ) { 
-                var transaction = new StellarSdk.TransactionBuilder(_this.account,bulid)
-                .addOperation(StellarSdk.Operation.payment({
-                    destination: _this.toPublic,
-                    asset: StellarSdk.Asset.native(),
-                    amount: _this.toOschNum 
-                }))
-                .addMemo(StellarSdk.Memo.text(_this.memo))
-                .build();
-                transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
-                // 提交交易信息
-                _this.stellarServer.submitTransaction(transaction).then(function(res){
-                    console.log("发送交易成功")
-                    alert("发送成功");
-                    location.reload() 
-                })
+                if(_this.selectType == 'Osch'){
+                    var transaction = new StellarSdk.TransactionBuilder(_this.account,bulid)
+                    .addOperation(StellarSdk.Operation.payment({
+                        destination: _this.toPublic,
+                        asset: StellarSdk.Asset.native(),
+                        amount: _this.toOschNum 
+                    }))
+                    .addMemo(StellarSdk.Memo.text(_this.memo))
+                    .build();
+                    transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
+                    // 提交交易信息
+                    _this.stellarServer.submitTransaction(transaction).then(function(res){
+                        console.log("发送交易成功")
+                        alert("发送成功");
+                        location.reload() 
+                    })
+                }
+                if(_this.selectType == 'Time'){
+                    var transaction = new StellarSdk.TransactionBuilder(_this.account,bulid)
+                    .addOperation(StellarSdk.Operation.payment({
+                        destination: _this.toPublic,
+                        asset: new StellarSdk.Asset(_this.timeCode,_this.timeIssuer) ,
+                        amount: _this.toOschNum 
+                    }))
+                    .addMemo(StellarSdk.Memo.text(_this.memo))
+                    .build();
+                    transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
+                    // 提交交易信息
+                    _this.stellarServer.submitTransaction(transaction).then(function(res){
+                        console.log("发送交易成功")
+                        alert("发送成功");
+                        location.reload() 
+                    })
+                }
+                if(_this.selectType == 'Hour'){
+
+                    var transaction = new StellarSdk.TransactionBuilder(_this.account,bulid)
+                    .addOperation(StellarSdk.Operation.payment({
+                        destination: _this.toPublic,
+                        asset: new StellarSdk.Asset(_this.hourCode,_this.hourIssuer),
+                        amount: _this.toOschNum 
+                    }))
+                    .addMemo(StellarSdk.Memo.text(_this.memo))
+                    .build();
+                    transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
+                    // 提交交易信息
+                    _this.stellarServer.submitTransaction(transaction).then(function(res){
+                        console.log("发送交易成功")
+                        alert("发送成功");
+                        location.reload() 
+                    })
+                
+                }
+                
                 //如果valid 的值为2 则进行激活事件
             } else if( _this.valid == 2){  
                 this.stellarServer
-                    .loadAccount(_this.sourceId)
+                    .loadAccount(_this.publicKey)
                     .then(function(account){
                         console.log(account);
                         var transaction = new StellarSdk.TransactionBuilder(account,{
@@ -350,8 +396,6 @@ export default {
         //init secret tool
         var strkey = StellarSdk.StrKey;
         var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
-        
-        console.log(arrPrivate)
         var keypair = new StellarSdk.Keypair({
             type: "ed25519",
             secretKey: arrPrivate 
@@ -367,13 +411,27 @@ export default {
             .loadAccount(this.publicKey)
             .then(function(account){
                 _this.account = account;
-                for(var i=0;i<account.balances.length; i++){
-                    if(account.balances[i].asset_type ==  "credit_alphanum4" || "credit_alphanum12"){
-                        _this.oschNum = account.balances[i].balance;
-                        // break; 
+                for(var num of account.balances){
+                        if(num.asset_code=='hour'){
+                            _this.hourNum = num.balance
+                            _this.hourIssuer = num.asset_issuer
+                            _this.hourCode = num.asset_code
+                            console.log(_this.hourIssuer)
+                            console.log(_this.hourCode)
+                            console.log(_this.hourNum)
+                        }else if(num.asset_code == 'time'){
+                            _this.timeNum = num.balance
+                            _this.timeIssuer = num.asset_issuer
+                            _this.timeCode = num.asset_code
+                            console.log(_this.timeNum)
+                        }else if(num.asset_type == 'native'){
+                            _this.oschNum = num.balance
+                            console.log(_this.oschNum)
+                        }
                     }
-                }
             })
+        // let secretkeyPair=StellarSdk.Keypair.fromSecret(_this.secret)
+        // console.log(secretkeyPair)
     }
 }
 </script>
