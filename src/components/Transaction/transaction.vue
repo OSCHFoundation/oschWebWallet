@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-header></v-header>
+        <button @click="out">退出登录</button>
         <t-main></t-main>
         <v-footer></v-footer>
     </div>
@@ -14,6 +15,12 @@ export default {
     data () {
         return {
 
+        }
+    },
+    methods: {
+         out() {
+            sessionStorage.clear()
+            this.$router.push('/transactionlogin')
         }
     },
     components: {

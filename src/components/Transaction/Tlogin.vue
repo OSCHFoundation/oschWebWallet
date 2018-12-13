@@ -21,6 +21,9 @@ export default {
         return {
             secret: '',
              tips: false, //提示
+             server: '',
+             publicKey: '',
+
         }
     },
     methods : {
@@ -41,7 +44,25 @@ export default {
                 location.reload() 
             // console.log(this.secret.length)
             } else if(this.tips == false) {
-            this.$router.push('/transaction/' + this.secret)
+                var _this = this;
+                StellarSdk.Config.setAllowHttp(true);
+                StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
+                _this.server = new StellarSdk.Server(_this.horizonUrl);
+                var strkey = StellarSdk.StrKey;
+                var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
+                var keypair = new StellarSdk.Keypair({
+                    type: "ed25519",
+                    secretKey: arrPrivate 
+                });
+                _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
+                _this.server
+                    .loadAccount(_this.publicKey)
+                    .then(function(account){
+                        _this.$router.push('/transaction/' + _this.secret)
+                    }).catch((err) => {
+                        alert('当前账户未激活，请激活后执行操作')
+                        location.reload()
+                    })
             }
         }
     },
@@ -49,6 +70,23 @@ export default {
         VNav,
         VHeader,
         VFooter
+    },
+    mounted() {
+        let user = JSON.parse(sessionStorage.user)
+        if(user !== false){
+            this.$router.push('/transaction/' + user.priv)
+        }
+        var _this = this;
+        StellarSdk.Config.setAllowHttp(true);
+        StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
+        _this.server = new StellarSdk.Server(_this.horizonUrl);
+        var strkey = StellarSdk.StrKey;
+        var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
+        var keypair = new StellarSdk.Keypair({
+            type: "ed25519",
+            secretKey: arrPrivate 
+        });
+        _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
     }
 }
 </script>   

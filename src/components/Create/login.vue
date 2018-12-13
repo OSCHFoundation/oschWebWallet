@@ -22,7 +22,10 @@ export default {
         return {
             secret: '',
             tips: false, //提示
-            com: 1
+            com: 1,
+            publicKey:"",
+            server:""
+
         }
     },
     methods : {
@@ -40,10 +43,30 @@ export default {
                 location.reload() 
             } else if(this.tips == true){
                 alert('提示:您输入的私钥格式不正确或不符合格式，请确认后输入（私钥的长度为56位）')
-                location.reload() 
+                // location.reload() 
             // console.log(this.secret.length)
             } else if(this.tips == false) {
-            this.$router.push('/wallet/' + this.secret)
+                var _this = this;
+                StellarSdk.Config.setAllowHttp(true);
+                StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
+                _this.server = new StellarSdk.Server(_this.horizonUrl);
+                var strkey = StellarSdk.StrKey;
+                var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
+                var keypair = new StellarSdk.Keypair({
+                    type: "ed25519",
+                    secretKey: arrPrivate 
+                });
+                _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
+                console.log(_this.secret)
+                console.log(_this.publicKey)
+                _this.server
+                    .loadAccount(_this.publicKey)
+                    .then(function(account){
+                        _this.$router.push('/wallet/' + _this.secret)
+                    }).catch((err) => {
+                        alert('当前账户未激活，请激活后执行操作')
+                        // location.reload()
+                    })
             }
         }
     },
@@ -53,10 +76,11 @@ export default {
         VFooter
     },
     mounted () {
-        var _this = this;
-        StellarSdk.Config.setAllowHttp(true);
-        StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret))
-        this.StellarServer = new StellarSdk.Server(_this.horizonUrl)
+        let user = JSON.parse(sessionStorage.user)
+        if(user !== false){
+            this.$router.push('/wallet/' + user.priv)
+        }
+
     }
 }
 </script>   
