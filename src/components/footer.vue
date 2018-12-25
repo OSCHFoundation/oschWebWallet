@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     footer {
         min-width: 960px;
         line-height: 200px;

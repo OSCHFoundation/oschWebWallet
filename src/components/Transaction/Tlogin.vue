@@ -76,17 +76,6 @@ export default {
         if(user !== false){
             this.$router.push('/transaction/' + user.priv)
         }
-        var _this = this;
-        StellarSdk.Config.setAllowHttp(true);
-        StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
-        _this.server = new StellarSdk.Server(_this.horizonUrl);
-        var strkey = StellarSdk.StrKey;
-        var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
-        var keypair = new StellarSdk.Keypair({
-            type: "ed25519",
-            secretKey: arrPrivate 
-        });
-        _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
     }
 }
 </script>   

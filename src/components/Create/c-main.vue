@@ -35,7 +35,6 @@ export default {
             ifKeyBox: false,
             newPublicKey: "",
             newPrivateKey: "",
-            stellarServer: ""
         }
     },
     components: {
@@ -55,7 +54,7 @@ export default {
 </script>
 
 <style>
-   .main {
+   /* .main {
         margin: 30px;
         background-color: bisque;
         min-width: 960px;
@@ -83,10 +82,9 @@ export default {
         display: block;
         margin: 30px auto 0;
         border-radius: 3px;
-        /* border: none; */
         background: skyblue;
         width: 150px;
         height: 30px;
-    }
+    } */
  
 </style>

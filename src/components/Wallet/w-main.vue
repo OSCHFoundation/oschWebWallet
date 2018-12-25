@@ -66,6 +66,7 @@
                             </el-table-column>
                             <el-table-column
                             label="Transaction ID"
+                            width="400"
                             >
                             <template slot-scope="scope">
                                 <el-button-group>
@@ -76,11 +77,13 @@
                             <el-table-column
                             prop="activeType"
                             label="ActiveType"
+                            width="400"
                             >
                             </el-table-column>
                             <el-table-column
                             prop="asset"
                             label="Currency"
+                            width="400"
                             >
                             </el-table-column>
                         </el-table>
@@ -305,6 +308,8 @@ export default {
         //点击信任
         changeTrust() {
             console.log(this.trustHour)
+           
+
             if(this.trustHour === true){
                 alert('您已经信任过了')
             }else{
@@ -386,6 +391,7 @@ export default {
         },
         // 循环遍历数组，并抽取6个参数，然后放入wArrPage
         render(page){
+            this.tab = page.length
             console.log(page)
                 for(var page1 of page){
                      var ob = {
@@ -478,6 +484,11 @@ export default {
                 .loadAccount(this.publicKey)
                 .then(function(account){
                     _this.account = account;
+                    //把账户信息保存在session中
+                    let ueserInfo = JSON.stringify({
+                        aco: account
+                    })
+                    sessionStorage.ueserInfo = ueserInfo
                     for(var num of account.balances){
                         if(num.asset_code=='hour'){
                             _this.hourNum = num.balance
@@ -488,6 +499,10 @@ export default {
                         }else if(num.asset_type == 'native'){
                             _this.oschNum = num.balance
                         }
+                    let ueserInfo = JSON.stringify({
+                        aco: account,
+                    })
+                    sessionStorage.ueserInfo = ueserInfo
                     }
                 }).catch((err) => {
                     console.log(err)

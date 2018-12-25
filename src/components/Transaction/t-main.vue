@@ -144,12 +144,6 @@ export default {
             memo: "",//备忘录
             close: false,//遮罩层
             baseFee: "", //愿意在此交易中按操作支付的最高费用
-             timebounds: {
-                minTime: '',
-                maxTime: ''
-            },
-            minTime: '',//lowerTime 需放入timebounds
-            maxTime: '',//upTime 需放入timebounds
             trustHour:false,
             trustTime:false
         }
@@ -173,7 +167,11 @@ export default {
             if(_this.trueToPublic == false){
                 alert('当前输入的公钥无效')
                     location.reload() 
-            }else { // 目标地址合法执行
+            }else if(_this.toPublic == _this.publicKey){
+                alert('目标地址不能为当前账户地址')
+                    location.reload() 
+            }
+            else { // 目标地址合法执行
                 _this.stellarServer
                 .loadAccount(_this.toPublic)
                 .then(function(account){
@@ -212,9 +210,12 @@ export default {
                 if(_this.baseFee<minFee){
                     alert('基础手续费小于基数（基数:所持代币类目数*10）')
                     _this.close = false
+                        location.reload() 
                 }else if(_this.baseFee<10) {
                     alert('基础费用不可小于10 Osch')
                     _this.close = false
+                        location.reload() 
+
                 }
             }
         },
@@ -226,22 +227,8 @@ export default {
         sendClick () {
             // this.close = true
             var _this = this;
-            // 操作交易时间的键值对不为空的情况下
-            if((_this.minTime!== "")||(_this.maxTime!== "")){
-                _this.timebounds = {
-                    minTime: _this.minTime, //lowerTime
-                    maxTime: _this.maxTime //upTime
-                }
-            }
-            //创建bulid变量，里面存储着创建交易的operation键值对操作
             let bulid = {
                 fee: _this.baseFee*10000000, 
-            }
-            //做判断如果时间交易两项中的任意一项没有填写，则创建交易的时候只发送默认的基本费用
-            if((_this.minTime == "")||(_this.maxTime == "")) {
-                bulid = {
-                    fee: _this.baseFee, 
-                }
             }
             //判断选择类型
             //当valid的值为1是,则进行转账交易

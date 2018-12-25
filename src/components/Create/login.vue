@@ -62,9 +62,10 @@ export default {
                 _this.server
                     .loadAccount(_this.publicKey)
                     .then(function(account){
-                        _this.$router.push('/wallet/' + _this.secret)
+                        _this.$router.push('/inner/' + _this.secret)
                     }).catch((err) => {
-                        alert('当前账户未激活，请激活后执行操作')
+                        console.log('hahah')
+                        // alert('当前账户未激活，请激活后执行操作')
                         // location.reload()
                     })
             }
