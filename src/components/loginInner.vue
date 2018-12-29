@@ -4,7 +4,7 @@
     <main class="main">
       <div class="main-left">
         <div class="img">
-          <img src="./img/index_tx@2x.png" width="48" height="48" alt>
+          <img src="../../static/img/index_tx@2x.png" width="48" height="48" alt>
         </div>
         <div class="coinName">
           <span>钱包名字</span>
@@ -13,27 +13,27 @@
         </div>
         <div class="operationList">
           <ul class="opList" @click="handleClick">
-            <li>
-              <div class="li1">
-                <img src="./img/index_message@2x.png" width="26" height="26" alt>
+            <li  v-bind:class="{back:back1 == 1}" @click="num(1)">
+              <div class="li1" >
+                <img src="../../static/img/index_message@2x.png" width="26" height="26" alt>
                 <span>钱包信息</span>
               </div>
             </li>
-            <li>
+            <li v-bind:class="{back:back1 == 2}" @click="num(2)">
               <div class="li1">
-                <img src="./img/index_zc@2x.png" width="26" height="26" alt>
+                <img src="../../static/img/index_zc@2x.png" width="26" height="26" alt>
                 <span>资产</span>
               </div>
             </li>
-            <li>
+            <li v-bind:class="{back:back1 == 3}" @click="num(3)">
               <div class="li1">
-                <img src="./img/index_zz@2x.png" width="26" height="26" alt>
+                <img src="../../static/img/index_zz@2x.png" width="26" height="26" alt>
                 <span>转账</span>
               </div>
             </li>
-            <li>
+            <li v-bind:class="{back:back1 == 4}" @click="num(4)">
               <div class="li1">
-                <img src="./img/index_code@2x.png" width="26" height="26" alt>
+                <img src="../../static/img/index_code@2x.png" width="26" height="26" alt>
                 <span>收款</span>
               </div>
             </li>
@@ -44,6 +44,7 @@
         <v-wallet v-if="come==1" v-on:listenPrice="showPrice"></v-wallet>
         <v-asset v-if="come==2"></v-asset>
         <v-payments v-if="come==3"></v-payments>
+        <v-receivables  v-if="come==4"></v-receivables>
       </div>
     </main>
     <v-footer></v-footer>
@@ -56,18 +57,21 @@ import VFooter from "./innerList/footer";
 import VWallet from "./innerList/wallet";
 import VAsset from "./innerList/asset";
 import VPayments from "./innerList/payments";
+import VReceivables from "./innerList/receivables"
 export default {
   components: {
     VHeader,
     VFooter,
     VWallet,
     VAsset,
-    VPayments
+    VPayments,
+    VReceivables
   },
   data() {
     return {
       come: 1, //v-show
-      price: 0
+      price: 0,
+      back1:1
     };
   },
   filters: {
@@ -78,6 +82,9 @@ export default {
     }
   },
   methods: {
+    num(val) {
+      this.back1 = val
+    },
     handleClick(event) {
       if (event.target.innerHTML == "钱包信息") {
         this.come = 1;
@@ -92,7 +99,7 @@ export default {
         console.log(this.show);
       } else if (event.target.innerHTML == "收款") {
         this.come = 4;
-      }
+      }   
     },
     showPrice(data) {
       console.log("1231231321");
@@ -185,5 +192,9 @@ export default {
 .li1 span {
   margin-left: 20px;
   color: #999999
+}
+.back {
+  background:rgba(28,35,46,1);
+  color:rgba(229,229,229,1);
 }
 </style>

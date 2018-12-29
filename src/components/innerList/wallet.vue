@@ -5,8 +5,8 @@
       <div class="my">
         <span class="small">我的地址：</span>
         <span class="big">{{publicKey}}</span>
-        <img class="copy" src="../img/index_code@2x.png" width="18" height="18">
-        <img class="code" src="../img/index_fd@2x.png" width="18" height="18">
+        <img class="copy" src="../../../static/img/index_code@2x.png" width="18" height="18">
+        <img class="code" src="../../../static/img/index_fd@2x.png" width="18" height="18">
       </div>
 
       <div class="state" v-show="validType">
@@ -23,13 +23,13 @@
         <span class="small">保证金：</span>
         <span class="big">{{promiseFee}} Osch</span>
         
-        <img class="question" src="../img/u897.png" alt>
+        <img class="question" src="../../../static/img/u897.png" alt>
       </div>
       <div class="coinList">
         <div class="coin">
           <div class="coinImg">
             <div class="bao">
-              <img src="../img/u15.png" width="40" height="40">
+              <img src="../../../static/img/u15.png" width="40" height="40">
             </div>
             <strong clas>Osch</strong>
           </div>
@@ -41,7 +41,7 @@
         <div class="coin" v-show="isTime">
           <div class="coinImg">
             <div class="bao">
-              <img src="../img/u269.png" width="40" height="40">
+              <img src="../../../static/img/u269.png" width="40" height="40">
             </div>
             <strong>Time</strong>
           </div>
@@ -53,7 +53,7 @@
         <div class="coin" v-show="isHour">
           <div class="coinImg">
             <div class="bao">
-              <img src="../img/u259.png" width="40" height="40">
+              <img src="../../../static/img/u259.png" width="40" height="40">
             </div>
             <strong>Hour</strong>
           </div>
@@ -247,7 +247,6 @@ export default {
     render(page) {
       let num = "5120.651605150";
       console.log(parseFloat(num).toFixed(2));
-      console.log(page);
       for (var page1 of page) {
         var ob = {
           time: page1.created_at, //交易时间
@@ -261,7 +260,6 @@ export default {
           memo: "",
           from: page1.from
         };
-        console.log(page1);
         page1
           .transaction()
           .then(res => {
@@ -285,7 +283,6 @@ export default {
         if (page1.type == "payment") {
           if (page1.from == this.publicKey) {
             ob.num = "-" + parseFloat(page1.amount).toFixed(2);
-            console.log(ob.num);
           } else {
             ob.num = "+" + parseFloat(page1.amount).toFixed(2);
           }
@@ -480,7 +477,7 @@ export default {
   display: inline-block;
   width: 332px;
   height: 100px;
-  background-image: url("../img/coin.png");
+  background-image: url("../../../static/img/coin.png");
   background-size: 100% 100%;
 
   border-radius: 5px;

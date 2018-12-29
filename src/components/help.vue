@@ -107,11 +107,11 @@ export default {
   z-index: 1;
 }
 .main {
-  padding-top: 129px;
+  padding-top: 69px;
   margin: 0 auto;
   width: 80%;
   min-height: 700px;
-  background-image: url("./img/diandian.png");
+  background-image: url("../../static/img/diandian.png");
   background-size: 140% 100%;
   z-index: 2;
 }

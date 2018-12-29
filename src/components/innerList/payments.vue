@@ -5,83 +5,83 @@
       <div class="choseCoin">
         <div class="coinList">
           <div class="coin" @click="payOsch">
-            <div class="coinImg">
-              <img src="../img/u15.png" alt>
+            <div class="coin-left">
+              <img :src="selectType =='Osch' ? yc :xianshi" width="22" height="22">
             </div>
-            <div class="coinInner">
-              <strong>Osch</strong>
-              <p>余额: {{oschNum | numFilter}} Osch</p>
-              <!-- <p>≈￥0.001</p> -->
+            <div class="coin-right">
+              <div class="coinImg">
+                <img src="../../../static/img/u15.png" width="40" height="40">
+              </div>
+              <div class="coinInner">
+                <strong class="stron">Osch</strong>
+              </div>
+              <span class="balance1">{{oschNum | numFilter}}</span>
             </div>
           </div>
           <div class="coin" v-show="isTime" @click="payTime">
-            <div class="coinImg">
-              <img src="../img/u269.png" alt>
+            <div class="coin-left">
+              <img :src="selectType =='Time' ? yc :xianshi" width="22" height="22">
             </div>
-            <div class="coinInner">
-              <strong>Time</strong>
-              <p>余额: {{timeNum | numFilter}} Time</p>
-              <!-- <p>≈￥ 0.001</p> -->
+            <div class="coin-right">
+              <div class="coinImg">
+                <img src="../../../static/img/u269.png" width="40" height="40">
+              </div>
+              <div class="coinInner">
+                <strong class="stron">Time</strong>
+              </div>
+              <span class="balance1">{{timeNum | numFilter}}</span>
             </div>
           </div>
           <div class="coin" v-show="isHour" @click="payHour">
-            <div class="coinImg">
-              <img src="../img/u259.png" alt>
+            <div class="coin-left">
+              <img :src="selectType =='Hour' ? yc :xianshi" width="22" height="22">
             </div>
-            <div class="coinInner">
-              <strong>Hour</strong>
-              <p>余额: {{hourNum | numFilter}} Hour</p>
-              <!-- <p>≈￥ 0.001</p> -->
+            <div class="coin-right">
+              <div class="coinImg">
+                <img src="../../../static/img/u259.png" width="40" height="40">
+              </div>
+              <div class="coinInner">
+                <strong class="stron">Hour</strong>
+              </div>
+              <span class="balance1">{{hourNum | numFilter}}</span>
             </div>
           </div>
         </div>
       </div>
+      <div class="title1">转账信息</div>
     </div>
-    <div class="payInner" v-show="page1">
-      <div class="payHea">转账</div>
-      <div class="innerList">
-        <div class="inner-left">收款地址：</div>
-        <div class="inner-right">
-          <input type="text" placeholder="请输入收款人信息" v-model="toPublic">
-        </div>
+    <!-- 填写信息 -->
+    <div class="writeInfo">
+      <div class="write-title">
+        <span class="title-left">转账地址</span>
+        <span class="star">*</span>
       </div>
-      <div class="innerList">
-        <div class="inner-left">转账数量：</div>
-        <div class="inner-right">
-          <input
-            type="text"
-            onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
-            placeholder="请输入数量"
-            v-model="toOschNum"
-          >
-        </div>
+      <input type="text" placeholder="输入对方公钥地址" class="writeInput" v-model="toPublic">
+      <div class="write-title">
+        <span class="title-left">转账数量</span>
+        <span class="star">*</span>
       </div>
-      <div class="innerList">
-        <div class="inner-left">备注(可选项)：</div>
-        <div class="inner-right">
-          <input type="text" placeholder="最多可输入20个字符，10个中文（含标点符号）" v-model="memo" maxlength="20">
-          <!-- <input onkeyup="value=value.replace(/[\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[\d]/g,''))" maxlength=20 name="Numbers" v-model="memo">  -->
-        </div>
+      <input type="text" placeholder="输入转账数量" class="writeInput"  v-model="toOschNum" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+      <div class="write-title">
+        <span class="title-left">矿工费（选填）</span>
+        <img src="../../../static/img/u897.png" width="16" height="16" class="ques">
       </div>
-      <div class="innerList">
-        <div class="inner-left">矿工费：</div>
-        <div class="inner-right">
-          <input type="text" placeholder="10 Osch" v-model="baseFee">
-        </div>
+      <input type="text" placeholder="输入交易矿工费" class="writeInput">
+      <div class="write-title">
+        <span class="title-left">备注（选填）</span>
+        <el-switch v-model="value2" active-color="#10C796" inactive-color="#ccc"></el-switch>
       </div>
-      <div class="btn">
-        <button class="prev" @click="back">上一步</button>
-        <button class="next" @click="openMask">下一步</button>
-      </div>
+      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo">
+        <button class="sure"  :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"  v-bind:disabled="(toOschNum==''&&toPublic=='')" @click="openMask">确认</button>
     </div>
     <div class="confrimTransaction" v-show="close">
       <div class="transactionMask">
-        <h2 class="maskTitle">你即将发送...</h2>
-        <div class="maskHeader mBorder">
+        <h2 class="maskTitle">转账信息</h2>
+        <!-- <div class="maskHeader mBorder">
           <div class="maskAccount">当前地址: {{publicKey}}</div>
           <div class="maskAccount">目标地址: {{toPublic}}</div>
           <div class="masknum">交易额: {{toOschNum}} {{selectType}}</div>
-        </div>
+        </div> -->
         <div class="maskInner mBorder">
           <p class="maskInnerList">
             <span class="maskListLeft">当前地址:</span>
@@ -107,33 +107,40 @@
             <span class="maskListLeft">币种:</span>
             <span class="maskListRight">{{selectType}}</span>
           </p>
+            <button class="maskBtn cancel" @click="closeMask">取消交易</button>
+        <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
         </div>
-        <div class="maskFooter mBorder">
+        <!-- <div class="maskFooter mBorder">
           <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbsp {{selectType}} 到：</h1>
           <h2>{{toPublic}}</h2>
-        </div>
-        <button class="maskBtn cancel" @click="closeMask">取消交易(关闭遮罩层)</button>
-        <button class="maskBtn send" @click="sendClick">确认无误,发送交易(关闭遮罩层)</button>
+        </div> -->
+      
       </div>
     </div>
+    <!-- <div class="back-mask"></div> -->
+
   </div>
 </template>
 
 <script>
+import select from "../../../static/img/set.png";
+import noSelect from "../../../static/img/set1.png";  
 export default {
   components: {},
   props: {},
   data() {
     return {
-      // oschNum: "",
-      // timeNum: "",
-      // hourNum: "",
+        value1: true,
+        value2: true,
+        // 开关插件
       isHour: false,
       isTime: false,
       page: true, //进入页面
       page1: false, //转账页面
-      selectType: "Oshc", // 资产类型
-      //   -----------
+      selectType: "Osch", // 资产类型
+      // choseSelect: 1,
+      xianshi:select,
+      yc:noSelect,
       oschNum: "0", //剩余Osch数量
       hourNum: "0",
       timeNum: "0",
@@ -149,15 +156,14 @@ export default {
       account: "", //每次请求stellar返回的账户详情
       secret: this.$route.params.id, //私钥
       publicKey: "",
-       valid: 1, //判断目的地地址
-      selectType: "", //下拉框类型
+      valid: 1, //判断目的地地址
       transactionType: "", //交易类型
       memo: "", //备忘录
       close: false, //遮罩层
       baseFee: "", //愿意在此交易中按操作支付的最高费用
       trustHour: false,
       trustTime: false,
-      promiseFee:0
+      promiseFee: 0
     };
   },
   filters: {
@@ -173,18 +179,19 @@ export default {
       this.page = true;
     },
     payOsch() {
-      this.page = false;
-      this.page1 = true;
+      // this.page = false;
+      // this.page1 = true;
       this.selectType = "Osch";
+      console.log('gagagagaga')
     },
     payTime() {
-      this.page = false;
-      this.page1 = true;
+      // this.page = false;
+      // this.page1 = true;
       this.selectType = "Time";
     },
     payHour() {
-      this.page = false;
-      this.page1 = true;
+      // this.page = false;
+      // this.page1 = true;
       this.selectType = "Hour";
     },
     closeMask() {
@@ -244,33 +251,37 @@ export default {
         //做判断基础交易费用
         console.log(_this.baseFee);
         console.log(_this.account);
-        let fees = this.toOschNum - this.promiseFee
-        if(_this.baseFee == '') {
-          _this.baseFee = 10
-        }else if(_this.baseFee < 10) {
-          alert('基本费用不可小于10')
+        let fees = this.toOschNum - this.promiseFee;
+        if (_this.baseFee == "") {
+          _this.baseFee = 10;
+        } else if (_this.baseFee < 10) {
+          alert("基本费用不可小于10");
           _this.close = false;
           location.reload();
-        } else if(this.fees < 0) {
-          alert('此操作小于一本费用')
+        } else if (this.fees < 0) {
+          alert("此操作小于一本费用");
           _this.close = false;
           location.reload();
         }
       }
     },
     sendClick() {
+      console.log('haahahaa')
       // this.close = true
       var _this = this;
       let bulid = {
         fee: _this.baseFee * 10000000
       };
+      // _this.selectType = "Osch"
+      console.log(_this.selectType)
       //判断选择类型
       //当valid的值为1是,则进行转账交易
       if (_this.valid == 1) {
         if (_this.selectType == "Osch") {
+
           var transaction = new StellarSdk.TransactionBuilder(
             _this.account,
-            bulid
+            // bulid
           )
             .addOperation(
               StellarSdk.Operation.payment({
@@ -289,7 +300,12 @@ export default {
               console.log("发送交易成功");
               alert("发送成功");
               location.reload();
-            });
+            })
+            .catch((err)=>{
+            console.log('zheehijiaoyi')
+
+              console.log('fafa')
+            })
         }
         if (_this.selectType == "Time") {
           if (_this.trustTime == false) {
@@ -319,9 +335,13 @@ export default {
                 console.log("发送交易成功");
                 alert("发送成功");
                 location.reload();
+              })
+              .catch((err)=> {
+                console.log('faf')
               });
           }
         }
+        console.log('kkk')
         if (_this.selectType == "Hour") {
           if (_this.trustHour == false) {
             alert(
@@ -387,7 +407,10 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    this.select = 1;
+    this.value1 = 1
+  },
   mounted() {
     var _this = this;
     StellarSdk.Config.setAllowHttp(true);
@@ -428,59 +451,55 @@ export default {
       .catch(err => {
         console.log("hhahahahahahahahhaha");
       });
-    // let user = JSON.stringify({
-    //   pub: this.publicKey,
-    //   priv: this.secret
-    // });
-    // sessionStorage.user = user;
-    let user = JSON.parse(sessionStorage.user)
-      this.promiseFee = user.fee
-      console.log(this.promiseFee)
+    let user = JSON.parse(sessionStorage.user);
+    this.promiseFee = user.fee;
+    console.log(this.promiseFee);
   }
 };
 </script>
 <style scoped>
 .payments {
-  padding-top: 150px;
-  width: 100%;
-  height: 1200px;
-  background-color: antiquewhite;
+  padding: 0 0 0 32px;
+  min-height: 895px;
+  background: rgba(23, 29, 38, 1);
+
 }
 .payHeader {
-  text-align: center;
+  padding-top: 24px;
+  font-size: 22px;
+  font-family: MicrosoftYaHei-Bold;
+  font-weight: bold;
+  color: rgba(240, 240, 240, 1);
   display: block;
-  font-size: 40px;
 }
 .coin {
   margin-right: 20px;
   display: inline-block;
-  padding: 10px;
-  width: 300px;
-  background-color: rgba(240, 240, 240, 1);
-  border-radius: 5px;
 }
 .coinImg {
   float: left;
-  width: 65px;
-  height: 65px;
-  overflow: hidden;
+  margin: 17px 0 0 14px;
+  width: 46px;
+  height: 46px;
+  border: 3px solid rgba(104, 104, 104, 0.2);
+  border-radius: 50%;
 }
 .coinImg img {
-  width: 65px;
-  height: 65px;
-  vertical-align: middle;
+  padding-top: 3px;
+  padding-left: 3px;
+  /* vertical-align: middle; */
 }
 .coinInner {
   display: inline-block;
   padding-left: 15px;
+  line-height: 89px;
   font-size: 17px;
 }
 .choseCoin {
   width: 100%;
 }
 .coinList {
-  width: 1030px;
-  margin: 50px auto;
+  margin-top: 40px;
 }
 .payInner {
   margin: 0 auto;
@@ -541,12 +560,11 @@ export default {
 .transactionMask {
   position: relative;
   padding: 0.75rem;
-  margin: 30px auto;
-  width: 780px;
-  height: 800px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  margin: 180px auto;
+  width:444px;
+height:567px;
+background:rgba(255,255,255,1);
+border-radius:4px;
 }
 .maskTitle {
   margin: 0 0 1rem;
@@ -571,10 +589,131 @@ export default {
   height: 150px;
 }
 .maskBtn {
-  padding: 12px 35px;
+  width:188px;
+height:44px;
+border-radius:4px;
   border: 1px;
-  font-size: 1.07rem;
-  font-weight: 400;
-  margin-left: 80px;
 }
+.coin-left {
+  float: left;
+  margin-top: 31px;
+}
+.coin-right {
+  height: 80px;
+  width: 300px;
+  margin-left: 38px;
+  background: rgba(42, 53, 69, 1);
+  border-radius: 6px;
+  background-image: url("../../../static/img/coin.png");
+  background-size: 100% 100%;
+}
+.stron {
+  font-size: 18px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(230, 230, 230, 1);
+}
+.balance1 {
+  float: right;
+  margin: 30px 16px 0 0;
+  text-align: right;
+  font-size: 18px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(1, 227, 181, 1);
+}
+.title1 {
+  margin-top: 64px;
+  font-size: 22px;
+  font-family: MicrosoftYaHei-Bold;
+  font-weight: bold;
+  color: rgba(240, 240, 240, 1);
+}
+.title-left {
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(153,153,153,1);
+}
+.star {
+  font-size:16px;
+  color: #E84949
+}
+.writeInput {
+  letter-spacing:1px;
+  color: #fff;
+  padding-left: 8px;
+  width:690px;
+height:40px;
+border:1px solid rgba(63,79,102,1);
+background: rgba(0, 0, 0, 0.1);
+border-radius:2px;
+}
+.writeInput:focus {
+  color: #fff;
+ border:1px solid rgba(16,199,150,1);
+}
+.write-title {
+  height: 56px;
+  line-height: 56px;
+}
+.ques {
+  padding-top: 20px;
+}
+.sure {
+  color: aliceblue;
+
+  margin-top: 48px;
+  display:block;
+  width:212px;
+height:44px;
+/* border: 1px solid #fff; */
+  background:rgba(99,98,102,1);
+border-radius:4px;
+}
+.sure1 {
+  color: aliceblue;
+  margin-top: 48px;
+  display:block;
+  width:212px;
+height:44px;
+/* border: 1px solid #fff; */
+  background:#10C796;
+border-radius:4px;
+}
+.maskListLeft {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(102,102,102,1);
+}
+.maskListRight {
+  margin-bottom: 16px;
+  display: inline-block;
+  max-width: 394px;
+   word-wrap: break-word; word-break: normal;
+  font-size:14px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(26,26,26,1);
+}
+.cancel {
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(255,255,255,1);
+  background:rgba(179,179,179,1);
+}
+.send {
+  margin-left: 15px;
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(255,255,255,1);
+  background:rgba(16,199,150,1);
+border-radius:4px;
+}
+
 </style>  

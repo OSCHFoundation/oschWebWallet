@@ -15,7 +15,7 @@
             <p>密钥用于访问您的帐户并进行交易。 保持此代码的安全。 拥有该代码的任何人都可以完全访问该帐户和资金。 如果您丢失了密钥，您将无法再访问资金，也没有恢复机制。</p>
             <div class="service">
               <img
-                src="./img/set.png"
+                src="../../static/img/set.png"
                 alt
                 width="22"
                 height="22"
@@ -24,7 +24,7 @@
                 v-show="number2 ==0"
               >
               <img
-                src="./img/set1.png"
+                src="../../static/img/set1.png"
                 alt
                 width="22"
                 height="22"
@@ -58,25 +58,39 @@
             <p>2、请务必小心确保您的计算机是安全的，不要在不信任的计算机上运行</p>
             <span class="impor">保持密钥安全。 这个密钥只会向您显示一次。 Open wallet不保存它，如果丢失则无法帮助您恢复它。</span>
           </div>
-        
-            <div class="key">
-            <span class="address">公钥:</span>
-            <div class="shuru" >
-            <input type="text" class="pube" v-model="publicKey" id="gongyao">
-            <img src="./img/copy@2x.png" alt="" width="22" height="22" class="keyImg" @click="copy('.keyImg')" data-clipboard-target="#gongyao">
-            </div>
-            </div>
-          
-          <div class="key">
 
+          <div class="key">
+            <span class="address">公钥:</span>
+            <div class="shuru">
+              <input type="text" class="pube" v-model="publicKey" id="gongyao">
+              <img
+                src="../../static/img/copy@2x.png"
+                alt
+                width="22"
+                height="22"
+                class="keyImg"
+                @click="copy('.keyImg')"
+                data-clipboard-target="#gongyao"
+              >
+            </div>
+          </div>
+
+          <div class="key">
             <span class="address">私钥:</span>
             <div class="shuru">
-            <input :type="arrt" class="pube" id="siyao" v-model="secret1">
-            <img src="./img/copy@2x.png" alt="" width="22" height="22" class="keyImg1" @click="copy('.keyImg1')" data-clipboard-target="#siyao">
-            <img :src="dianji" width="22" height="22" alt="" class="eye" @click="show"> 
-
+              <input :type="arrt" class="pube" id="siyao" v-model="secret1">
+              <img
+                src="../../static/img/copy@2x.png"
+                alt
+                width="22"
+                height="22"
+                class="keyImg1"
+                @click="copy('.keyImg1')"
+                data-clipboard-target="#siyao"
+              >
+              <img :src="dianji" width="22" height="22" alt class="eye" @click="show">
             </div>
-            </div>
+          </div>
           <div class="code">
             <div class="pub">
               <div class="code2" id="qrcode1"></div>
@@ -103,15 +117,14 @@
           <div class="main-header">秘钥登录</div>
           <div class="innerList">
             <p>请务必小心确保您的计算机是安全的，不要在不信任的计算机上输入私钥，以防丢失钱包资产</p>
-           <div class="shuru">
-            <input :type="arrt" class="pube" id="siyao" v-model="secret"  placeholder="输入钱包秘钥">
-            <img :src="dianji" alt="" width="22" height="22" class="keyImg1"  @click="show">
+            <div class="shuru">
+              <input :type="arrt" class="pube" id="siyao" v-model="secret" placeholder="输入钱包秘钥">
+              <img :src="dianji" alt width="22" height="22" class="keyImg1" @click="show">
             </div>
-
 
             <div class="service">
               <img
-                src="./img/set.png"
+                src="../../static/img/set.png"
                 alt
                 width="22"
                 height="22"
@@ -120,7 +133,7 @@
                 v-show="number2 ==0"
               >
               <img
-                src="./img/set1.png"
+                src="../../static/img/set1.png"
                 alt
                 width="22"
                 height="22"
@@ -129,10 +142,14 @@
                 v-show="number2 ==1"
               >
               <span>我已仔细阅读并同意
-                <router-link to="/service"  class="set">服务及隐私条款</router-link>
+                <router-link to="/service" class="set">服务及隐私条款</router-link>
               </span>
             </div>
-            <button :class="{btn:number2==0,btn2:number2 ==1}"  v-bind:disabled="number2==0" @click="login">登录</button>
+            <button
+              :class="{btn:number2==0,btn2:number2 ==1}"
+              v-bind:disabled="number2==0"
+              @click="login"
+            >登录</button>
           </div>
         </div>
       </div>
@@ -146,8 +163,8 @@ import QRCode from "qrcodejs2";
 import Clipboard from "clipboard";
 import VHeader from "./innerList/header";
 import VFooter from "./innerList/footer";
-import xianshi from './img/xianshi.png';
-import yc from './img/yingchang.png'
+import xianshi from "../../static/img/xianshi.png";
+import yc from "../../static/img/yingchang.png";
 export default {
   components: {
     VHeader,
@@ -172,18 +189,18 @@ export default {
     };
   },
   methods: {
-    copy(weilei) {  
-      console.log('hha')
-          let clipboard = new Clipboard(weilei)  
-          clipboard.on('success', e => {  
-            console.log('1111111')
-                  clipboard.destroy()  
-                })  
-                clipboard.on('error', e => {  
-                  console.log('2222')
-                  clipboard.destroy()  
-                })  
-        },
+    copy(weilei) {
+      console.log("hha");
+      let clipboard = new Clipboard(weilei);
+      clipboard.on("success", e => {
+        console.log("1111111");
+        clipboard.destroy();
+      });
+      clipboard.on("error", e => {
+        console.log("2222");
+        clipboard.destroy();
+      });
+    },
     setType() {
       console.log(this.number2);
       if (this.number2 == 0) {
@@ -208,6 +225,7 @@ export default {
         location.reload();
       } else if (this.tips == true) {
         alert("提示:您输入的私钥格式不正确或不符合格式，请确认后输入）");
+        location.reload();
       } else if (this.tips == false) {
         var _this = this;
         StellarSdk.Config.setAllowHttp(true);
@@ -248,11 +266,11 @@ export default {
     },
     show() {
       if (this.number == 0) {
-        this.dianji = yc
+        this.dianji = yc;
         this.arrt = "text";
         this.number = 1;
       } else if (this.number == 1) {
-        this.dianji = xianshi
+        this.dianji = xianshi;
         this.arrt = "password";
         this.number = 0;
       }
@@ -311,7 +329,7 @@ export default {
 .main {
   padding: 30px;
   height: 900px;
-  background-image: url("./img/background.png");
+  background-image: url("../../static/img/background.png");
   background-size: 100% 100%;
 }
 .main-header {
@@ -451,16 +469,16 @@ export default {
 }
 .Sign {
   margin-top: 55px;
-  width:212px;
-height:44px;
-text-align: center;
-line-height: 44px;
-background:rgba(16,199,150,1);
-border-radius:4px;
-font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(245,245,245,1);
+  width: 212px;
+  height: 44px;
+  text-align: center;
+  line-height: 44px;
+  background: rgba(16, 199, 150, 1);
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(245, 245, 245, 1);
 }
 .key {
   margin-top: 5px;
@@ -470,7 +488,7 @@ color:rgba(245,245,245,1);
   display: inline-block;
   width: 715px;
   height: 36px;
-  background: #212121
+  background: #212121;
 }
 .pube {
   margin: 0;
@@ -479,7 +497,7 @@ color:rgba(245,245,245,1);
   height: 36px;
   background: #4e4e4e;
   border: none;
-    font-size: 16px;
+  font-size: 16px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: #01e3b5;
@@ -498,7 +516,7 @@ color:rgba(245,245,245,1);
 }
 .eye {
   position: absolute;
-      left: 1025px;
-    top: 567px;
+  left: 1025px;
+  top: 567px;
 }
 </style>

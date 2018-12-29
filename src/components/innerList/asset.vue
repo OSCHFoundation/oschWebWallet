@@ -4,7 +4,7 @@
       <div class="transactionMask">
         <div class="addTime" v-show="!hourNum" @click="changeTrust(isHour)">
           <div class="coinImg">
-            <img src="../img/u259.png" alt>
+            <img src="../../../static/img/u259.png" alt>
           </div>
           <div class="coinInner">
             <h2 class="title">Hour</h2>
@@ -13,7 +13,7 @@
         </div>
         <div class="addTime" v-show="!timeNum" @click="changeTrust(isTime)">
           <div class="coinImg">
-            <img src="../img/u269.png" alt>
+            <img src="../../../static/img/u269.png" alt>
           </div>
           <div class="coinInner">
             <h2 class="title">Time</h2>
@@ -24,27 +24,27 @@
       </div>
     </div>
     <div class="coinList">
-      <div class="coin" @click="getOsch($event)">
+      <div  v-bind:class="{coin:true,back:back1 == 1}" @click="getOsch($event)">
         <div class="coinImg">
-          <img src="../img/u15.png" width="32" height="32">
+          <img src="../../../static/img/u15.png" width="32" height="32">
         </div>
         <div class="coinInner">
           <span>Osch</span>
           <!-- <p>余额: {{oschNum | numFilter}} Osch</p> -->
         </div>
       </div>
-      <div class="coin" v-show="timeNum" @click="getTime($event)">
+      <div  v-bind:class="{coin:true,back:back1 == 2}"  v-show="timeNum" @click="getTime($event)">
         <div class="coinImg">
-          <img src="../img/u269.png" width="32" height="32">
+          <img src="../../../static/img/u269.png" width="32" height="32">
         </div>
         <div class="coinInner">
           <span>Time</span>
           <!-- <p>余额: {{timeNum | numFilter}} Time</p> -->
         </div>
       </div>
-      <div class="coin" v-show="hourNum" @click="getHour($event)">
+      <div  v-bind:class="{coin:true,back:back1 == 3}" v-show="hourNum" @click="getHour($event)">
         <div class="coinImg">
-          <img src="../img/u259.png" width="32" height="32">
+          <img src="../../../static/img/u259.png" width="32" height="32">
         </div>
         <div class="coinInner">
           <span>Hour</span>
@@ -53,7 +53,7 @@
       </div>
       <div class="addCoin" @click="openMask" v-show="allCoin">
         <!-- <div class="add">+</div> -->
-        <img src="../img/asd.png" width="15" height="15" class="add">
+        <img src="../../../static/img/asd.png" width="15" height="15" class="add">
         
         <span>添加资产</span>
       </div>
@@ -82,11 +82,11 @@
 
               style="width: 100%"
             >
-              <el-table-column prop="time" label="交易时间" width="170"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="150"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="210"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="210"></el-table-column>
-              <el-table-column label="交易号" width="320">
+              <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
                     <el-button @click.native="transactionInfo">{{scope.row.transaction}}</el-button>
@@ -95,7 +95,7 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" width="130"></el-table-column>
+              <el-table-column prop="memo" label="备忘录" ></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收入交易" name="first">
@@ -105,11 +105,11 @@
 
               style="width: 100%"
             >
-              <el-table-column prop="time" label="交易时间" width="170"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="150"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="210"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="210"></el-table-column>
-              <el-table-column label="交易号" width="320">
+              <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
                     <el-button @click.native="transactionInfo">{{scope.row.transaction}}</el-button>
@@ -118,7 +118,7 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" width="130"></el-table-column>
+              <el-table-column prop="memo" label="备忘录" ></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="支出交易">
@@ -128,11 +128,11 @@
               
               style="width: 100%"
             >
-              <el-table-column prop="time" label="交易时间" width="170"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="150"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="210"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="210"></el-table-column>
-              <el-table-column label="交易号" width="320">
+              <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
                     <el-button @click.native="transactionInfo">{{scope.row.transaction}}</el-button>
@@ -141,7 +141,7 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" width="130"></el-table-column>
+              <el-table-column prop="memo" label="备忘录" ></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-pagination
@@ -160,9 +160,9 @@
 </template>
 
 <script>
-import timeCoin from "../img/u269.png";
-import oschCoin from "../img/u15.png";
-import hourCoin from "../img/u259.png";
+import timeCoin from "../../../static/img/u269.png";
+import oschCoin from "../../../static/img/u15.png";
+import hourCoin from "../../../static/img/u259.png";
 export default {
   components: {},
   props: {},
@@ -192,7 +192,9 @@ export default {
       number: 0,
       unit: "",
       oscImg: oschCoin,
-      showBtn: false //取消信任按钮
+      showBtn: false, //取消信任按钮
+      back1:1
+
     };
   },
   filters: {
@@ -220,6 +222,7 @@ export default {
       this.unit = "Osch";
       this.oscImg = oschCoin;
       this.showBtn = false;
+      this.back1 = 1
     },
     getTime(event) {
       console.log(event.currentTarget);
@@ -230,6 +233,7 @@ export default {
       this.unit = "Time";
       this.oscImg = timeCoin;
       this.showBtn = true;
+      this.back1 = 2
     },
     getHour(event) {
       console.log(event.currentTarget);
@@ -240,6 +244,7 @@ export default {
       this.unit = "Hour";
       this.oscImg = hourCoin;
       this.showBtn = true;
+      this.back1 = 3
     },
     //分页
     handleCurrentChange(cpage) {
@@ -604,5 +609,8 @@ export default {
 }
 .add {
   margin: 22px 7px 10px 27px;
+}
+.back {
+background:rgba(28,35,46,1);
 }
 </style>

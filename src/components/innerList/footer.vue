@@ -21,7 +21,7 @@
       </ul>
     </div>
     <div class="lower">
-      <img src="../img/foot_logo@2x.png" width="18" height="18">
+      <img src="../../../static/img/foot_logo@2x.png" width="18" height="18">
        <span>Smart wallet for OSCH assets</span>
     </div>
   </div>

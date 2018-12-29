@@ -5,7 +5,7 @@
         <div class="close" @click="close">X</div>
       </div>
     </div>
-    <img class="logo" src="../img/logo.png" width="180" height="40">
+    <img class="logo" src="../../../static/img/logo.png" width="180" height="40">
     <div class="headerList">
       <ul>
         <li v-bind:class="{butn:clas==4}" @click="come" v-show="login ==2">
@@ -75,7 +75,7 @@ export default {
     },
     close() {
       this.number = 1;
-      location.reload();
+      // location.reload();
     }
   },
   created() {},

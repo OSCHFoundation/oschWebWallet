@@ -53,7 +53,7 @@ export default {
 .us {
   width: 100%;
   height: 100%;
-  background-image: url("../img/diandian.png");
+  background-image: url("../../../static/img/diandian.png");
   background-size: 100% 70%;
   background-repeat: repeat-y;
 }
