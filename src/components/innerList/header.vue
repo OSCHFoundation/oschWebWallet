@@ -1,24 +1,27 @@
 <template>
-  <div class="header" v-bind:class="{header:li1==2,header1:li1 !=2}">
+  <div  v-bind:class="{header:backgound1==1,header1:backgound1 ==2}">
     <div class="mask" v-show="number == 0">
-      <div class="code" id="qrcode3">
+      <div class="maskBackground">
         <div class="close" @click="close">X</div>
+        <p class="code-title">公钥二维码</p>
+        <div class="code" id="qrcode3"></div>
       </div>
     </div>
     <img class="logo" src="../../../static/img/logo.png" width="180" height="40">
     <div class="headerList">
       <ul>
         <li v-bind:class="{butn:clas==4}" @click="come" v-show="login ==2">
-          <span :class="{co:true}">首页</span>
+          <span :class="{font:true,co:clas == 4}">首页</span>
         </li>
-        <li v-bind:class="{butn:clas==3}" @click="numb(3)">
+        <!-- <li v-bind:class="{butn:clas==3}" @click="numb(3)"> -->
+        <li @click="numb(3)">
           <span @click="download">下载App</span>
         </li>
-        
+
         <li v-bind:class="{butn:li1==1}" @click="numb(1)">
           <router-link to="/help" :class="{font:true,co:clas ==1}">帮助</router-link>
         </li>
-        <li v-bind:class="{butn:clas==2}" @click="numb(2)"  v-if="this.li1 == 2">
+        <li v-bind:class="{butn:clas==2}" @click="numb(2)" v-if="this.login == 3">
           <router-link to="/created" :class="{font:true,co:clas == 2}">创建/登录</router-link>
         </li>
         <li v-bind:class="{butn:li1==2}" @click="out" v-if="login == 2">
@@ -37,13 +40,13 @@ export default {
   props: {},
   data() {
     return {
+      backgound1:1,
       number: 2,
       li1: 0,
-      login:1,
-      clas:0,
-      path: this.$route.fullPath,
+      login: 1,
+      clas: 0,
+      path: this.$route.fullPath
       // user:JSON.parse(sessionStorage.user)
-      
     };
   },
   methods: {
@@ -56,22 +59,24 @@ export default {
         colorLiht: "#fff"
       });
     },
-    come() {
-      let  user = JSON.parse(sessionStorage.user)
-      this.$router.push('/inner/'+  user.priv)
-      this.clas = 4
+    getHelp() {
+      this.li = 1;
     },
-    out () {
-     sessionStorage.clear()
-     this.li1 = 2
-
+    come() {
+      let user = JSON.parse(sessionStorage.user);
+      this.$router.push("/inner/" + user.priv);
+      this.clas = 4;
+    },
+    out() {
+      sessionStorage.clear();
+      this.li1 = 2;
     },
     numb(num) {
       this.li = num;
     },
     download() {
       this.number = 0;
-      this.clas = 3;
+      // this.clas = 3;
     },
     close() {
       this.number = 1;
@@ -79,41 +84,44 @@ export default {
     }
   },
   created() {},
-  watch : {
-    uesr:function(newString,oldString){
-     
-    }
+  watch: {
+    uesr: function(newString, oldString) {}
   },
   mounted() {
     this.qrcode3();
-    console.log(this.user)
+    // console.log(user);
     if (this.path == "/help") {
-      this.clas = 1
-      let  user = JSON.parse(sessionStorage.user)
-      // if(user !== "") {
-      //   console.log(user)
-      //   this.login = 2
-      // }else {
-      //   console.log(user)
-      //   this.li1 = 2
-      // }
+      this.li1 = 1;
+      this.clas = 1;
+      const f = () => JSON.parse(sessionStorage.user);
+      Promise.resolve().then(f).catch((err)=>{
+        this.li1  = 1
+        this.login = 3
+        this.clas = 1
+      });
+      let user = JSON.parse(sessionStorage.user);
+      if (user == "") {
+        this.clas = 2;
+        this.li1 = 2;
+      } else {
+        this.login = 2;
+        // this.clas = 4;
+      }
     } else if (this.path == "/created") {
-      this.clas = 2
-      this.li1 = 2;
+      this.clas = 2;
+      this.login = 3
+      this.backgound1 = 1
     } else {
-        this.login = 2
-        this.clas = 4
-
+      this.login = 2;
+      this.clas = 4;
+      this.backgound1 = 2;
     }
-     
-    
-
   }
 };
 </script>
 <style scoped>
 .header {
-  /* position: fixed; */
+  position: fixed;
   top: 0;
   width: 100%;
   height: 60px;
@@ -147,7 +155,7 @@ export default {
 .headerList ul li {
   height: 55px;
   line-height: 55px;
-  margin: 0 37px;
+  margin: 0 16px;
   padding: 0 4px 0 4px;
   display: inline-block;
 }
@@ -163,10 +171,7 @@ export default {
   background: rgba(0.5, 0.5, 0.5, 0.5);
 }
 .code {
-  display: inline-block;
-  position: relative;
-  margin: -180px auto 0;
-  top: 30%;
+  /* top: 30%; */
   z-index: 9999;
   background-repeat: no-repeat;
 }
@@ -182,9 +187,13 @@ export default {
   color: #01e3b5;
 }
 .close {
+  position: absolute;
+  padding: 2px;
+  top: -20px;
+  left: 60px;
   color: #ffffff;
+  cursor:default;
   height: 20px;
-  margin-bottom: 8px;
   line-height: 20px;
   width: 20px;
   margin-left: 179px;
@@ -192,5 +201,25 @@ export default {
   font-size: 13px;
   background: #979191;
   border: 1px solid darkgray;
+}
+.maskBackground {
+  padding: 14px;
+  /* position: relative; */
+  position: absolute;
+  left: 45%;
+  top: 40%;
+  margin: -50px 0 0 -50px;
+  width: 200px;
+  height: 200px;
+  background: #ffffff;
+}
+.code-title {
+  padding-left: 50px;
+  float: left;
+  margin-top: -70px;
+  font-size: 18px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
 }
 </style>

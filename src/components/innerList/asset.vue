@@ -2,9 +2,10 @@
   <div class="asset">
     <div class="mask" v-show="open">
       <div class="transactionMask">
+        <p class="addCoinTitle">添加资产</p>
         <div class="addTime" v-show="!hourNum" @click="changeTrust(isHour)">
           <div class="coinImg">
-            <img src="../../../static/img/u259.png" alt>
+            <img src="../../../static/img/u259.png" width="44" height="44">
           </div>
           <div class="coinInner">
             <h2 class="title">Hour</h2>
@@ -13,18 +14,19 @@
         </div>
         <div class="addTime" v-show="!timeNum" @click="changeTrust(isTime)">
           <div class="coinImg">
-            <img src="../../../static/img/u269.png" alt>
+            <img src="../../../static/img/u269.png" width="44" height="44">
           </div>
           <div class="coinInner">
             <h2 class="title">Time</h2>
           </div>
           <button class="btn">信任Time</button>
         </div>
-        <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button>
+        <hr>
+        <!-- <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button> -->
       </div>
     </div>
     <div class="coinList">
-      <div  v-bind:class="{coin:true,back:back1 == 1}" @click="getOsch($event)">
+      <div v-bind:class="{coin:true,back:back1 == 1}" @click="getOsch($event)">
         <div class="coinImg">
           <img src="../../../static/img/u15.png" width="32" height="32">
         </div>
@@ -33,7 +35,7 @@
           <!-- <p>余额: {{oschNum | numFilter}} Osch</p> -->
         </div>
       </div>
-      <div  v-bind:class="{coin:true,back:back1 == 2}"  v-show="timeNum" @click="getTime($event)">
+      <div v-bind:class="{coin:true,back:back1 == 2}" v-show="timeNum" @click="getTime($event)">
         <div class="coinImg">
           <img src="../../../static/img/u269.png" width="32" height="32">
         </div>
@@ -42,7 +44,7 @@
           <!-- <p>余额: {{timeNum | numFilter}} Time</p> -->
         </div>
       </div>
-      <div  v-bind:class="{coin:true,back:back1 == 3}" v-show="hourNum" @click="getHour($event)">
+      <div v-bind:class="{coin:true,back:back1 == 3}" v-show="hourNum" @click="getHour($event)">
         <div class="coinImg">
           <img src="../../../static/img/u259.png" width="32" height="32">
         </div>
@@ -79,7 +81,6 @@
             <el-table
               :data="coin.slice((currpage - 1) * pagesize, currpage * pagesize)"
               :row-class-name="tableRowClassName"
-
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
@@ -95,14 +96,13 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" ></el-table-column>
+              <el-table-column prop="memo" label="备忘录"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收入交易" name="first">
             <el-table
               :data="input.slice((currpage - 1) * pagesize, currpage * pagesize)"
               :row-class-name="tableRowClassName"
-
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
@@ -118,14 +118,13 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" ></el-table-column>
+              <el-table-column prop="memo" label="备忘录"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="支出交易">
             <el-table
               :data="output.slice((currpage - 1) * pagesize, currpage * pagesize)"
               :row-class-name="tableRowClassName"
-              
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
@@ -141,7 +140,7 @@
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
               <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录" ></el-table-column>
+              <el-table-column prop="memo" label="备忘录"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-pagination
@@ -193,8 +192,7 @@ export default {
       unit: "",
       oscImg: oschCoin,
       showBtn: false, //取消信任按钮
-      back1:1
-
+      back1: 1
     };
   },
   filters: {
@@ -222,7 +220,7 @@ export default {
       this.unit = "Osch";
       this.oscImg = oschCoin;
       this.showBtn = false;
-      this.back1 = 1
+      this.back1 = 1;
     },
     getTime(event) {
       console.log(event.currentTarget);
@@ -233,7 +231,7 @@ export default {
       this.unit = "Time";
       this.oscImg = timeCoin;
       this.showBtn = true;
-      this.back1 = 2
+      this.back1 = 2;
     },
     getHour(event) {
       console.log(event.currentTarget);
@@ -244,7 +242,7 @@ export default {
       this.unit = "Hour";
       this.oscImg = hourCoin;
       this.showBtn = true;
-      this.back1 = 3
+      this.back1 = 3;
     },
     //分页
     handleCurrentChange(cpage) {
@@ -437,7 +435,6 @@ export default {
   min-height: 895px;
   /* background: aliceblue; */
   background: #171d26;
-
 }
 .coinList {
   float: left;
@@ -456,13 +453,19 @@ export default {
 }
 .coinImg {
   float: left;
+  margin-top: 10px;
+  padding: 0 8px;
   overflow: hidden;
 }
-.coinImg img {
-  margin-top: 10px;
-  margin-left: 8px;
-  margin-right: 15px;
-  overflow: hidden;
+/* .coinImg img { */
+  /* margin-top: 10px; */
+  /* margin-left: 8px; */
+  /* margin-right: 15px; */
+  /* overflow: hidden; */
+/* } */
+hr {
+  margin-top: 24px;
+border:1px solid rgba(240,240,240,1);
 }
 .coinInner {
   display: inline-block;
@@ -497,25 +500,37 @@ export default {
   position: relative;
   padding: 0.75rem;
   margin: 220px auto;
-  width: 500px;
-  height: 400px;
+  width: 360px;
+  height: 320px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 10px;
 }
 .addTime {
-  height: 120px;
-  vertical-align: middle;
+  /* height: 120px; */
+  margin-top: 20px;
+  /* vertical-align: middle; */
 }
 .title {
+  font-size: 16px;
+  font-family: MicrosoftYaHei-Bold;
+  font-weight: bold;
+  color: rgba(51, 51, 51, 1);
   height: 65px;
-  line-height: 65px;
+  /* line-height: 65px; */
 }
 .btn {
-  margin-left: 220px;
-  width: 120px;
-  height: 40px;
-  border-radius: 5px;
+  float: right;
+  margin-top: 20px;
+  width: 80px;
+  height: 28px;
+  background: rgba(16, 199, 150, 1);
+  border-radius: 14px;
+  font-size: 14px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  border: none;
 }
 .maskBtn {
   display: block;
@@ -531,7 +546,7 @@ export default {
   padding-top: 24px;
   min-height: 871px;
   border-left: 1px solid #283242;
-  background: #171d26 ;
+  background: #171d26;
 }
 .info {
   display: block;
@@ -611,6 +626,13 @@ export default {
   margin: 22px 7px 10px 27px;
 }
 .back {
-background:rgba(28,35,46,1);
+  background: rgba(28, 35, 46, 1);
+}
+.addCoinTitle {
+  text-align: center;
+  font-size: 20px;
+  font-family: MicrosoftYaHei-Bold;
+  font-weight: bold;
+  color: rgba(51, 51, 51, 1);
 }
 </style>

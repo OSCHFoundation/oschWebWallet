@@ -35,7 +35,7 @@
           </div>
           <div class="coinInner">
             <p class="banlance">{{oschNum | numFilter}}</p>
-            <p class="ren">≈￥0.001</p>
+            <p class="ren">≈￥{{oschPrice | numFilter}}</p>
           </div>
         </div>
         <div class="coin" v-show="isTime">
@@ -47,7 +47,7 @@
           </div>
           <div class="coinInner">
             <p class="banlance">{{timeNum | numFilter}}</p>
-            <p class="ren">≈￥ {{timePrice | numFilter}}</p>
+            <p class="ren">≈￥0.01</p>
           </div>
         </div>
         <div class="coin" v-show="isHour">
@@ -160,7 +160,7 @@ export default {
       oschNum: "0", //Osch余额
       timeNum: "0",
       hourNum: "0",
-      timePrice: 0,
+      oschPrice: 0, //汇率
       account: "", //每次请求stellar返回的账户详情
       tableData: [],
       currpage: 1,
@@ -204,11 +204,11 @@ export default {
       // setInterval(function(){
       var _this = this;
       this.$axios
-        .get("http://192.168.1.106:1120/oschPrice/v1/listOschPrice")
+        .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
         .then(res => {
           let price = res.data.result.price;
-          _this.timePrice = price * this.timeNum;
-          this.$emit("listenPrice", this.timePrice);
+          _this.oschPrice = price * this.oschNum;
+          this.$emit("listenPrice", this.oschPrice);
 
           console.log(_this.timePrice);
           console.log(res.data.result.price);
@@ -247,8 +247,9 @@ export default {
     render(page) {
       let num = "5120.651605150";
       console.log(parseFloat(num).toFixed(2));
-      for (var page1 of page) {
-        var ob = {
+      console.log(page);
+      for (let page1 of page) {
+        let ob = {
           time: page1.created_at, //交易时间
           transaction: page1.transaction_hash, //交易哈希
           num: parseFloat(page1.amount).toFixed(3), //交易数量
@@ -260,17 +261,23 @@ export default {
           memo: "",
           from: page1.from
         };
+        console.log(ob.memo);
         page1
           .transaction()
           .then(res => {
-            ob.memo = res.memo; //备忘录
+            ob.memo = res.memo;
+            // for (var i = 0; i <= this.wArrPage.length; i++) {
+            //   console.log(this.wArrPage[i].memo);
+            //   if(this.wArrPage[i].memo==false) {
+            //     this.wArrPage[i].memo = "无"
+            //   }
+              // this.wArrPage[i].memo = ob.memo;
+            // }
+            console.log(this.wArrPage);
           })
           .catch(err => {
             console.log(err);
           });
-        if (ob.memo == "") {
-          ob.memo = "无";
-        }
 
         if (ob.asset == "native") {
           ob.asset = "Osch";
@@ -279,7 +286,6 @@ export default {
         } else if (page1.asset_code == "time") {
           ob.asset = "Time";
         }
-
         if (page1.type == "payment") {
           if (page1.from == this.publicKey) {
             ob.num = "-" + parseFloat(page1.amount).toFixed(2);
@@ -289,6 +295,7 @@ export default {
           this.wArrPage.push(ob);
         } else if (page1.type == "create_account") {
           (ob.num = parseFloat(page1.starting_balance).toFixed(2)), //交易数量
+            // (ob.memo = '无'),
             (ob.to = page1.funder), //目标地址
             (ob.asset = "Osch"); //交易币种
           ob.from = page1.account;
@@ -299,7 +306,8 @@ export default {
           }
           this.wArrPage.push(ob);
         } else if (page1.type == "change_trust") {
-          (ob.num = "-" + "100.00"), //交易数量
+          (ob.num = "-" + "10.00"), //交易数量
+            // (ob.memo = "111"),
             (ob.to = page1.asset_issuer), //目标地址
             (ob.asset = page1.asset_code), //交易币种
             (ob.activeType = page1.type), //交易类型 （交易、创建账户等）
@@ -308,6 +316,7 @@ export default {
         }
       }
       this.tab = this.wArrPage.length;
+      console.log(this.wArrPage);
     },
     //分类显示收入、支出
     getPage: async function() {
@@ -315,6 +324,7 @@ export default {
         var num = this.wArrPage[i].num;
         if (num.substr(0, 1) == "+") {
           this.input.push(this.wArrPage[i]);
+          console.log(this.input);
         }
         if (num.substr(0, 1) == "-") {
           this.output.push(this.wArrPage[i]);
@@ -421,6 +431,7 @@ export default {
     this.getPrice();
     setInterval(() => {
       this.getPrice();
+      console.log(this.getPrice());
     }, 15000);
   }
 };
@@ -572,5 +583,8 @@ export default {
 }
 .element #color1 {
   color: #01e3b5;
+}
+.el-table__row .el-table_1_column_2 {
+  color: aqua;
 }
 </style>

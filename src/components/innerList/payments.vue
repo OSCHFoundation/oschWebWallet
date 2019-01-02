@@ -56,7 +56,7 @@
         <span class="title-left">转账地址</span>
         <span class="star">*</span>
       </div>
-      <input type="text" placeholder="输入对方公钥地址" class="writeInput" v-model="toPublic">
+      <input type="text" placeholder="输入对方公钥地址" class="writeInput" v-model="toPublic" onkeyup="this.value=this.value.replace(/(^\s*)|(\s*$)/g,'')">
       <div class="write-title">
         <span class="title-left">转账数量</span>
         <span class="star">*</span>
@@ -66,13 +66,13 @@
         <span class="title-left">矿工费（选填）</span>
         <img src="../../../static/img/u897.png" width="16" height="16" class="ques">
       </div>
-      <input type="text" placeholder="输入交易矿工费" class="writeInput">
+      <input type="text" placeholder="输入交易矿工费" class="writeInput" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
       <div class="write-title">
-        <span class="title-left">备注（选填）</span>
+        <span class="title-left" >备注（选填）</span>
         <el-switch v-model="value2" active-color="#10C796" inactive-color="#ccc"></el-switch>
       </div>
-      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo">
-        <button class="sure"  :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"  v-bind:disabled="(toOschNum==''&&toPublic=='')" @click="openMask">确认</button>
+      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo" v-show="value2">
+        <button class="sure"  :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"  v-bind:disabled="(toOschNum==''||toPublic=='')" @click="openMask">确认</button>
     </div>
     <div class="confrimTransaction" v-show="close">
       <div class="transactionMask">
@@ -127,11 +127,11 @@ import select from "../../../static/img/set.png";
 import noSelect from "../../../static/img/set1.png";  
 export default {
   components: {},
-  props: {},
+  props: {},  
   data() {
     return {
         value1: true,
-        value2: true,
+        value2: false,
         // 开关插件
       isHour: false,
       isTime: false,
@@ -174,6 +174,9 @@ export default {
     }
   },
   methods: {
+    cleanSpace(str) {
+      // str.replace
+    },
     back() {
       this.page1 = false;
       this.page = true;
@@ -200,6 +203,7 @@ export default {
     //打开遮罩层
     openMask() {
       var _this = this;
+      _this.trueToPublic = true;
       try {
         //判断目标地址是否合法
         let strkey = StellarSdk.StrKey;
@@ -210,10 +214,10 @@ export default {
       }
       if (_this.trueToPublic == false) {
         alert("当前输入的公钥无效");
-        location.reload();
+        // location.reload();
       } else if (_this.toPublic == _this.publicKey) {
         alert("目标地址不能为当前账户地址");
-        location.reload();
+        // location.reload();
       } else {
         // 目标地址合法执行
         _this.stellarServer
@@ -240,12 +244,8 @@ export default {
             console.log(err.response);
             //报错则认为输入的目标在账户为激活,或输入错误
             _this.valid = 2; //转账操作
-            if (_this.toOschNum == "") {
-              alert("交易数量不能为空");
-              location.reload();
-            } else {
+            console.log(_this.valid)
               _this.close = true;
-            }
           });
         //交易数量不能为空
         //做判断基础交易费用
@@ -258,7 +258,7 @@ export default {
           alert("基本费用不可小于10");
           _this.close = false;
           location.reload();
-        } else if (this.fees < 0) {
+        } else if (fees < 0) {
           alert("此操作小于一本费用");
           _this.close = false;
           location.reload();
@@ -277,11 +277,12 @@ export default {
       //判断选择类型
       //当valid的值为1是,则进行转账交易
       if (_this.valid == 1) {
+        console.log(bulid)
         if (_this.selectType == "Osch") {
-
+          
           var transaction = new StellarSdk.TransactionBuilder(
             _this.account,
-            // bulid
+            bulid
           )
             .addOperation(
               StellarSdk.Operation.payment({
@@ -375,13 +376,15 @@ export default {
         }
         //如果valid 的值为2 则进行激活事件
       } else if (_this.valid == 2) {
+        console.log(_this.selectType)
         if (_this.selectType == "Osch") {
           this.stellarServer
             .loadAccount(_this.publicKey)
             .then(function(account) {
               console.log(account);
+              console.log(_this.baseFee)
               var transaction = new StellarSdk.TransactionBuilder(account, {
-                fee: _this.baseFee
+                fee: _this.baseFee*10000000
               })
                 .addOperation(
                   StellarSdk.Operation.createAccount({

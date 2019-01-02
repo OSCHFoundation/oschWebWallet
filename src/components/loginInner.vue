@@ -15,26 +15,26 @@
           <ul class="opList" @click="handleClick">
             <li  v-bind:class="{back:back1 == 1}" @click="num(1)">
               <div class="li1" >
-                <img src="../../static/img/index_message@2x.png" width="26" height="26" alt>
-                <span>钱包信息</span>
+                <img :src="come ==1? wallet1:wallet2" width="26" height="26" alt>
+                <span v-bind:class="{spanColor:come != 1,span1Color:come ==1}">钱包信息</span>
               </div>
             </li>
             <li v-bind:class="{back:back1 == 2}" @click="num(2)">
               <div class="li1">
-                <img src="../../static/img/index_zc@2x.png" width="26" height="26" alt>
-                <span>资产</span>
+                <img :src="come ==2 ?asset1:asset2" width="26" height="26" alt>
+                <span v-bind:class="{spanColor:come != 2,span1Color:come ==2}">资产</span>
               </div>
             </li>
             <li v-bind:class="{back:back1 == 3}" @click="num(3)">
               <div class="li1">
-                <img src="../../static/img/index_zz@2x.png" width="26" height="26" alt>
-                <span>转账</span>
+                <img :src="come == 3 ? payment1:payment2 " width="26" height="26" alt>
+                <span v-bind:class="{spanColor:come != 3,span1Color:come ==3}">转账</span>
               </div>
             </li>
             <li v-bind:class="{back:back1 == 4}" @click="num(4)">
               <div class="li1">
-                <img src="../../static/img/index_code@2x.png" width="26" height="26" alt>
-                <span>收款</span>
+                <img :src="come == 4 ? code1:code2" width="26" height="26" alt>
+                <span v-bind:class="{spanColor:come != 4,span1Color:come ==4}">收款</span>
               </div>
             </li>
           </ul>
@@ -58,6 +58,15 @@ import VWallet from "./innerList/wallet";
 import VAsset from "./innerList/asset";
 import VPayments from "./innerList/payments";
 import VReceivables from "./innerList/receivables"
+import wallet1 from '../../static/img/index_message@2x.png'
+import wallet2 from '../../static/img/index_message_default@2x.png'
+import asset1 from '../../static/img/index_pressed@2x.png'
+import asset2 from '../../static/img/index_zc_default@2x.png'
+import payment1 from '../../static/img/index_zz_@2x.png'
+import payment2 from '../../static/img/index_zz_default@2x.png'
+import code1 from '../../static/img/index_code_pressed@2x.png'
+import code2 from '../../static/img/index_code_default@2x.png'
+
 export default {
   components: {
     VHeader,
@@ -71,7 +80,16 @@ export default {
     return {
       come: 1, //v-show
       price: 0,
-      back1:1
+      back1:1,
+      wallet1,
+      wallet2,
+      asset1,
+      asset2,
+      payment1,
+      payment2,
+      code1,
+      code2
+      
     };
   },
   filters: {
@@ -191,7 +209,18 @@ export default {
 }
 .li1 span {
   margin-left: 20px;
+  /* color: #999999 */
+}
+
+.spanColor {
+  margin-left: 20px;
   color: #999999
+}
+.span1Color{
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(230,230,230,1);
 }
 .back {
   background:rgba(28,35,46,1);
