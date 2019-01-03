@@ -1,5 +1,28 @@
 <template>
   <div class="payments">
+    <div class="progressMask" v-if="showProgress">
+      <div class="progressInner">
+        <span>正在提交</span>
+        <el-progress :percentage="progress"></el-progress>
+        <div class="second">正在进行交易，大约需要3~5S</div>
+      </div>
+    </div>
+    <div class="mask" v-if="maskTips">
+      <div class="alertMask">
+        <div class="title">{{maskTitle}}</div>
+        <div class="alertInner">{{maskInner}}</div>
+        <button class="alertBtn" @click="closeMaskTips">确认</button>
+      </div>
+    </div>
+    <div class="mask1" v-if="mask1Tips">
+      <div class="mask1Box">
+        <div class="mask1Title">
+          <img src="../../../static/img/Tips.png" width="28px" height="28px">
+        </div>
+        <div class="mask1Inner">{{mask1Inner}}</div>
+      </div>
+    </div>
+
     <div v-show="page">
       <strong class="payHeader">选择转账资产</strong>
       <div class="choseCoin">
@@ -50,29 +73,57 @@
       </div>
       <div class="title1">转账信息</div>
     </div>
+
     <!-- 填写信息 -->
     <div class="writeInfo">
       <div class="write-title">
         <span class="title-left">转账地址</span>
         <span class="star">*</span>
       </div>
-      <input type="text" placeholder="输入对方公钥地址" class="writeInput" v-model="toPublic" onkeyup="this.value=this.value.replace(/(^\s*)|(\s*$)/g,'')">
+      <input
+        type="text"
+        placeholder="输入对方公钥地址"
+        class="writeInput"
+        v-model="toPublic"
+        onkeyup="this.value=this.value.replace(/(^\s*)|(\s*$)/g,'')"
+         maxlength="57" 
+      >
       <div class="write-title">
         <span class="title-left">转账数量</span>
         <span class="star">*</span>
       </div>
-      <input type="text" placeholder="输入转账数量" class="writeInput"  v-model="toOschNum" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+      <input
+        type="text"
+        placeholder="输入转账数量"
+        class="writeInput"
+        v-model="toOschNum"
+        onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+         maxlength="15" 
+
+      >
       <div class="write-title">
         <span class="title-left">矿工费（选填）</span>
-        <img src="../../../static/img/u897.png" width="16" height="16" class="ques">
+        <img src="../../../static/img/u897.png" width="16" height="16" class="ques" >
       </div>
-      <input type="text" placeholder="输入交易矿工费" class="writeInput" onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)">
+      <input
+        type="text"
+        placeholder="输入交易矿工费"
+        v-model="baseFee"
+        class="writeInput"
+        onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
+        maxlength="10"
+      >
       <div class="write-title">
-        <span class="title-left" >备注（选填）</span>
+        <span class="title-left">备注（选填）</span>
         <el-switch v-model="value2" active-color="#10C796" inactive-color="#ccc"></el-switch>
       </div>
-      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo" v-show="value2">
-        <button class="sure"  :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"  v-bind:disabled="(toOschNum==''||toPublic=='')" @click="openMask">确认</button>
+      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo" v-show="value2"  maxlength="10">
+      <button
+        class="sure"
+        :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"
+        v-bind:disabled="(toOschNum==''||toPublic=='')"
+        @click="openMask"
+      >确认</button>
     </div>
     <div class="confrimTransaction" v-show="close">
       <div class="transactionMask">
@@ -81,7 +132,7 @@
           <div class="maskAccount">当前地址: {{publicKey}}</div>
           <div class="maskAccount">目标地址: {{toPublic}}</div>
           <div class="masknum">交易额: {{toOschNum}} {{selectType}}</div>
-        </div> -->
+        </div>-->
         <div class="maskInner mBorder">
           <p class="maskInnerList">
             <span class="maskListLeft">当前地址:</span>
@@ -97,50 +148,48 @@
           </p>
           <p class="maskInnerList">
             <span class="maskListLeft">账户余额:</span>
-            <span class="maskListRight">{{oschNum}} {{selectType}}</span>
+            <span class="maskListRight">{{allCoin | numFilter}} {{selectType}}</span>
           </p>
           <p class="maskInnerList">
             <span class="maskListLeft">交易额:</span>
-            <span class="maskListRight">{{toOschNum}}&nbsp {{selectType}}</span>
+            <span class="maskListRight">{{toOschNum | numFilter}}&nbsp {{selectType}}</span>
           </p>
           <p class="maskInnerList">
             <span class="maskListLeft">币种:</span>
             <span class="maskListRight">{{selectType}}</span>
           </p>
-            <button class="maskBtn cancel" @click="closeMask">取消交易</button>
-        <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
+          <button class="maskBtn cancel" @click="closeMask">取消交易</button>
+          <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
         </div>
         <!-- <div class="maskFooter mBorder">
           <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbsp {{selectType}} 到：</h1>
           <h2>{{toPublic}}</h2>
-        </div> -->
-      
+        </div>-->
       </div>
     </div>
     <!-- <div class="back-mask"></div> -->
-
   </div>
 </template>
 
 <script>
 import select from "../../../static/img/set.png";
-import noSelect from "../../../static/img/set1.png";  
+import noSelect from "../../../static/img/set1.png";
 export default {
   components: {},
-  props: {},  
+  props: {},
   data() {
     return {
-        value1: true,
-        value2: false,
-        // 开关插件
+      value1: true,
+      value2: false,
+      // 开关插件
       isHour: false,
       isTime: false,
       page: true, //进入页面
       page1: false, //转账页面
       selectType: "Osch", // 资产类型
       // choseSelect: 1,
-      xianshi:select,
-      yc:noSelect,
+      xianshi: select,
+      yc: noSelect,
       oschNum: "0", //剩余Osch数量
       hourNum: "0",
       timeNum: "0",
@@ -163,7 +212,15 @@ export default {
       baseFee: "", //愿意在此交易中按操作支付的最高费用
       trustHour: false,
       trustTime: false,
-      promiseFee: 0
+      promiseFee: 0,
+      maskTips: false,
+      maskTitle: "",
+      maskInner: "",
+      mask1Tips: false,
+      mask1Inner: "目标地址不正确，请确认后重试",
+      allCoin: "",
+      progress: 0,
+      showProgress: false
     };
   },
   filters: {
@@ -174,6 +231,27 @@ export default {
     }
   },
   methods: {
+    addProgress() {
+      this.progress = 0;
+      setInterval(() => {
+        if (this.progress == 100) {
+          clearTimeout();
+        } else {
+          this.progress++;
+          console.log(this.progress);
+        }
+      }, 100);
+      this.progress = 0;
+    },
+    setMask() {
+      this.mask1Tips = true;
+      setTimeout(() => {
+        this.mask1Tips = false;
+      }, 1000);
+    },
+    closeMaskTips() {
+      this.maskTips = false;
+    },
     cleanSpace(str) {
       // str.replace
     },
@@ -185,45 +263,56 @@ export default {
       // this.page = false;
       // this.page1 = true;
       this.selectType = "Osch";
-      console.log('gagagagaga')
+      this.allCoin = this.oschNum;
+      console.log("gagagagaga");
     },
     payTime() {
       // this.page = false;
       // this.page1 = true;
       this.selectType = "Time";
+      this.allCoin = this.timeNum;
     },
     payHour() {
       // this.page = false;
       // this.page1 = true;
       this.selectType = "Hour";
+      this.allCoin = this.hourNum;
     },
     closeMask() {
       this.close = false;
     },
     //打开遮罩层
     openMask() {
+      console.log("哈哈");
       var _this = this;
       _this.trueToPublic = true;
       try {
         //判断目标地址是否合法
         let strkey = StellarSdk.StrKey;
         let arrPrivate = strkey.decodeEd25519PublicKey(_this.toPublic);
+        console.log(arrPrivate);
       } catch (err) {
         console.log(err.response);
         _this.trueToPublic = false;
       }
       if (_this.trueToPublic == false) {
-        alert("当前输入的公钥无效");
-        // location.reload();
+        _this.close = false;
+        _this.mask1Inner = "目标地址不符合规则，请确认后重试";
+        _this.setMask(); //弹出遮罩
       } else if (_this.toPublic == _this.publicKey) {
-        alert("目标地址不能为当前账户地址");
-        // location.reload();
+        _this.close = false;
+        _this.mask1Inner = "目标地址不能为当前账户地址,请重试";
+        _this.setMask(); //弹出遮罩
+      } else if (_this.allCoin <= _this.toOschNum) {
+        console.log(_this.allCoin);
+        _this.close = false;
+        _this.mask1Inner = "余额不足，请稍后再试";
+        _this.setMask(); //弹出遮罩
       } else {
         // 目标地址合法执行
         _this.stellarServer
           .loadAccount(_this.toPublic)
           .then(function(account) {
-            console.log(99999999999999999);
             for (var num of account.balances) {
               if (num.asset_code == "hour") {
                 _this.trustHour = true; //确认账户中信任过Huor资产
@@ -231,21 +320,24 @@ export default {
                 _this.trustTime = true; //确认账户中信任过Time资产
               }
             }
-            if (_this.toOschNum == "") {
-              alert("交易数量不能为空");
-              location.reload();
-            } else {
-              _this.close = true;
-            }
           })
           .catch(err => {
-            alert("你所转到的账户未激活，转大于100OSCH即可以激活该账户");
-
-            console.log(err.response);
-            //报错则认为输入的目标在账户为激活,或输入错误
+            _this.mask1Inner =
+              "你所转到的账户未激活，转大于100OSCH即可以激活该账户";
+            _this.setMask(); //弹出遮罩
             _this.valid = 2; //转账操作
-            console.log(_this.valid)
-              _this.close = true;
+
+            console.log(_this.valid);
+            // if(_this.close==true){
+            //      _this.mask1Inner =
+            //   "你所转到的账户未激活，转大于100OSCH即可以激活该账户";
+            // _this.setMask(); //弹出遮罩
+            // // alert("你所转到的账户未激活，转大于100OSCH即可以激活该账户");
+            //   _this.close=true
+            // }else {
+            //   _this.close=false
+            // }
+            // _this.close = true;
           });
         //交易数量不能为空
         //做判断基础交易费用
@@ -254,32 +346,39 @@ export default {
         let fees = this.toOschNum - this.promiseFee;
         if (_this.baseFee == "") {
           _this.baseFee = 10;
+          console.log(_this.baseFee);
         } else if (_this.baseFee < 10) {
-          alert("基本费用不可小于10");
+          _this.mask1Inner = "基本费用不可小于10";
+          _this.setMask(); //弹出遮罩
           _this.close = false;
-          location.reload();
         } else if (fees < 0) {
-          alert("此操作小于一本费用");
-          _this.close = false;
-          location.reload();
+          console.log("111111");
+          this.close = false;
+          _this.mask1Inner = "此操作小于基本费用";
+          _this.setMask(); //弹出遮罩
+        } else {
+          _this.close = true;
         }
       }
     },
     sendClick() {
-      console.log('haahahaa')
+      this.addProgress();
+      this.showProgress = true;
+      this.close = false;
+
+      console.log("haahahaa");
       // this.close = true
       var _this = this;
       let bulid = {
         fee: _this.baseFee * 10000000
       };
       // _this.selectType = "Osch"
-      console.log(_this.selectType)
+      console.log(_this.selectType);
       //判断选择类型
       //当valid的值为1是,则进行转账交易
       if (_this.valid == 1) {
-        console.log(bulid)
+        console.log(bulid);
         if (_this.selectType == "Osch") {
-          
           var transaction = new StellarSdk.TransactionBuilder(
             _this.account,
             bulid
@@ -298,22 +397,28 @@ export default {
           _this.stellarServer
             .submitTransaction(transaction)
             .then(function(res) {
-              console.log("发送交易成功");
-              alert("发送成功");
-              location.reload();
-            })
-            .catch((err)=>{
-            console.log('zheehijiaoyi')
+              _this.close = false;
 
-              console.log('fafa')
+              _this.progress = 100;
+              _this.showProgress = false;
+              console.log("发送交易成功");
+              // alert("发送成功");
+              _this.mask1Inner = "发送成功";
+              _this.setMask(); //弹出遮罩
             })
+            .catch(err => {
+              console.log("fafa");
+            });
         }
         if (_this.selectType == "Time") {
           if (_this.trustTime == false) {
-            alert(
-              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
-            );
-            location.reload();
+            // alert(
+            //   "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
+            // );
+            _this.mask1Inner =
+              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试";
+            _this.setMask(); //弹出遮罩
+            // location.reload();
           } else {
             var transaction = new StellarSdk.TransactionBuilder(
               _this.account,
@@ -335,20 +440,22 @@ export default {
               .then(function(res) {
                 console.log("发送交易成功");
                 alert("发送成功");
-                location.reload();
+                _this.close = false;
+                _this.mask1Inner = "发送成功";
+                _this.setMask(); //弹出遮罩
+                // location.reload();
               })
-              .catch((err)=> {
-                console.log('faf')
+              .catch(err => {
+                console.log("faf");
               });
           }
         }
-        console.log('kkk')
+        console.log("kkk");
         if (_this.selectType == "Hour") {
           if (_this.trustHour == false) {
-            alert(
-              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
-            );
-            location.reload();
+            _this.mask1Inner =
+              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试";
+            _this.setMask(); //弹出遮罩
           } else {
             var transaction = new StellarSdk.TransactionBuilder(
               _this.account,
@@ -369,22 +476,25 @@ export default {
               .submitTransaction(transaction)
               .then(function(res) {
                 console.log("发送交易成功");
-                alert("发送成功");
-                location.reload();
+                // alert("发送成功");
+                _this.close = false;
+                _this.mask1Inner = "发送成功";
+                _this.setMask(); //弹出遮罩
+                // location.reload();
               });
           }
         }
         //如果valid 的值为2 则进行激活事件
       } else if (_this.valid == 2) {
-        console.log(_this.selectType)
+        console.log(_this.selectType);
         if (_this.selectType == "Osch") {
           this.stellarServer
             .loadAccount(_this.publicKey)
             .then(function(account) {
               console.log(account);
-              console.log(_this.baseFee)
+              console.log(_this.baseFee);
               var transaction = new StellarSdk.TransactionBuilder(account, {
-                fee: _this.baseFee*10000000
+                fee: _this.baseFee * 10000000
               })
                 .addOperation(
                   StellarSdk.Operation.createAccount({
@@ -398,13 +508,15 @@ export default {
               _this.stellarServer
                 .submitTransaction(transaction)
                 .then(function(res) {
-                  console.log("目标地址初始化成功");
-                  alert("目地址初始化成功");
-                  location.reload();
+                  _this.close = false;
+                  _this.mask1Inner = "目标地址初始化成功";
+                  _this.setMask(); //弹出遮罩
+                  // location.reload();
                 });
             });
         } else {
           alert("目标账户尚未为激活，无法进行其他操作，激活请用本币Osch激活");
+
           location.reload();
         }
       }
@@ -412,7 +524,7 @@ export default {
   },
   created() {
     this.select = 1;
-    this.value1 = 1
+    this.value1 = 1;
   },
   mounted() {
     var _this = this;
@@ -448,6 +560,7 @@ export default {
             _this.isTime = true;
           } else if (num.asset_type == "native") {
             _this.oschNum = num.balance;
+            _this.allCoin = num.balance;
           }
         }
       })
@@ -457,6 +570,7 @@ export default {
     let user = JSON.parse(sessionStorage.user);
     this.promiseFee = user.fee;
     console.log(this.promiseFee);
+    this.allCoin = this.oschNum;
   }
 };
 </script>
@@ -465,7 +579,6 @@ export default {
   padding: 0 0 0 32px;
   min-height: 895px;
   background: rgba(23, 29, 38, 1);
-
 }
 .payHeader {
   padding-top: 24px;
@@ -564,10 +677,10 @@ export default {
   position: relative;
   padding: 0.75rem;
   margin: 180px auto;
-  width:444px;
-height:567px;
-background:rgba(255,255,255,1);
-border-radius:4px;
+  width: 444px;
+  height: 567px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 4px;
 }
 .maskTitle {
   margin: 0 0 1rem;
@@ -592,10 +705,11 @@ border-radius:4px;
   height: 150px;
 }
 .maskBtn {
-  width:188px;
-height:44px;
-border-radius:4px;
+  width: 188px;
+  height: 44px;
+  border-radius: 4px;
   border: 1px;
+  border: none;
 }
 .coin-left {
   float: left;
@@ -633,28 +747,28 @@ border-radius:4px;
   color: rgba(240, 240, 240, 1);
 }
 .title-left {
-  font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(153,153,153,1);
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(153, 153, 153, 1);
 }
 .star {
-  font-size:16px;
-  color: #E84949
+  font-size: 16px;
+  color: #e84949;
 }
 .writeInput {
-  letter-spacing:1px;
+  letter-spacing: 1px;
   color: #fff;
   padding-left: 8px;
-  width:690px;
-height:40px;
-border:1px solid rgba(63,79,102,1);
-background: rgba(0, 0, 0, 0.1);
-border-radius:2px;
+  width: 690px;
+  height: 40px;
+  border: 1px solid rgba(63, 79, 102, 1);
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
 }
 .writeInput:focus {
   color: #fff;
- border:1px solid rgba(16,199,150,1);
+  border: 1px solid rgba(16, 199, 150, 1);
 }
 .write-title {
   height: 56px;
@@ -665,58 +779,169 @@ border-radius:2px;
 }
 .sure {
   color: aliceblue;
-
+  border: none;
   margin-top: 48px;
-  display:block;
-  width:212px;
-height:44px;
-/* border: 1px solid #fff; */
-  background:rgba(99,98,102,1);
-border-radius:4px;
+  display: block;
+  width: 212px;
+  height: 44px;
+  /* border: 1px solid #fff; */
+  background: rgba(99, 98, 102, 1);
+  border-radius: 4px;
 }
 .sure1 {
   color: aliceblue;
   margin-top: 48px;
-  display:block;
-  width:212px;
-height:44px;
-/* border: 1px solid #fff; */
-  background:#10C796;
-border-radius:4px;
+  display: block;
+  width: 212px;
+  height: 44px;
+  /* border: 1px solid #fff; */
+
+  background: #10c796;
+  border-radius: 4px;
 }
 .maskListLeft {
   display: inline-block;
   margin-bottom: 16px;
-  font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(102,102,102,1);
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(102, 102, 102, 1);
 }
 .maskListRight {
   margin-bottom: 16px;
   display: inline-block;
   max-width: 394px;
-   word-wrap: break-word; word-break: normal;
-  font-size:14px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(26,26,26,1);
+  word-wrap: break-word;
+  word-break: normal;
+  font-size: 14px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(26, 26, 26, 1);
 }
 .cancel {
-  font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(255,255,255,1);
-  background:rgba(179,179,179,1);
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  background: rgba(179, 179, 179, 1);
 }
 .send {
   margin-left: 15px;
-  font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(255,255,255,1);
-  background:rgba(16,199,150,1);
-border-radius:4px;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  background: rgba(16, 199, 150, 1);
+  border-radius: 4px;
 }
-
+.alertMask {
+  position: absolute;
+  left: 40%;
+  top: 30%;
+  padding: 24px;
+  width: 360px;
+  height: 207px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 4px;
+}
+.alertMask .title {
+  margin-bottom: 39px;
+  text-align: center;
+  font-size: 20px;
+  font-family: MicrosoftYaHei-Bold;
+  font-weight: bold;
+  color: rgba(51, 51, 51, 1);
+}
+.alertInner {
+  text-align: center;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(26, 26, 26, 1);
+}
+.alertBtn {
+  margin-top: 32px;
+  margin-left: 25px;
+  width: 312px;
+  height: 44px;
+  background: rgba(16, 199, 150, 1);
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+}
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.mask1 {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.mask1Box {
+  position: relative;
+  margin: 20% auto;
+  padding: 16px 24px;
+  width: 224px;
+  min-height: 96px;
+  background: rgba(0, 0, 0, 1);
+  opacity: 0.6;
+  border-radius: 4px;
+}
+.mask1Title {
+  margin: 0 auto;
+  width: 29px;
+  height: 29px;
+}
+.mask1Inner {
+  display: inline-block;
+  text-align: center;
+  margin-top: 23px;
+  width: 100%;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(240, 240, 240, 1);
+}
+.progressMask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.progressInner {
+  margin: 15% auto;
+  padding: 24px 40px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 4px;
+  width: 514px;
+  height: 219px;
+}
+.progressInner span {
+  display: inline-block;
+  margin-bottom: 32px;
+  font-size: 18px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(51, 51, 51, 1);
+}
+.second {
+  margin-top: 24px;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(102, 102, 102, 1);
+}
 </style>  

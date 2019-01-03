@@ -2,6 +2,7 @@
   <div class="asset">
     <div class="mask" v-show="open">
       <div class="transactionMask">
+        <div class="closeMask" @click="closeClick">X</div>
         <p class="addCoinTitle">添加资产</p>
         <div class="addTime" v-show="!hourNum" @click="changeTrust(isHour)">
           <div class="coinImg">
@@ -164,7 +165,7 @@ import oschCoin from "../../../static/img/u15.png";
 import hourCoin from "../../../static/img/u259.png";
 export default {
   components: {},
-  props: {},
+  props: ['coinPrice'],
   data() {
     return {
       allCoin: true,
@@ -192,7 +193,8 @@ export default {
       unit: "",
       oscImg: oschCoin,
       showBtn: false, //取消信任按钮
-      back1: 1
+      back1: 1,
+      // coinPrice:0
     };
   },
   filters: {
@@ -425,6 +427,7 @@ export default {
       "hour",
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
+    console.log(this.coinPrice)
   }
 };
 </script>
@@ -634,5 +637,18 @@ border:1px solid rgba(240,240,240,1);
   font-family: MicrosoftYaHei-Bold;
   font-weight: bold;
   color: rgba(51, 51, 51, 1);
+}
+.closeMask {
+  float: right;
+  margin-top: -35px;
+  margin-right: -50px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  color: aliceblue;
+  font-size: 18px;
+  background: #585858;
+  border-radius: 50%;
+  text-align: center;
 }
 </style>

@@ -62,15 +62,15 @@
           <div class="key">
             <span class="address">公钥:</span>
             <div class="shuru">
-              <input type="text" class="pube" v-model="publicKey" id="gongyao">
+              <input type="text" class="pube" v-model="publicKey" id="gongyao" title="显示/隐藏">
               <img
                 src="../../static/img/copy@2x.png"
-                alt
                 width="22"
                 height="22"
                 class="keyImg"
                 @click="copy('.keyImg')"
                 data-clipboard-target="#gongyao"
+                title="复制"
               >
             </div>
           </div>
@@ -81,25 +81,31 @@
               <input :type="arrt" class="pube" id="siyao" v-model="secret1">
               <img
                 src="../../static/img/copy@2x.png"
-                alt
                 width="22"
                 height="22"
                 class="keyImg1"
                 @click="copy('.keyImg1')"
                 data-clipboard-target="#siyao"
+                title="复制"
               >
               <img :src="dianji" width="22" height="22" alt class="eye" @click="show">
             </div>
           </div>
           <div class="code">
             <div class="pub">
-              <div class="code2" id="qrcode1"></div>
+              <div class="code-pading">
+                <div class="code2" id="qrcode1"></div>
+              </div>
               <span class="er">公钥二维码</span>
             </div>
             <div class="prev">
               <div>
-                <div class="mask" v-show="number == 0"></div>
-                <div class="code2" id="qrcode2"></div>
+                  <div class="mask" v-show="number == 0"></div>
+
+                <div class="code-pading">
+                  <div class="code2" id="qrcode2"></div>
+                </div>
+
                 <span class="er">私钥二维码</span>
               </div>
             </div>
@@ -364,6 +370,7 @@ export default {
   width: 212px;
   background: rgba(99, 98, 102, 1);
   border-radius: 4px;
+  border: none
 }
 .btn2 {
   color: #f5f5f5;
@@ -372,6 +379,8 @@ export default {
   width: 212px;
   background: #10c796;
   border-radius: 4px;
+  border: none
+
 }
 .impor {
   display: inline-block;
@@ -419,8 +428,8 @@ export default {
 .mask {
   position: absolute;
   z-index: 100;
-  width: 150px;
-  height: 150px;
+  width: 180px;
+  height: 180px;;
   background: rgba(35, 35, 36, 0.9);
 }
 .set {
@@ -452,6 +461,7 @@ export default {
   height: 44px;
   background: rgba(16, 199, 150, 1);
   border-radius: 4px;
+  border: none
 }
 .inpu1 {
   margin-top: 24px;
@@ -516,7 +526,11 @@ export default {
 }
 .eye {
   position: absolute;
-  left: 1025px;
-  top: 567px;
+  margin-left: -35px;
+  margin-top: 8px;
+}
+.code-pading {
+  padding: 15px;
+  background: #f5f5f5;
 }
 </style>

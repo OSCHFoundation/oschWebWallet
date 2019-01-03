@@ -4,7 +4,7 @@
     <main class="main">
       <div class="main-left">
         <div class="img">
-          <img src="../../static/img/index_tx@2x.png" width="48" height="48" alt>
+          <img src="../../static/img/index_tx@2x.png" width="48" height="48" alt="头像">
         </div>
         <div class="coinName">
           <span>钱包名字</span>
@@ -42,7 +42,7 @@
       </div>
       <div class="main-right">
         <v-wallet v-if="come==1" v-on:listenPrice="showPrice"></v-wallet>
-        <v-asset v-if="come==2"></v-asset>
+        <v-asset v-if="come==2" :coinPrice="price"></v-asset>
         <v-payments v-if="come==3"></v-payments>
         <v-receivables  v-if="come==4"></v-receivables>
       </div>
@@ -103,25 +103,22 @@ export default {
     num(val) {
       this.back1 = val
     },
+    
     handleClick(event) {
-      if (event.target.innerHTML == "钱包信息") {
+      if (this.back1==1) {
         this.come = 1;
-        // location.reload()
-
         console.log(this.show);
-      } else if (event.target.innerHTML == "资产") {
+      } else if (this.back1==2) {
         this.come = 2;
         console.log(this.show);
-      } else if (event.target.innerHTML == "转账") {
+      } else if (this.back1==3) {
         this.come = 3;
         console.log(this.show);
-      } else if (event.target.innerHTML == "收款") {
+      } else if (this.back1==4) {
         this.come = 4;
       }   
     },
     showPrice(data) {
-      console.log("1231231321");
-      console.log(data);
       this.price = data;
       this.price.toFixed(2);
     }

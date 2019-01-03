@@ -3,7 +3,7 @@
     <div class="mask" v-show="number == 0">
       <div class="maskBackground">
         <div class="close" @click="close">X</div>
-        <p class="code-title">公钥二维码</p>
+        <p class="code-title">下载App</p>
         <div class="code" id="qrcode3"></div>
       </div>
     </div>
@@ -214,7 +214,7 @@ export default {
   background: #ffffff;
 }
 .code-title {
-  padding-left: 50px;
+  padding-left: 70px;
   float: left;
   margin-top: -70px;
   font-size: 18px;

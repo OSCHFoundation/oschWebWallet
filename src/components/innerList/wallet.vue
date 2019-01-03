@@ -1,12 +1,42 @@
 <template>
   <div class="walletInfo">
+    <div class="mask" v-show="maskCode == 2">
+      <div class="maskBackground">
+        <div class="close0" @click="close0">X</div>
+        <p class="code-title">公钥地址</p>
+        <div class="code1" id="qrcode6"></div>
+      </div>
+    </div>
+    <div class="mask1" v-if="mask1Tips">
+      <div class="mask1Box">
+        <div class="mask1Title">
+          <img src="../../../static/img/true.png" width="28px" height="28px">
+        </div>
+        <div class="mask1Inner">已复制</div>
+      </div>
+    </div>
     <h2 class="title">账户信息</h2>
     <div class="address">
       <div class="my">
         <span class="small">我的地址：</span>
-        <span class="big">{{publicKey}}</span>
-        <img class="copy" src="../../../static/img/index_code@2x.png" width="18" height="18">
-        <img class="code" src="../../../static/img/index_fd@2x.png" width="18" height="18">
+        <span class="big" id="big">{{publicKey}}</span>
+        <img
+          class="copy"
+          src="../../../static/img/index_code@2x.png"
+          width="22"
+          height="22"
+          title="二维码"
+          @click="showCode"
+        >
+        <img
+          class="code"
+          src="../../../static/img/biger.png"
+          width="18"
+          height="18"
+          @click="copy('.code')"
+          data-clipboard-target="#big"
+          title="复制地址"
+        >
       </div>
 
       <div class="state" v-show="validType">
@@ -75,9 +105,9 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120" id="color1"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286" class="from"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="140" id="color1"></el-table-column>
+              <el-table-column prop="from" label="来源账户" width="296" class="from"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -149,6 +179,9 @@
 </template>
 
 <script>
+import Clipboard from "clipboard";
+import QRCode from "qrcodejs2";
+
 export default {
   components: {},
   props: {},
@@ -179,7 +212,10 @@ export default {
       limit: 200,
       isHour: false,
       isTime: false,
-      promiseFee: 0
+      promiseFee: 0,
+      mask1Tips: false,
+      mask1Inner: "目标地址不正确，请确认后重试",
+      maskCode: 0
     };
   },
   filters: {
@@ -190,6 +226,40 @@ export default {
     }
   },
   methods: {
+    qrcode6() {
+      let qrcode6 = new QRCode("qrcode6", {
+        width: 200,
+        height: 200,
+        text: "5511551155115151515151",
+        colorDark: "#000",
+        colorLiht: "#fff"
+      });
+    },
+    close0() {
+      this.maskCode = 0;
+    },
+    copy(weilei) {
+      console.log("hha");
+      let clipboard = new Clipboard(weilei);
+      clipboard.on("success", e => {
+        console.log("1111111");
+        clipboard.destroy();
+      });
+      clipboard.on("error", e => {
+        console.log("2222");
+        clipboard.destroy();
+      });
+      this.setMask();
+    },
+    showCode() {
+      this.maskCode = 2
+    },
+    setMask() {
+      this.mask1Tips = true;
+      setTimeout(() => {
+        this.mask1Tips = false;
+      }, 1000);
+    },
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex % 2 === 0) {
         return "warning-row";
@@ -266,14 +336,6 @@ export default {
           .transaction()
           .then(res => {
             ob.memo = res.memo;
-            // for (var i = 0; i <= this.wArrPage.length; i++) {
-            //   console.log(this.wArrPage[i].memo);
-            //   if(this.wArrPage[i].memo==false) {
-            //     this.wArrPage[i].memo = "无"
-            //   }
-              // this.wArrPage[i].memo = ob.memo;
-            // }
-            console.log(this.wArrPage);
           })
           .catch(err => {
             console.log(err);
@@ -429,6 +491,7 @@ export default {
     console.log(this.hour);
     console.log(this.time);
     this.getPrice();
+    this.qrcode6();
     setInterval(() => {
       this.getPrice();
       console.log(this.getPrice());
@@ -470,13 +533,15 @@ export default {
 }
 .copy {
   margin-left: 0px;
-  width: 20px;
-  height: 20px;
+  /* width: 20px; */
+  /* height: 20px; */
   vertical-align: middle;
 }
 .code {
-  padding-top: 4px;
-  padding-left: 3px;
+  /* padding-top: 4px; */
+  margin-top: 4px;
+  /* padding-left: 3px; */
+  margin-left: 3px;
 }
 .question {
   margin-left: 15px;
@@ -586,5 +651,84 @@ export default {
 }
 .el-table__row .el-table_1_column_2 {
   color: aqua;
+}
+.mask1 {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.mask1Box {
+  position: relative;
+  margin: 20% auto;
+  width: 142px;
+  height: 60px;
+  background: rgba(0, 0, 0, 1);
+  opacity: 0.6;
+  border-radius: 4px;
+}
+.mask1Title {
+  float: left;
+  overflow: hidden;
+  margin: 16px 12px 16px 28px;
+}
+.mask1Inner {
+  height: 60px;
+  line-height: 60px;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(240, 240, 240, 1);
+}
+.mask {
+   position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.close0 {
+  position: absolute;
+  padding: 2px;
+  top: -20px;
+  left: 60px;
+  color: #ffffff;
+  cursor: default;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+  width: 20px;
+  margin-left: 179px;
+  border-radius: 50%;
+  font-size: 13px;
+  background: #979191;
+  border: 1px solid darkgray;
+}
+.maskBackground {
+  padding: 14px;
+  /* position: relative; */
+  position: absolute;
+  left: 45%;
+  top: 40%;
+  margin: -50px 0 0 -50px;
+  width: 200px;
+  height: 200px;
+  background: #ffffff;
+}
+.code-title {
+  padding-left: 50px;
+  float: left;
+  margin-top: -70px;
+  font-size: 18px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+}
+.code1 {
+  z-index: 9999;
+  background-repeat: no-repeat;
 }
 </style>
