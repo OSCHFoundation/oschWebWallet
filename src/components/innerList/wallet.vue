@@ -47,7 +47,7 @@
         <span class="small">当前状态：</span>
         <span class="big">未激活</span>
         
-        <button class="activation">点击激活</button>
+        <!-- <button class="activation">点击激活</button> -->
       </div>
       <div class="promise">
         <span class="small">保证金：</span>
@@ -105,7 +105,7 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="140" id="color1"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="140" id="color1" class="money"></el-table-column>
               <el-table-column prop="from" label="来源账户" width="296" class="from"></el-table-column>
               <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
@@ -127,9 +127,9 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120" class="color1"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="140" class="color1"></el-table-column>
+              <el-table-column prop="from" label="来源账户" width="296"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -149,9 +149,13 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column label="交易金额" width="140">
+                 <template slot-scope="scope">
+                  <span style="color:#F55436">{{scope.row.num}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="from" label="来源账户" width="296"></el-table-column>
+              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -258,7 +262,7 @@ export default {
       this.mask1Tips = true;
       setTimeout(() => {
         this.mask1Tips = false;
-      }, 1000);
+      }, 2000);
     },
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex % 2 === 0) {
@@ -280,13 +284,13 @@ export default {
           _this.oschPrice = price * this.oschNum;
           this.$emit("listenPrice", this.oschPrice);
 
-          console.log(_this.timePrice);
-          console.log(res.data.result.price);
+          // console.log(_this.timePrice);
+          // console.log(res.data.result.price);
         })
         .catch(err => {
           console.log(err);
         });
-      console.log("haha");
+      // console.log("haha");
     },
     handleCurrentChange(cpage) {
       this.currpage = cpage;
@@ -332,14 +336,17 @@ export default {
           from: page1.from
         };
         console.log(ob.memo);
-        page1
-          .transaction()
-          .then(res => {
-            ob.memo = res.memo;
-          })
-          .catch(err => {
-            console.log(err);
-          });
+
+        //请求到transaction中的memo
+
+        // page1
+        //   .transaction()
+        //   .then(res => {
+        //     ob.memo = res.memo;
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
 
         if (ob.asset == "native") {
           ob.asset = "Osch";
@@ -378,7 +385,7 @@ export default {
         }
       }
       this.tab = this.wArrPage.length;
-      console.log(this.wArrPage);
+      // console.log(this.wArrPage);
     },
     //分类显示收入、支出
     getPage: async function() {
@@ -386,7 +393,7 @@ export default {
         var num = this.wArrPage[i].num;
         if (num.substr(0, 1) == "+") {
           this.input.push(this.wArrPage[i]);
-          console.log(this.input);
+          // console.log(this.input);
         }
         if (num.substr(0, 1) == "-") {
           this.output.push(this.wArrPage[i]);
@@ -494,7 +501,7 @@ export default {
     this.qrcode6();
     setInterval(() => {
       this.getPrice();
-      console.log(this.getPrice());
+      // console.log(this.getPrice());
     }, 15000);
   }
 };
@@ -719,9 +726,9 @@ export default {
   background: #ffffff;
 }
 .code-title {
-  padding-left: 50px;
+  padding-left: 65px;
   float: left;
-  margin-top: -70px;
+  margin-top: -55px;
   font-size: 18px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
@@ -731,4 +738,21 @@ export default {
   z-index: 9999;
   background-repeat: no-repeat;
 }
+/* .element .el-table td:nth-child(1),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(6),
+td:nth-child(7),
+td:nth-child(8) {
+  color: rgba(202, 208, 219, 1);
+}
+ .element .el-table td:nth-child(2) {
+   color: rgba(1,227,181,1) !important
+ } */
+ /* .el-table .cell {
+  font-size: 12px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  text-align: center;
+} */
 </style>

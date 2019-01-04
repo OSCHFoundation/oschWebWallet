@@ -20,7 +20,7 @@
           <div class="coinInner">
             <h2 class="title">Time</h2>
           </div>
-          <button class="btn">信任Time</button>
+          <button class="btn" type="primary" @click="openFullScreen2">信任Time</button>
         </div>
         <hr>
         <!-- <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button> -->
@@ -71,7 +71,7 @@
         <span class="word">{{unit}}</span>
         <div class="exchange">
           <span class="rmb">RMB</span>
-          <span class="cash">≈ ￥ --</span>
+          <span class="cash">≈ ￥ 0.01</span>
           <button v-show="showBtn" @click="cancelTrust" class="close">取消信任</button>
         </div>
         <span class="transaction1">交易记录</span>
@@ -85,7 +85,11 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column  label="交易金额" width="120">
+                <template slot-scope="scope">
+                  <span :class="{transactionMoney:moneyColor==2, transactionMoney1:moneyColor==3}">{{scope.row.num}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
               <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
@@ -107,7 +111,11 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column  label="交易金额" width="120">
+                <template slot-scope="scope">
+                  <span>{{scope.row.num}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
               <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
@@ -129,7 +137,11 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="120"></el-table-column>
+              <el-table-column label="交易金额" width="120">
+                 <template slot-scope="scope">
+                  <span style="color:#F55436">{{scope.row.num}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
               <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
@@ -165,7 +177,7 @@ import oschCoin from "../../../static/img/u15.png";
 import hourCoin from "../../../static/img/u259.png";
 export default {
   components: {},
-  props: ['coinPrice'],
+  props: ["coinPrice"],
   data() {
     return {
       allCoin: true,
@@ -194,6 +206,8 @@ export default {
       oscImg: oschCoin,
       showBtn: false, //取消信任按钮
       back1: 1,
+      loading: true,
+      moneyColor:1
       // coinPrice:0
     };
   },
@@ -205,6 +219,19 @@ export default {
     }
   },
   methods: {
+    //loading 插件
+    openFullScreen2() {
+      this.open = false;
+      const loading = this.$loading({
+        lock: this.loading,
+        text: "玩命加载中...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 5000);
+    },
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex % 2 === 0) {
         return "warning-row";
@@ -319,11 +346,13 @@ export default {
       this.server
         .submitTransaction(transaction)
         .then(function(res) {
+          this.fullscreenLoading = false;
           console.log("发送交易成功");
           alert("发送成功");
           location.reload();
         })
         .catch(function(err) {
+          this.fullscreenLoading = false;
           alert("授权失败");
           console.log(err.response);
           console.log(err.response.data.extras.result_codes.transaction);
@@ -427,7 +456,16 @@ export default {
       "hour",
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
-    console.log(this.coinPrice)
+    console.log(this.coinPrice);
+    console.log(this.coin)
+    for(var i of this.coin){
+      let semb=i.num.slice(0,1)
+      if(semb == "+"){
+        this.moneyColor = 2
+      }else {
+        this.moneyColor = 3
+      }
+    }
   }
 };
 </script>
@@ -461,14 +499,14 @@ export default {
   overflow: hidden;
 }
 /* .coinImg img { */
-  /* margin-top: 10px; */
-  /* margin-left: 8px; */
-  /* margin-right: 15px; */
-  /* overflow: hidden; */
+/* margin-top: 10px; */
+/* margin-left: 8px; */
+/* margin-right: 15px; */
+/* overflow: hidden; */
 /* } */
 hr {
   margin-top: 24px;
-border:1px solid rgba(240,240,240,1);
+  border: 1px solid rgba(240, 240, 240, 1);
 }
 .coinInner {
   display: inline-block;
@@ -650,5 +688,11 @@ border:1px solid rgba(240,240,240,1);
   background: #585858;
   border-radius: 50%;
   text-align: center;
+}
+.transactionMoney {
+  color: #01E3B5
+}
+.transactionMoney1 {
+  color: #F55436
 }
 </style>

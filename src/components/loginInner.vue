@@ -149,7 +149,7 @@ export default {
 }
 .main-right {
   margin-left: 176px;
-  margin-bottom: 250px;
+  /* margin-bottom: 250px; */
 }
 .img {
   padding-left: 60px;

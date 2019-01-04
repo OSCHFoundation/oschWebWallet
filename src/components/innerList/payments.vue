@@ -9,8 +9,10 @@
     </div>
     <div class="mask" v-if="maskTips">
       <div class="alertMask">
-        <div class="title">{{maskTitle}}</div>
-        <div class="alertInner">{{maskInner}}</div>
+        <!-- <div class="title">{{maskTitle}}</div> -->
+        <div class="title">目标地址未激活</div>
+        <!-- <div class="alertInner">{{maskInner}}</div> -->
+        <div class="alertInner">目标地址未激活，转大于100 Osch 激活该账户</div>
         <button class="alertBtn" @click="closeMaskTips">确认</button>
       </div>
     </div>
@@ -86,7 +88,7 @@
         class="writeInput"
         v-model="toPublic"
         onkeyup="this.value=this.value.replace(/(^\s*)|(\s*$)/g,'')"
-         maxlength="57" 
+        maxlength="57"
       >
       <div class="write-title">
         <span class="title-left">转账数量</span>
@@ -98,26 +100,32 @@
         class="writeInput"
         v-model="toOschNum"
         onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
-         maxlength="15" 
-
+        maxlength="15"
       >
       <div class="write-title">
         <span class="title-left">矿工费（选填）</span>
-        <img src="../../../static/img/u897.png" width="16" height="16" class="ques" >
+        <img src="../../../static/img/u897.png" width="16" height="16" class="ques">
       </div>
       <input
         type="text"
         placeholder="输入交易矿工费"
         v-model="baseFee"
         class="writeInput"
-        onkeyup="this.value=this.value.toString().match(/^\d+(?:\.\d{0,2})?/)"
         maxlength="10"
+        onkeyup="value=value.replace(/[^\d\.]/g,'')"
       >
       <div class="write-title">
         <span class="title-left">备注（选填）</span>
         <el-switch v-model="value2" active-color="#10C796" inactive-color="#ccc"></el-switch>
       </div>
-      <input type="text" placeholder="最多可输入10个字符" class="writeInput" v-model="memo" v-show="value2"  maxlength="10">
+      <input
+        type="text"
+        placeholder="最多可输入10个字符"
+        class="writeInput"
+        v-model="memo"
+        v-show="value2"
+        maxlength="10"
+      >
       <button
         class="sure"
         :class="{sure:(toOschNum==''&&toPublic==''),sure1:(toOschNum!=''&&toPublic!='')}"
@@ -168,6 +176,9 @@
       </div>
     </div>
     <!-- <div class="back-mask"></div> -->
+    <div class="backgroundImg">
+      <img src="../../../static/img/sk_bg@2x.png" width="100%">
+    </div>
   </div>
 </template>
 
@@ -236,12 +247,17 @@ export default {
       setInterval(() => {
         if (this.progress == 100) {
           clearTimeout();
+          // this.showProgress = false
         } else {
           this.progress++;
           console.log(this.progress);
         }
+        if(this.mask1Tips==true){
+          clearTimeout();
+        }
       }, 100);
       this.progress = 0;
+      
     },
     setMask() {
       this.mask1Tips = true;
@@ -251,6 +267,13 @@ export default {
     },
     closeMaskTips() {
       this.maskTips = false;
+      if (this.selectType == "Time") {
+        this.close = false;
+      } else if(this.selectType == "Hour"){
+        this.close = false;
+      } else {
+        this.close = true
+      }
     },
     cleanSpace(str) {
       // str.replace
@@ -260,23 +283,19 @@ export default {
       this.page = true;
     },
     payOsch() {
-      // this.page = false;
-      // this.page1 = true;
       this.selectType = "Osch";
       this.allCoin = this.oschNum;
-      console.log("gagagagaga");
+      console.log(this.allCoin);
     },
     payTime() {
-      // this.page = false;
-      // this.page1 = true;
       this.selectType = "Time";
       this.allCoin = this.timeNum;
+      console.log(this.allCoin);
     },
     payHour() {
-      // this.page = false;
-      // this.page1 = true;
       this.selectType = "Hour";
       this.allCoin = this.hourNum;
+      console.log(this.allCoin);
     },
     closeMask() {
       this.close = false;
@@ -286,10 +305,13 @@ export default {
       console.log("哈哈");
       var _this = this;
       _this.trueToPublic = true;
+      let payMoney = parseInt(_this.toOschNum)
+      let quick = parseInt(_this.baseFee)
       try {
         //判断目标地址是否合法
         let strkey = StellarSdk.StrKey;
         let arrPrivate = strkey.decodeEd25519PublicKey(_this.toPublic);
+        console.log(_this.toOschNum);
         console.log(arrPrivate);
       } catch (err) {
         console.log(err.response);
@@ -303,10 +325,15 @@ export default {
         _this.close = false;
         _this.mask1Inner = "目标地址不能为当前账户地址,请重试";
         _this.setMask(); //弹出遮罩
-      } else if (_this.allCoin <= _this.toOschNum) {
+      } else if (_this.allCoin - _this.toOschNum < 0) {
         console.log(_this.allCoin);
+        console.log(_this.toOschNum);
         _this.close = false;
         _this.mask1Inner = "余额不足，请稍后再试";
+        _this.setMask(); //弹出遮罩
+      } else if(typeof(payMoney)!="number"){
+        _this.close = false;
+        _this.mask1Inner = "请输入正确的数字格式";
         _this.setMask(); //弹出遮罩
       } else {
         // 目标地址合法执行
@@ -320,30 +347,19 @@ export default {
                 _this.trustTime = true; //确认账户中信任过Time资产
               }
             }
+            // _this.close = true;
           })
           .catch(err => {
-            _this.mask1Inner =
-              "你所转到的账户未激活，转大于100OSCH即可以激活该账户";
-            _this.setMask(); //弹出遮罩
+            _this.close = false;
+              _this.maskTips = true;
             _this.valid = 2; //转账操作
-
             console.log(_this.valid);
-            // if(_this.close==true){
-            //      _this.mask1Inner =
-            //   "你所转到的账户未激活，转大于100OSCH即可以激活该账户";
-            // _this.setMask(); //弹出遮罩
-            // // alert("你所转到的账户未激活，转大于100OSCH即可以激活该账户");
-            //   _this.close=true
-            // }else {
-            //   _this.close=false
-            // }
-            // _this.close = true;
           });
         //交易数量不能为空
         //做判断基础交易费用
         console.log(_this.baseFee);
         console.log(_this.account);
-        let fees = this.toOschNum - this.promiseFee;
+        let fees = this.allCoin - this.promiseFee;
         if (_this.baseFee == "") {
           _this.baseFee = 10;
           console.log(_this.baseFee);
@@ -351,13 +367,17 @@ export default {
           _this.mask1Inner = "基本费用不可小于10";
           _this.setMask(); //弹出遮罩
           _this.close = false;
+        } else if(typeof(quick)!="number"){
+          _this.close = false;
+        _this.mask1Inner = "请输入正确的数字格式";
+        _this.setMask(); //弹出遮罩
         } else if (fees < 0) {
-          console.log("111111");
-          this.close = false;
+          console.log(fees)
+          _this.close = false;
           _this.mask1Inner = "此操作小于基本费用";
           _this.setMask(); //弹出遮罩
         } else {
-          _this.close = true;
+          _this.close = true
         }
       }
     },
@@ -405,6 +425,10 @@ export default {
               // alert("发送成功");
               _this.mask1Inner = "发送成功";
               _this.setMask(); //弹出遮罩
+              location.reload()
+              setTimeout(()=>{
+                location.reload()
+              },2000)
             })
             .catch(err => {
               console.log("fafa");
@@ -415,6 +439,8 @@ export default {
             // alert(
             //   "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
             // );
+            _this.close = false;
+            _this.showProgress = false;
             _this.mask1Inner =
               "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
@@ -439,10 +465,14 @@ export default {
               .submitTransaction(transaction)
               .then(function(res) {
                 console.log("发送交易成功");
-                alert("发送成功");
+                // alert("发送成功");
+                _this.showProgress = false;
                 _this.close = false;
                 _this.mask1Inner = "发送成功";
                 _this.setMask(); //弹出遮罩
+                   setTimeout(()=>{
+                location.reload()
+              },2000)
                 // location.reload();
               })
               .catch(err => {
@@ -453,8 +483,10 @@ export default {
         console.log("kkk");
         if (_this.selectType == "Hour") {
           if (_this.trustHour == false) {
+            _this.close = false;
+            _this.showProgress = false;
             _this.mask1Inner =
-              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试";
+              "你所转到的账户未信任“Hour币”，可通知其开启“Time币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
           } else {
             var transaction = new StellarSdk.TransactionBuilder(
@@ -477,9 +509,13 @@ export default {
               .then(function(res) {
                 console.log("发送交易成功");
                 // alert("发送成功");
+                _this.showProgress = false;
                 _this.close = false;
                 _this.mask1Inner = "发送成功";
                 _this.setMask(); //弹出遮罩
+                 setTimeout(()=>{
+                location.reload()
+              },2000)
                 // location.reload();
               });
           }
@@ -508,6 +544,7 @@ export default {
               _this.stellarServer
                 .submitTransaction(transaction)
                 .then(function(res) {
+                  _this.showProgress = false;
                   _this.close = false;
                   _this.mask1Inner = "目标地址初始化成功";
                   _this.setMask(); //弹出遮罩
@@ -515,9 +552,9 @@ export default {
                 });
             });
         } else {
-          alert("目标账户尚未为激活，无法进行其他操作，激活请用本币Osch激活");
-
-          location.reload();
+          // this.maskTips = true
+          // alert("目标账户尚未为激活，无法进行其他操作，激活请用本币Osch激活");
+          // location.reload();
         }
       }
     }
@@ -943,5 +980,10 @@ export default {
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: rgba(102, 102, 102, 1);
+}
+.backgroundImg {
+  position: absolute;
+  bottom: 0;
+  z-index: -1;
 }
 </style>  
