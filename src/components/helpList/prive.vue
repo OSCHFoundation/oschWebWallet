@@ -34,10 +34,10 @@ export default {
 </script>
 <style scoped>
 .about-us {
-  padding-left: 25%;
-  padding-top: 84px;
+   padding-top: 84px;
+  margin: 0 auto;
   width: 960px;
-  min-height: 900px;
+  min-height: 800px;
   z-index: 3;
   overflow: hidden;
 }

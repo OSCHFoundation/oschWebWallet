@@ -54,7 +54,7 @@ export default {
       let qrcode3 = new QRCode("qrcode3", {
         width: 200,
         height: 200,
-        text: "asd528sdx8th2jk82cx",
+        text: "https://oschpublicchain.oss-cn-shanghai.aliyuncs.com/OpenWalletAndriod",
         colorDark: "#000",
         colorLiht: "#fff"
       });

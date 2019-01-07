@@ -548,7 +548,7 @@ export default {
                   _this.close = false;
                   _this.mask1Inner = "目标地址初始化成功";
                   _this.setMask(); //弹出遮罩
-                  // location.reload();
+                  location.reload();
                 });
             });
         } else {
@@ -754,7 +754,7 @@ export default {
 }
 .coin-right {
   height: 80px;
-  width: 300px;
+  width: 280px;
   margin-left: 38px;
   background: rgba(42, 53, 69, 1);
   border-radius: 6px;

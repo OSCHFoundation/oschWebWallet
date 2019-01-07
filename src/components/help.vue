@@ -108,16 +108,17 @@ export default {
 }
 .main {
   padding-top: 69px;
-  margin: 0 auto;
-  width: 80%;
+  /* margin: 0 auto; */
+  /* width: 80%; */
   min-height: 700px;
   background-image: url("../../static/img/diandian.png");
   background-size: 140% 100%;
   z-index: 2;
 }
 .inner {
-  padding-left: 150px;
-  height: 784px;
+  width: 1180px;
+  margin: 0 auto;
+  padding-bottom: 20px;
 }
 .inner-header {
   font-size: 32px;
@@ -127,10 +128,11 @@ export default {
 }
 .page {
   display: inline-block;
-  margin-right: 18px;
+  margin-right: 10px;
   margin-top: 50px;
   padding-left: 18px;
-  width: 388px;
+  padding-right: 10px;
+  /* width: 388px; */
   height: 129px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;

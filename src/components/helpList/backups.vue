@@ -42,11 +42,10 @@ export default {
 </script>
 <style scoped>
 .about-us {
-  padding-top: 84px;
-  padding-left: 25%;
-    display: inline-block;
+ padding-top: 84px;
+  margin: 0 auto;
   width: 960px;
-  min-height: 900px;
+  min-height: 800px;
   z-index: 3;
   overflow: hidden;
 }

@@ -1,26 +1,42 @@
 <template>
   <div class="asset">
+    <div class="mask1" v-if="actionShow">
+      <div class="mask1Box">
+        <div class="mask1Title">
+          <img src="../../../static/img/true.png" width="28px" height="28px">
+        </div>
+        <div class="mask1Inner">{{actionState}}</div>
+      </div>
+    </div>
+    <div class="mask1" v-if="actionShow1">
+      <div class="mask1Box1">
+        <div class="mask1Title">
+          <!-- <img src="../../../static/img/true.png" width="28px" height="28px"> -->
+        </div>
+        <div class="mask1Inner">操作失败，当前代币尚有余额，请稍后重试</div>
+      </div>
+    </div>
     <div class="mask" v-show="open">
       <div class="transactionMask">
         <div class="closeMask" @click="closeClick">X</div>
         <p class="addCoinTitle">添加资产</p>
-        <div class="addTime" v-show="!hourNum" @click="changeTrust(isHour)">
+        <div class="addTime" v-show="!hourNum" >
           <div class="coinImg">
             <img src="../../../static/img/u259.png" width="44" height="44">
           </div>
           <div class="coinInner">
             <h2 class="title">Hour</h2>
           </div>
-          <button class="btn">信任Hour</button>
+          <button class="btn" type="primary" @click="changeTrust(isHour)">信任Hour</button>
         </div>
-        <div class="addTime" v-show="!timeNum" @click="changeTrust(isTime)">
+        <div class="addTime" v-show="!timeNum">
           <div class="coinImg">
             <img src="../../../static/img/u269.png" width="44" height="44">
           </div>
           <div class="coinInner">
             <h2 class="title">Time</h2>
           </div>
-          <button class="btn" type="primary" @click="openFullScreen2">信任Time</button>
+          <button class="btn" type="primary" @click="changeTrust(isTime)">信任Time</button>
         </div>
         <hr>
         <!-- <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button> -->
@@ -85,9 +101,10 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column  label="交易金额" width="120">
+              <el-table-column label="交易金额" width="120">
                 <template slot-scope="scope">
-                  <span :class="{transactionMoney:moneyColor==2, transactionMoney1:moneyColor==3}">{{scope.row.num}}</span>
+                  <span :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
+                  >{{scope.row.num}}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
@@ -111,7 +128,7 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column  label="交易金额" width="120">
+              <el-table-column label="交易金额" width="120">
                 <template slot-scope="scope">
                   <span>{{scope.row.num}}</span>
                 </template>
@@ -138,7 +155,7 @@
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
               <el-table-column label="交易金额" width="120">
-                 <template slot-scope="scope">
+                <template slot-scope="scope">
                   <span style="color:#F55436">{{scope.row.num}}</span>
                 </template>
               </el-table-column>
@@ -207,8 +224,10 @@ export default {
       showBtn: false, //取消信任按钮
       back1: 1,
       loading: true,
-      moneyColor:1
-      // coinPrice:0
+      moneyColor: 1,
+      actionState: "操作成功",
+      actionShow: false,
+      actionShow1: false
     };
   },
   filters: {
@@ -220,18 +239,6 @@ export default {
   },
   methods: {
     //loading 插件
-    openFullScreen2() {
-      this.open = false;
-      const loading = this.$loading({
-        lock: this.loading,
-        text: "玩命加载中...",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
-      });
-      setTimeout(() => {
-        loading.close();
-      }, 5000);
-    },
     tableRowClassName({ row, rowIndex }) {
       if (rowIndex % 2 === 0) {
         return "warning-row";
@@ -284,10 +291,13 @@ export default {
     handleClose(key, keyPath) {},
     handleClick(res, event) {
       if (event.target.innerHTML == "全部交易记录") {
+        this.currpage = 1
         this.tab = this.osch.length;
       } else if (event.target.innerHTML == "收入交易") {
+        this.currpage = 1
         this.tab = this.input.length;
       } else if (event.target.innerHTML == "支出交易") {
+        this.currpage = 1
         this.tab = this.output.length;
       }
     },
@@ -330,10 +340,15 @@ export default {
     },
     //点击信任
     changeTrust(coin) {
-      console.log(this.isHour);
-      console.log(this.account);
-      console.log(this.sercet);
-      var transaction = new StellarSdk.TransactionBuilder(this.account, {
+      this.open = false;
+      const loading = this.$loading({
+        lock: false,
+        text: "玩命加载中...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      let _this = this
+      var transaction = new StellarSdk.TransactionBuilder(_this.account, {
         fee: "100000000"
       })
         .addOperation(
@@ -342,39 +357,57 @@ export default {
           })
         )
         .build();
-      transaction.sign(StellarSdk.Keypair.fromSecret(this.sercet));
-      this.server
+      transaction.sign(StellarSdk.Keypair.fromSecret(_this.sercet));
+      _this.server
         .submitTransaction(transaction)
         .then(function(res) {
-          this.fullscreenLoading = false;
-          console.log("发送交易成功");
-          alert("发送成功");
-          location.reload();
+          // _this.fullscreenLoading = false;
+          loading.close();
+          _this.actionShow = true;
+          setTimeout(()=>{
+            location.reload()
+          },2000)
         })
         .catch(function(err) {
-          this.fullscreenLoading = false;
-          alert("授权失败");
-          console.log(err.response);
-          console.log(err.response.data.extras.result_codes.transaction);
+          loading.close();
+          _this.actionShow1 = true;
+          setTimeout(()=>{
+            location.reload()
+         },2000)
+          
         });
     },
     cancelTrust() {
+      
       if (this.unit == "Time") {
         if (this.timeNum > 0) {
-          alert("当前代币尚有资产，请转以后再试");
+          this.actionShow1 = true
+          setTimeout(()=>{
+          this.actionShow1 = false
+          },3000)
         } else {
           this.closeTrust(this.isTime);
         }
       }
       if (this.unit == "Hour") {
         if (this.hourNum > 0) {
-          alert("当前代币尚有资产，请转以后再试");
+          this.actionShow1 = true
+          setTimeout(()=>{
+          this.actionShow1 = false
+          },3000)
         } else {
           this.closeTrust(this.isHour);
         }
       }
     },
     closeTrust(asCoin) {
+      const loading = this.$loading({
+        lock: false,
+        text: "玩命加载中...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      let _this =this
       var transaction = new StellarSdk.TransactionBuilder(this.account, {
         fee: "100000000"
       })
@@ -391,15 +424,19 @@ export default {
       this.server
         .submitTransaction(transaction)
         .then(function(res) {
-          console.log(res);
-          console.log("发送交易成功");
-          alert("取消成功");
-          location.reload();
+          loading.close();
+          _this.actionShow = true;
+          setTimeout(()=>{
+            location.reload()
+         },2000)
         })
         .catch(function(err) {
-          alert("授权失败");
-          console.log(err.response);
-          console.log(err.response.data.extras.result_codes.transaction);
+          loading.close();
+          _this.actionShow1 = true;
+          setTimeout(()=>{
+            location.reload()
+         },2000)
+          // alert("授权失败");
         });
     },
     //打开遮罩层
@@ -457,13 +494,13 @@ export default {
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
     console.log(this.coinPrice);
-    console.log(this.coin)
-    for(var i of this.coin){
-      let semb=i.num.slice(0,1)
-      if(semb == "+"){
-        this.moneyColor = 2
-      }else {
-        this.moneyColor = 3
+    console.log(this.coin);
+    for (var i of this.coin) {
+      let semb = i.num.slice(0, 1);
+      if (semb == "+") {
+        this.moneyColor = 2;
+      } else {
+        this.moneyColor = 3;
       }
     }
   }
@@ -498,12 +535,6 @@ export default {
   padding: 0 8px;
   overflow: hidden;
 }
-/* .coinImg img { */
-/* margin-top: 10px; */
-/* margin-left: 8px; */
-/* margin-right: 15px; */
-/* overflow: hidden; */
-/* } */
 hr {
   margin-top: 24px;
   border: 1px solid rgba(240, 240, 240, 1);
@@ -542,7 +573,7 @@ hr {
   padding: 0.75rem;
   margin: 220px auto;
   width: 360px;
-  height: 320px;
+  /* height: 320px; */
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -690,9 +721,48 @@ hr {
   text-align: center;
 }
 .transactionMoney {
-  color: #01E3B5
+  color: #01e3b5;
 }
 .transactionMoney1 {
-  color: #F55436
+  color: #f55436;
+}
+.mask1 {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 99999;
+}
+.mask1Box {
+  position: relative;
+  margin: 20% auto;
+  width: 142px;
+  height: 60px;
+  background: rgba(0, 0, 0, 1);
+  opacity: 0.6;
+  border-radius: 4px;
+}
+.mask1Box1 {
+  position: relative;
+  margin: 20% auto;
+  width: 390px;
+  height: 60px;
+  background: rgba(0, 0, 0, 1);
+  opacity: 0.6;
+  border-radius: 4px;
+}
+.mask1Title {
+  float: left;
+  overflow: hidden;
+  margin: 16px 12px 16px 28px;
+}
+.mask1Inner {
+  height: 60px;
+  line-height: 60px;
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(240, 240, 240, 1);
 }
 </style>

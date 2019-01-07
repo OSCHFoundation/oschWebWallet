@@ -105,7 +105,12 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="140" id="color1" class="money"></el-table-column>
+              <el-table-column prop="num" label="交易金额" width="140" id="color1" class="money">
+                <template slot-scope="scope">
+                  <span :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
+                  >{{scope.row.num}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="from" label="来源账户" width="296" class="from"></el-table-column>
               <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
@@ -304,8 +309,10 @@ export default {
       if (event.target.innerHTML == "全部交易记录") {
         this.tab = this.wArrPage.length;
       } else if (event.target.innerHTML == "收入交易") {
+      this.currpage = 1;
         this.tab = this.input.length;
       } else if (event.target.innerHTML == "支出交易") {
+      this.currpage = 1;
         this.tab = this.output.length;
       }
     },
@@ -558,7 +565,7 @@ export default {
 .coin {
   margin-right: 20px;
   display: inline-block;
-  width: 332px;
+  width: 330px;
   height: 100px;
   background-image: url("../../../static/img/coin.png");
   background-size: 100% 100%;
@@ -737,6 +744,9 @@ export default {
 .code1 {
   z-index: 9999;
   background-repeat: no-repeat;
+}
+.transactionMoney1 {
+  color: #f55436;
 }
 /* .element .el-table td:nth-child(1),
 td:nth-child(3),
