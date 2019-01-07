@@ -172,6 +172,29 @@ export default {
 .el-table td:nth-child(2){
   color: #fff;
   color: rgba(1, 227, 181, 1) ;
+}
+.el-input__inner {
+  background: #1f2733;
+  border: #151c26
+}
+.el-scrollbar{
+  background: #181e26
+}
+.el-select-dropdown {
+  
+  border: none
+}
+.el-select-dropdown__item{
+  background: #181e26
+}
+.el-select-dropdown__item.hover {
+  background: #283242
 
 }
+ .el-select-dropdown__item:hover {
+  background: #283242
+ }
+ .el-select-dropdown__item.selected {
+   color: #e5e5e5
+ }
 </style>
