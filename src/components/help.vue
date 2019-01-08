@@ -110,7 +110,7 @@ export default {
   padding-top: 69px;
   /* margin: 0 auto; */
   /* width: 80%; */
-  min-height: 700px;
+  min-height: 900px;
   background-image: url("../../static/img/diandian.png");
   background-size: 140% 100%;
   z-index: 2;

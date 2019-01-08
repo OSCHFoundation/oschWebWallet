@@ -68,10 +68,15 @@ export default {
       this.setMask()
     }
   },
-  created() {},
+  created() {
+    let userPr= JSON.parse(sessionStorage.userPr)
+    this.user = userPr.pub
+
+  },
+  
   mounted() {
-    let userInfo = JSON.parse(sessionStorage.user);
-    this.user = userInfo.pub;
+    // let userInfo = JSON.parse(sessionStorage.user);
+    // this.user = userInfo.pub;
     this.qrcode1();
   }
 };
@@ -138,8 +143,11 @@ export default {
   font-weight: 400;
   color: rgba(245, 245, 245, 1);
 }
+.btn:hover {
+  cursor: pointer;
+}
 .back {
-  height: 350px;
+  height: 344px;
   width: 100%;
   background-image: url("../../../static/img/sk_bg@2x.png");
   background-size: 100% 100%;

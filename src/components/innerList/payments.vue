@@ -1,10 +1,11 @@
 <template>
   <div class="payments">
     <div class="progressMask" v-if="showProgress">
+      <!-- <div class="progressMask" v-if="true"> -->
       <div class="progressInner">
         <span>正在提交</span>
         <el-progress :percentage="progress"></el-progress>
-        <div class="second">正在进行交易，大约需要3~5S</div>
+        <div class="second">正在进行交易，大约需要几秒时间</div>
       </div>
     </div>
     <div class="mask" v-if="maskTips">
@@ -12,7 +13,7 @@
         <!-- <div class="title">{{maskTitle}}</div> -->
         <div class="title">目标地址未激活</div>
         <!-- <div class="alertInner">{{maskInner}}</div> -->
-        <div class="alertInner">目标地址未激活，转大于100 Osch 激活该账户</div>
+        <div class="alertInner">目标地址未激活，转大于100 OSCH 激活该账户</div>
         <button class="alertBtn" @click="closeMaskTips">确认</button>
       </div>
     </div>
@@ -31,42 +32,42 @@
         <div class="coinList">
           <div class="coin" @click="payOsch">
             <div class="coin-left">
-              <img :src="selectType =='Osch' ? yc :xianshi" width="22" height="22">
+              <img :src="selectType =='OSCH' ? yc :xianshi" width="22" height="22">
             </div>
             <div class="coin-right">
               <div class="coinImg">
                 <img src="../../../static/img/u15.png" width="40" height="40">
               </div>
               <div class="coinInner">
-                <strong class="stron">Osch</strong>
+                <strong class="stron">OSCH</strong>
               </div>
               <span class="balance1">{{oschNum | numFilter}}</span>
             </div>
           </div>
           <div class="coin" v-show="isTime" @click="payTime">
             <div class="coin-left">
-              <img :src="selectType =='Time' ? yc :xianshi" width="22" height="22">
+              <img :src="selectType =='TIME' ? yc :xianshi" width="22" height="22">
             </div>
             <div class="coin-right">
               <div class="coinImg">
                 <img src="../../../static/img/u269.png" width="40" height="40">
               </div>
               <div class="coinInner">
-                <strong class="stron">Time</strong>
+                <strong class="stron">TIME</strong>
               </div>
               <span class="balance1">{{timeNum | numFilter}}</span>
             </div>
           </div>
           <div class="coin" v-show="isHour" @click="payHour">
             <div class="coin-left">
-              <img :src="selectType =='Hour' ? yc :xianshi" width="22" height="22">
+              <img :src="selectType =='HOUR' ? yc :xianshi" width="22" height="22">
             </div>
             <div class="coin-right">
               <div class="coinImg">
                 <img src="../../../static/img/u259.png" width="40" height="40">
               </div>
               <div class="coinInner">
-                <strong class="stron">Hour</strong>
+                <strong class="stron">HOUR</strong>
               </div>
               <span class="balance1">{{hourNum | numFilter}}</span>
             </div>
@@ -116,7 +117,7 @@
       >
       <div class="write-title">
         <span class="title-left">备注（选填）</span>
-        <el-switch v-model="value2" active-color="#10C796" inactive-color="#ccc"></el-switch>
+        <el-switch v-model="value2" active-color="#10C796" inactive-color="#666566"></el-switch>
       </div>
       <input
         type="text"
@@ -143,31 +144,44 @@
         </div>-->
         <div class="maskInner mBorder">
           <p class="maskInnerList">
-            <span class="maskListLeft">当前地址:</span>
+            <span class="maskListLeft">转账地址:</span>
             <span class="maskListRight">{{publicKey}}</span>
           </p>
           <p class="maskInnerList">
-            <span class="maskListLeft">目标地址:</span>
+            <span class="maskListLeft">收款地址:</span>
             <span class="maskListRight">{{toPublic}}</span>
           </p>
-          <p class="maskInnerList" v-show="memo">
+          <!-- <p class="maskInnerList" v-show="memo">
             <span class="maskListLeft">备忘录:</span>
             <span class="maskListRight">{{memo}}</span>
-          </p>
+          </p>-->
           <p class="maskInnerList">
             <span class="maskListLeft">账户余额:</span>
-            <span class="maskListRight">{{allCoin | numFilter}} {{selectType}}</span>
+            <br>
+            <span class="maskListRight ">{{allCoin | numFilter}}</span>
+            <span class="unit">{{selectType}}</span>
           </p>
           <p class="maskInnerList">
-            <span class="maskListLeft">交易额:</span>
-            <span class="maskListRight">{{toOschNum | numFilter}}&nbsp {{selectType}}</span>
+            <span class="maskListLeft ">交易额:</span>
+            <br>
+            <span class="maskListRight coinColor">{{toOschNum | numFilter}}&nbsp {{selectType}}</span>
           </p>
-          <p class="maskInnerList">
+          <!-- <p class="maskInnerList">
             <span class="maskListLeft">币种:</span>
+            <br>
             <span class="maskListRight">{{selectType}}</span>
+          </p> -->
+          <p class="maskInnerList">
+            <span class="maskListLeft">备注:</span>
+            <br>
+            <span class="maskListRight">{{memo}}</span>
           </p>
-          <button class="maskBtn cancel" @click="closeMask">取消交易</button>
+          <div class="btnBox">
+            <button class="maskBtn cancel" @click="closeMask">取消交易</button>
           <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
+          </div>
+          <!-- <button class="maskBtn cancel" @click="closeMask">取消交易</button>
+          <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button> -->
         </div>
         <!-- <div class="maskFooter mBorder">
           <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbsp {{selectType}} 到：</h1>
@@ -176,9 +190,9 @@
       </div>
     </div>
     <!-- <div class="back-mask"></div> -->
-    <div class="backgroundImg">
+    <!-- <div class="backgroundImg">
       <img src="../../../static/img/sk_bg@2x.png" width="100%">
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -197,7 +211,7 @@ export default {
       isTime: false,
       page: true, //进入页面
       page1: false, //转账页面
-      selectType: "Osch", // 资产类型
+      selectType: "OSCH", // 资产类型
       // choseSelect: 1,
       xianshi: select,
       yc: noSelect,
@@ -214,7 +228,7 @@ export default {
       server: "", //Stellar
       stellarServer: "", //Stellar
       account: "", //每次请求stellar返回的账户详情
-      secret: this.$route.params.id, //私钥
+      secret: "", //私钥
       publicKey: "",
       valid: 1, //判断目的地地址
       transactionType: "", //交易类型
@@ -243,36 +257,29 @@ export default {
   },
   methods: {
     addProgress() {
-      this.progress = 0;
+      // this.progress = 0;
       setInterval(() => {
-        if (this.progress == 100) {
-          clearTimeout();
-          // this.showProgress = false
-        } else {
           this.progress++;
-          console.log(this.progress);
+        if (this.mask1Tips == true) {
+          this.progress = 99
         }
-        if(this.mask1Tips==true){
-          clearTimeout();
-        }
-      }, 100);
+      }, 50);
       this.progress = 0;
-      
     },
     setMask() {
       this.mask1Tips = true;
       setTimeout(() => {
         this.mask1Tips = false;
-      }, 1000);
+      }, 3000);
     },
     closeMaskTips() {
       this.maskTips = false;
-      if (this.selectType == "Time") {
+      if (this.selectType == "TIME") {
         this.close = false;
-      } else if(this.selectType == "Hour"){
+      } else if (this.selectType == "HOUR") {
         this.close = false;
       } else {
-        this.close = true
+        this.close = true;
       }
     },
     cleanSpace(str) {
@@ -283,38 +290,31 @@ export default {
       this.page = true;
     },
     payOsch() {
-      this.selectType = "Osch";
+      this.selectType = "OSCH";
       this.allCoin = this.oschNum;
-      console.log(this.allCoin);
     },
     payTime() {
-      this.selectType = "Time";
+      this.selectType = "TIME";
       this.allCoin = this.timeNum;
-      console.log(this.allCoin);
     },
     payHour() {
-      this.selectType = "Hour";
+      this.selectType = "HOUR";
       this.allCoin = this.hourNum;
-      console.log(this.allCoin);
     },
     closeMask() {
       this.close = false;
     },
     //打开遮罩层
     openMask() {
-      console.log("哈哈");
       var _this = this;
       _this.trueToPublic = true;
-      let payMoney = parseInt(_this.toOschNum)
-      let quick = parseInt(_this.baseFee)
+      let payMoney = parseInt(_this.toOschNum);
+      let quick = parseInt(_this.baseFee);
       try {
         //判断目标地址是否合法
         let strkey = StellarSdk.StrKey;
         let arrPrivate = strkey.decodeEd25519PublicKey(_this.toPublic);
-        console.log(_this.toOschNum);
-        console.log(arrPrivate);
       } catch (err) {
-        console.log(err.response);
         _this.trueToPublic = false;
       }
       if (_this.trueToPublic == false) {
@@ -326,12 +326,10 @@ export default {
         _this.mask1Inner = "目标地址不能为当前账户地址,请重试";
         _this.setMask(); //弹出遮罩
       } else if (_this.allCoin - _this.toOschNum < 0) {
-        console.log(_this.allCoin);
-        console.log(_this.toOschNum);
         _this.close = false;
         _this.mask1Inner = "余额不足，请稍后再试";
         _this.setMask(); //弹出遮罩
-      } else if(typeof(payMoney)!="number"){
+      } else if (typeof payMoney != "number") {
         _this.close = false;
         _this.mask1Inner = "请输入正确的数字格式";
         _this.setMask(); //弹出遮罩
@@ -351,33 +349,28 @@ export default {
           })
           .catch(err => {
             _this.close = false;
-              _this.maskTips = true;
+            _this.maskTips = true;
             _this.valid = 2; //转账操作
-            console.log(_this.valid);
           });
         //交易数量不能为空
         //做判断基础交易费用
-        console.log(_this.baseFee);
-        console.log(_this.account);
         let fees = this.allCoin - this.promiseFee;
         if (_this.baseFee == "") {
           _this.baseFee = 10;
-          console.log(_this.baseFee);
         } else if (_this.baseFee < 10) {
           _this.mask1Inner = "基本费用不可小于10";
           _this.setMask(); //弹出遮罩
           _this.close = false;
-        } else if(typeof(quick)!="number"){
+        } else if (typeof quick != "number") {
           _this.close = false;
-        _this.mask1Inner = "请输入正确的数字格式";
-        _this.setMask(); //弹出遮罩
+          _this.mask1Inner = "请输入正确的数字格式";
+          _this.setMask(); //弹出遮罩
         } else if (fees < 0) {
-          console.log(fees)
           _this.close = false;
           _this.mask1Inner = "此操作小于基本费用";
           _this.setMask(); //弹出遮罩
         } else {
-          _this.close = true
+          _this.close = true;
         }
       }
     },
@@ -386,19 +379,16 @@ export default {
       this.showProgress = true;
       this.close = false;
 
-      console.log("haahahaa");
       // this.close = true
       var _this = this;
       let bulid = {
         fee: _this.baseFee * 10000000
       };
       // _this.selectType = "Osch"
-      console.log(_this.selectType);
       //判断选择类型
       //当valid的值为1是,则进行转账交易
       if (_this.valid == 1) {
-        console.log(bulid);
-        if (_this.selectType == "Osch") {
+        if (_this.selectType == "OSCH") {
           var transaction = new StellarSdk.TransactionBuilder(
             _this.account,
             bulid
@@ -418,23 +408,20 @@ export default {
             .submitTransaction(transaction)
             .then(function(res) {
               _this.close = false;
-
-              _this.progress = 100;
+              _this.progress = 99;
               _this.showProgress = false;
-              console.log("发送交易成功");
               // alert("发送成功");
               _this.mask1Inner = "发送成功";
               _this.setMask(); //弹出遮罩
-              location.reload()
-              setTimeout(()=>{
-                location.reload()
-              },2000)
+              // location.reload();
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
             })
             .catch(err => {
-              console.log("fafa");
             });
         }
-        if (_this.selectType == "Time") {
+        if (_this.selectType == "TIME") {
           if (_this.trustTime == false) {
             // alert(
             //   "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
@@ -442,7 +429,7 @@ export default {
             _this.close = false;
             _this.showProgress = false;
             _this.mask1Inner =
-              "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试";
+              "你所转到的账户未信任“TIME币”，可通知其开启“TIME币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
             // location.reload();
           } else {
@@ -464,29 +451,26 @@ export default {
             _this.stellarServer
               .submitTransaction(transaction)
               .then(function(res) {
-                console.log("发送交易成功");
                 // alert("发送成功");
                 _this.showProgress = false;
                 _this.close = false;
                 _this.mask1Inner = "发送成功";
                 _this.setMask(); //弹出遮罩
-                   setTimeout(()=>{
-                location.reload()
-              },2000)
+                setTimeout(() => {
+                  location.reload();
+                }, 2000);
                 // location.reload();
               })
               .catch(err => {
-                console.log("faf");
               });
           }
         }
-        console.log("kkk");
-        if (_this.selectType == "Hour") {
+        if (_this.selectType == "HOUR") {
           if (_this.trustHour == false) {
             _this.close = false;
             _this.showProgress = false;
             _this.mask1Inner =
-              "你所转到的账户未信任“Hour币”，可通知其开启“Time币”信任，再次进行尝试";
+              "你所转到的账户未信任“HOUR币”，可通知其开启“HOUR币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
           } else {
             var transaction = new StellarSdk.TransactionBuilder(
@@ -507,28 +491,24 @@ export default {
             _this.stellarServer
               .submitTransaction(transaction)
               .then(function(res) {
-                console.log("发送交易成功");
                 // alert("发送成功");
                 _this.showProgress = false;
                 _this.close = false;
                 _this.mask1Inner = "发送成功";
                 _this.setMask(); //弹出遮罩
-                 setTimeout(()=>{
-                location.reload()
-              },2000)
+                setTimeout(() => {
+                  location.reload();
+                }, 2000);
                 // location.reload();
               });
           }
         }
         //如果valid 的值为2 则进行激活事件
       } else if (_this.valid == 2) {
-        console.log(_this.selectType);
         if (_this.selectType == "Osch") {
           this.stellarServer
             .loadAccount(_this.publicKey)
             .then(function(account) {
-              console.log(account);
-              console.log(_this.baseFee);
               var transaction = new StellarSdk.TransactionBuilder(account, {
                 fee: _this.baseFee * 10000000
               })
@@ -548,7 +528,9 @@ export default {
                   _this.close = false;
                   _this.mask1Inner = "目标地址初始化成功";
                   _this.setMask(); //弹出遮罩
-                  location.reload();
+                  setTimeout(() => {
+                    location.reload();
+                  }, 2000);
                 });
             });
         } else {
@@ -562,6 +544,8 @@ export default {
   created() {
     this.select = 1;
     this.value1 = 1;
+    let userPr= JSON.parse(sessionStorage.userPr)
+    this.secret = userPr.priv
   },
   mounted() {
     var _this = this;
@@ -569,7 +553,6 @@ export default {
     StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
     _this.stellarServer = new StellarSdk.Server(_this.horizonUrl);
     _this.server = new StellarSdk.Server(_this.horizonUrl);
-    console.log(_this.server);
 
     //init secret tool
     var strkey = StellarSdk.StrKey;
@@ -602,11 +585,9 @@ export default {
         }
       })
       .catch(err => {
-        console.log("hhahahahahahahahhaha");
       });
     let user = JSON.parse(sessionStorage.user);
     this.promiseFee = user.fee;
-    console.log(this.promiseFee);
     this.allCoin = this.oschNum;
   }
 };
@@ -616,6 +597,10 @@ export default {
   padding: 0 0 0 32px;
   min-height: 895px;
   background: rgba(23, 29, 38, 1);
+  background-image: url("../../../static/img/sk_bg@2x.png");
+  background-repeat: no-repeat;
+  background-size: 100% 50%;
+  background-position: 0% 100%;
 }
 .payHeader {
   padding-top: 24px;
@@ -629,9 +614,12 @@ export default {
   margin-right: 20px;
   display: inline-block;
 }
+.coin:hover {
+  cursor: pointer;
+}
 .coinImg {
   float: left;
-  margin: 17px 0 0 14px;
+  margin: 14px 0 0 14px;
   width: 46px;
   height: 46px;
   border: 3px solid rgba(104, 104, 104, 0.2);
@@ -645,7 +633,7 @@ export default {
 .coinInner {
   display: inline-block;
   padding-left: 15px;
-  line-height: 89px;
+  line-height: 80px;
   font-size: 17px;
 }
 .choseCoin {
@@ -712,28 +700,24 @@ export default {
 }
 .transactionMask {
   position: relative;
-  padding: 0.75rem;
-  margin: 180px auto;
+  padding: 15px;
+  margin: 160px auto;
   width: 444px;
-  height: 567px;
+  min-height: 515px;
   background: rgba(255, 255, 255, 1);
   border-radius: 4px;
 }
 .maskTitle {
-  margin: 0 0 1rem;
+  margin: 0 0 40px;
   text-align: center;
-  font-size: 1.9rem;
-  font-weight: 300;
-}
-.mBorder {
-  border-top: 1px solid #ccc;
+  font-size: 20px;
+  font-weight: 600;
 }
 .maskHeader {
   width: 100%;
   height: 115px;
 }
 .maskInner {
-  padding: 20px;
   height: 305px;
 }
 .maskFooter {
@@ -753,8 +737,9 @@ export default {
   margin-top: 31px;
 }
 .coin-right {
+  margin-bottom: 20px;
   height: 80px;
-  width: 280px;
+  width: 286px;
   margin-left: 38px;
   background: rgba(42, 53, 69, 1);
   border-radius: 6px;
@@ -777,14 +762,14 @@ export default {
   color: rgba(1, 227, 181, 1);
 }
 .title1 {
-  margin-top: 64px;
+  margin-top: 34px;
   font-size: 22px;
   font-family: MicrosoftYaHei-Bold;
   font-weight: bold;
   color: rgba(240, 240, 240, 1);
 }
 .title-left {
-  font-size: 16px;
+  font-size: 14px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: rgba(153, 153, 153, 1);
@@ -799,22 +784,23 @@ export default {
   padding-left: 8px;
   width: 690px;
   height: 40px;
-  border: 1px solid rgba(63, 79, 102, 1);
+  border: 1px solid #2f3d4d;
   background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 .writeInput:focus {
   color: #fff;
   border: 1px solid rgba(16, 199, 150, 1);
 }
 .write-title {
-  height: 56px;
-  line-height: 56px;
+  height: 52px;
+  line-height: 52px;
 }
 .ques {
   padding-top: 20px;
 }
 .sure {
+  font-size: 16px;
   color: aliceblue;
   border: none;
   margin-top: 48px;
@@ -826,6 +812,7 @@ export default {
   border-radius: 4px;
 }
 .sure1 {
+  font-size: 16px;
   color: aliceblue;
   margin-top: 48px;
   display: block;
@@ -835,6 +822,9 @@ export default {
 
   background: #10c796;
   border-radius: 4px;
+}
+.sure1:hover {
+  cursor: pointer;
 }
 .maskListLeft {
   display: inline-block;
@@ -847,7 +837,7 @@ export default {
 .maskListRight {
   margin-bottom: 16px;
   display: inline-block;
-  max-width: 394px;
+  max-width: 382px;
   word-wrap: break-word;
   word-break: normal;
   font-size: 14px;
@@ -862,6 +852,9 @@ export default {
   color: rgba(255, 255, 255, 1);
   background: rgba(179, 179, 179, 1);
 }
+.cancel:hover{
+  cursor: pointer;
+}
 .send {
   margin-left: 15px;
   font-size: 16px;
@@ -870,6 +863,9 @@ export default {
   color: rgba(255, 255, 255, 1);
   background: rgba(16, 199, 150, 1);
   border-radius: 4px;
+}
+.send:hover {
+  cursor: pointer;
 }
 .alertMask {
   position: absolute;
@@ -964,7 +960,7 @@ export default {
   background: rgba(255, 255, 255, 1);
   border-radius: 4px;
   width: 514px;
-  height: 219px;
+  height: 150px;
 }
 .progressInner span {
   display: inline-block;
@@ -981,9 +977,17 @@ export default {
   font-weight: 400;
   color: rgba(102, 102, 102, 1);
 }
-.backgroundImg {
-  position: absolute;
-  bottom: 0;
-  z-index: -1;
+
+.coinColor {
+  color: #fe8740;
+}
+.unit {
+  margin-left: 7px;
+  font-size: 15px;
+}
+.btnBox {
+  margin: 0 auto;
+  width: 400px;
+  
 }
 </style>  

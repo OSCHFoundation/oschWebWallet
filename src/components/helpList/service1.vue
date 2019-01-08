@@ -301,6 +301,9 @@
             <br>
             <p>上海瀚决网络科技有限公司</p>
             <br>
+            <div class="back">
+              <span class="backInner" @click="back">返回首页</span>
+            </div>
           </div>
         </div>
       </div>
@@ -321,7 +324,17 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    back(){
+      try{
+        let userPr = JSON.parse(sessionStorage.userPr);
+      this.$router.push("/inner/" + userPr.pub);
+      }catch(err){
+        this.$router.push("/created/")
+      }
+       
+    }
+  },
   created() {},
   mounted() {}
 };
@@ -333,7 +346,8 @@ export default {
   z-index: 1;
 }
 .service {
-  padding-left: 25%;
+  /* padding-left: 25%; */
+  margin: 0 auto;
   padding-top: 84px;
   width: 960px;
   z-index: 3;
@@ -357,17 +371,18 @@ export default {
 }
 .color {
   display: inline-block;
-  color: antiquewhite;
+  color: #01E3B5;
 
 }
 .service-inner {
+  margin-bottom: 30px;
   margin-top: 24px;
   padding: 30px 20px 52px;
   /* width: 960px; */
   /* height: 80px; */
   height: 100%;
   background: rgba(35, 42, 56, 1);
-  box-shadow: 0px 0px 4px 0px rgba(22, 27, 36, 1);
+  /* box-shadow: 0px 0px 4px 0px rgba(22, 27, 36, 1); */
 }
 .title {
   text-align: center;
@@ -403,5 +418,15 @@ strong {
 .yu {
   display: inline-block;
   padding-bottom: 0.5rem;
+}
+.back{
+  padding-right: 50px;
+}
+.backInner {
+  
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  text-align: right
 }
 </style>

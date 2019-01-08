@@ -50,12 +50,20 @@ export default {
   border-bottom: 1px solid #283242;
 }
 .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
-  border-color: #2c3e50;
+  border-color: #283242;
   color: rgba(204, 204, 204, 1);
   font-size: 14px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
-  background: #2c3e50;
+  background: #283242;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item:not(.is-disabled):hover {
+  /* color: #999999; */
+  color: rgba(204, 204, 204, 1);
+  background-color: #283242;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item {
+  transition: all .1s cubic-bezier(.645,.045,.355,1);
 }
 .el-tabs--border-card > .el-tabs__content {
   background: #171d26;
@@ -63,6 +71,10 @@ export default {
 .el-table th,
 .el-table tr {
   background: #171d26;
+}
+.el-button:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0)
 }
 
 .el-table .el-table__row--striped {
@@ -84,7 +96,7 @@ export default {
   font-size: 12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
-  color: rgba(202, 208, 219, 1);
+  color: #aeb3bd;
   text-decoration: underline;
 }
 .el-table td {
@@ -95,7 +107,7 @@ export default {
 }
 
 .el-table .success-row {
-  background: #1f2733 !important;
+  background: #1c232e !important;
 }
 .el-table th,
 .el-table tr {
@@ -109,6 +121,8 @@ export default {
 }
 .el-pagination__editor.el-input .el-input__inner {
   background: #171d26;
+  border: none;
+
 }
 .el-pagination .btn-next {
   background: #171d26;
@@ -119,8 +133,8 @@ export default {
 .el-pagination button:disabled {
   background: #171d26;
 }
-.el-pagination__editor.el-input .el-input__inner {
-  border: none;
+.el-pagination__editor.el-input .el-input__inner:focus {
+  color: #fff
 }
 .el-table::before {
   height: 0;
@@ -136,6 +150,7 @@ export default {
   font-size: 12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
+  /* color: #aeb3bd; */
   /* color:rgba(202,208,219,1); */
   text-align: center;
 }
@@ -158,6 +173,9 @@ export default {
 }
 .element .el-table td:nth-child(2) {
   color: rgba(1, 227, 181, 1) !important;
+}
+.el-table td:nth-child(1),.el-table td:nth-child(3) ,.el-table td:nth-child(4) ,.el-table td:nth-child(6),.el-table td:nth-child(7) ,.el-table td:nth-child(8){
+  color: #aeb3bd
 }
 .el-table thead {
   font-size: 12px;
@@ -184,6 +202,9 @@ export default {
   
   border: none
 }
+.el-table thead {
+  color: #888D94
+}
 .el-select-dropdown__item{
   background: #181e26
 }
@@ -195,6 +216,15 @@ export default {
   background: #283242
  }
  .el-select-dropdown__item.selected {
+   color: #e5e5e5
+ }
+ .el-pager li.active {
+   color: #e5e5e5
+ }
+ .el-pager li:hover  {
+   color: #e5e5e5
+ }
+ .el-pagination button:hover {
    color: #e5e5e5
  }
 </style>

@@ -44,10 +44,10 @@ export default {
   z-index: 9;
   width: 100%;
   height: 119px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
-  background:#1A202B
+  background:#141921
 }
 .footerList {
   padding-top: 28px;
@@ -55,11 +55,11 @@ export default {
 }
 .list {
   display: block;
-  width: 600px;
+  width: 528px;
   margin: 0 auto ;
 }
 .list li {
-  margin-right: 37px;
+  margin: 0 18px;
   color: #999999;
   display: inline-block;
   font-size: 16px;
@@ -71,9 +71,12 @@ export default {
   color: #808080;
 }
 .foot {
-  font-size:16px;
+  font-size:14px;
 font-family:MicrosoftYaHei;
 font-weight:400;
 color:rgba(153,153,153,1);
+}
+.foot:hover {
+  color: #e5e5e5
 }
 </style>

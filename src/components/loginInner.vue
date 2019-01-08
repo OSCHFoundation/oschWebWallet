@@ -62,8 +62,8 @@ import wallet1 from '../../static/img/index_message@2x.png'
 import wallet2 from '../../static/img/index_message_default@2x.png'
 import asset1 from '../../static/img/index_pressed@2x.png'
 import asset2 from '../../static/img/index_zc_default@2x.png'
-import payment1 from '../../static/img/index_zz_@2x.png'
-import payment2 from '../../static/img/index_zz_default@2x.png'
+import payment1 from '../../static/img/money.png'
+import payment2 from '../../static/img/money1.png'
 import code1 from '../../static/img/index_code_pressed@2x.png'
 import code2 from '../../static/img/index_code_default@2x.png'
 
@@ -107,13 +107,10 @@ export default {
     handleClick(event) {
       if (this.back1==1) {
         this.come = 1;
-        console.log(this.show);
       } else if (this.back1==2) {
         this.come = 2;
-        console.log(this.show);
       } else if (this.back1==3) {
         this.come = 3;
-        console.log(this.show);
       } else if (this.back1==4) {
         this.come = 4;
       }   
@@ -132,7 +129,7 @@ export default {
   margin: 0 auto;
 }
 .main {
-  padding-bottom: 32px;
+  padding-bottom: 4px;
   min-height: 880px;
   padding-top: 72px;
   width: 100%;
@@ -149,7 +146,7 @@ export default {
 }
 .main-right {
   margin-left: 176px;
-  /* margin-bottom: 250px; */
+  margin-bottom: 10px;
 }
 .img {
   padding-left: 60px;
@@ -195,6 +192,7 @@ export default {
 }
 .opList li:hover {
   background-color: #283242;
+  cursor:pointer
 }
 .li1 {
   padding-top: 15px;
@@ -203,6 +201,7 @@ export default {
 .li1 img {
   float: left;
   overflow: hidden;
+  margin-top: -1px
 }
 .li1 span {
   margin-left: 20px;

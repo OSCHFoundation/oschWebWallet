@@ -1,19 +1,20 @@
 <template>
-  <div  v-bind:class="{header:backgound1==1,header1:backgound1 ==2}">
+  <div v-bind:class="{header:backgound1==1,header1:backgound1 ==2}">
     <div class="mask" v-show="number == 0">
       <div class="maskBackground">
-        <div class="close" @click="close">X</div>
+        <div class="close" @click="close">
+          <img src="../../../static/img/cancel@2x.png" width="16" height="16" alt>
+        </div>
         <p class="code-title">下载App</p>
         <div class="code" id="qrcode3"></div>
       </div>
     </div>
-    <img class="logo" src="../../../static/img/logo.png" width="180" height="40">
+    <img class="logo" src="../../../static/img/logo.png" width="180" height="40" @click="back">
     <div class="headerList">
       <ul>
-        <li v-bind:class="{butn:clas==4}" @click="come" v-show="login ==2">
+        <!-- <li v-bind:class="{butn:clas==4}" @click="come" v-show="login ==2">
           <span :class="{font:true,co:clas == 4}">首页</span>
-        </li>
-        <!-- <li v-bind:class="{butn:clas==3}" @click="numb(3)"> -->
+        </li> -->
         <li @click="numb(3)">
           <span @click="download">下载App</span>
         </li>
@@ -24,10 +25,18 @@
         <li v-bind:class="{butn:clas==2}" @click="numb(2)" v-if="this.login == 3">
           <router-link to="/created" :class="{font:true,co:clas == 2}">创建/登录</router-link>
         </li>
-        <li v-bind:class="{butn:li1==2}" @click="out" v-if="login == 2">
-          <router-link to="/" :class="{font:true}">退出</router-link>
-          <!-- <span  :class="{font:true}" >退出</span> -->
+        <li v-bind:class="{butn:li1==2,imghover:true}" v-if="login == 2" >
+          <!-- <router-link to="/" :class="{font:true}">退出</router-link> -->
+          <img src="../../../static/img/index_tx@2x.png" width="32" height="32" class="Personal">
+           <ol class="PersonalCenter">
+          <li @click="come">我的钱包</li>
+          <li>
+          <!-- <router-link to="/" @click="out" class="outin">退出</router-link> -->
+          <span to="/" @click="out" class="outin">退出</span>
+          </li>
+        </ol>
         </li>
+       
       </ul>
     </div>
   </div>
@@ -40,7 +49,7 @@ export default {
   props: {},
   data() {
     return {
-      backgound1:1,
+      backgound1: 1,
       number: 2,
       li1: 0,
       login: 1,
@@ -54,22 +63,36 @@ export default {
       let qrcode3 = new QRCode("qrcode3", {
         width: 200,
         height: 200,
-        text: "https://oschpublicchain.oss-cn-shanghai.aliyuncs.com/OpenWalletAndriod",
+        text:
+          "https://oschpublicchain.oss-cn-shanghai.aliyuncs.com/OpenWalletAndriod",
         colorDark: "#000",
         colorLiht: "#fff"
       });
+    },
+    back() {
+      try {
+        let userPr = JSON.parse(sessionStorage.userPr);
+        this.$router.push("/inner/" + userPr.pub);
+      } catch (err) {
+        this.$router.push("/created/");
+      }
     },
     getHelp() {
       this.li = 1;
     },
     come() {
-      let user = JSON.parse(sessionStorage.user);
-      this.$router.push("/inner/" + user.priv);
-      this.clas = 4;
+      try {
+        let userPr = JSON.parse(sessionStorage.userPr);
+        this.$router.push("/inner/" + userPr.pub);
+      } catch (err) {
+        this.$router.push("/created/");
+      }
+      // this.clas = 4;
     },
     out() {
       sessionStorage.clear();
       this.li1 = 2;
+      this.$router.push("/");
     },
     numb(num) {
       this.li = num;
@@ -93,13 +116,15 @@ export default {
     if (this.path == "/help") {
       this.li1 = 1;
       this.clas = 1;
-      const f = () => JSON.parse(sessionStorage.user);
-      Promise.resolve().then(f).catch((err)=>{
-        this.li1  = 1
-        this.login = 3
-        this.clas = 1
-      });
-      let user = JSON.parse(sessionStorage.user);
+      const f = () => JSON.parse(sessionStorage.userPr);
+      Promise.resolve()
+        .then(f)
+        .catch(err => {
+          this.li1 = 1;
+          this.login = 3;
+          this.clas = 1;
+        });
+      let user = JSON.parse(sessionStorage.userPr);
       if (user == "") {
         this.clas = 2;
         this.li1 = 2;
@@ -109,12 +134,15 @@ export default {
       }
     } else if (this.path == "/created") {
       this.clas = 2;
-      this.login = 3
-      this.backgound1 = 1
+      this.login = 3;
+      this.backgound1 = 1;
     } else {
       this.login = 2;
       this.clas = 4;
       this.backgound1 = 2;
+    }
+    if (this.path == "/service") {
+      this.clas = 5;
     }
   }
 };
@@ -147,7 +175,7 @@ export default {
   top: 9px;
 }
 .headerList {
-  margin-right: 68px;
+  margin-right: 32px;
   text-align: center;
   float: right;
   overflow: hidden;
@@ -155,9 +183,12 @@ export default {
 .headerList ul li {
   height: 55px;
   line-height: 55px;
-  margin: 0 16px;
+  margin: 0 22px;
   padding: 0 4px 0 4px;
   display: inline-block;
+}
+.headerList ul li:hover {
+  cursor: pointer;
 }
 .headerList ul li span {
   font-size: 16px;
@@ -188,19 +219,20 @@ export default {
 }
 .close {
   position: absolute;
-  padding: 2px;
+  padding: 4px;
   top: -20px;
   left: 60px;
-  color: #ffffff;
-  cursor:default;
   height: 20px;
-  line-height: 20px;
   width: 20px;
   margin-left: 179px;
   border-radius: 50%;
-  font-size: 13px;
-  background: #979191;
-  border: 1px solid darkgray;
+  background: #585858;
+}
+.close:hover {
+  cursor: pointer;
+}
+.close img {
+  margin-top: 1px;
 }
 .maskBackground {
   padding: 14px;
@@ -217,9 +249,49 @@ export default {
   padding-left: 70px;
   float: left;
   margin-top: -70px;
-  font-size: 18px;
+  font-size: 20px;
+  font-family: MicrosoftYaHei;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+.logo:hover {
+  cursor: pointer;
+}
+.Personal {
+  padding-top: 15px;
+}
+.Personal:hover ol {
+  display: block;
+}
+.imghover:hover ol{
+  display: block
+}
+.PersonalCenter {
+  display: none;
+  position: absolute;
+  right: 5px;
+  box-shadow:0px 0px 4px 0px rgba(22,22,23,1);
+  
+}
+.headerList .PersonalCenter li {
+  margin: 0;
+  display: block;
+  width: 118px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
-  color: rgba(255, 255, 255, 1);
+  color: rgba(230, 230, 230, 1);
+  background: #141921
+}
+.headerList .PersonalCenter li:hover {
+  background: #283242
+}
+.outin {
+  font-size:16px;
+font-family:MicrosoftYaHei;
+font-weight:400;
+color:rgba(230,230,230,1);
 }
 </style>

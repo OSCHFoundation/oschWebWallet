@@ -20,15 +20,23 @@
       <div class="my">
         <span class="small">我的地址：</span>
         <span class="big" id="big">{{publicKey}}</span>
-        <img
+        <!-- <img
           class="copy"
           src="../../../static/img/index_code@2x.png"
           width="22"
           height="22"
           title="二维码"
           @click="showCode"
-        >
+        >-->
         <img
+          class="copy"
+          src="../../../static/img/biger.png"
+          width="20"
+          height="20"
+          title="查看二维码"
+          @click="showCode"
+        >
+        <!-- <img
           class="code"
           src="../../../static/img/biger.png"
           width="18"
@@ -36,22 +44,22 @@
           @click="copy('.code')"
           data-clipboard-target="#big"
           title="复制地址"
-        >
+        >-->
       </div>
 
       <div class="state" v-show="validType">
         <span class="small">当前状态：</span>
-        <span class="big">已激活</span>
+        <span class="big bigColor">已激活</span>
       </div>
       <div class="state" v-show="!validType">
         <span class="small">当前状态：</span>
-        <span class="big">未激活</span>
-        
+        <span class="big bigColor">未激活</span>
+
         <!-- <button class="activation">点击激活</button> -->
       </div>
       <div class="promise">
         <span class="small">保证金：</span>
-        <span class="big">{{promiseFee}} Osch</span>
+        <span class="big bigColor">{{promiseFee}} OSCH</span>
         
         <img class="question" src="../../../static/img/u897.png" alt>
       </div>
@@ -61,7 +69,7 @@
             <div class="bao">
               <img src="../../../static/img/u15.png" width="40" height="40">
             </div>
-            <strong clas>Osch</strong>
+            <strong clas>OSCH</strong>
           </div>
           <div class="coinInner">
             <p class="banlance">{{oschNum | numFilter}}</p>
@@ -73,7 +81,7 @@
             <div class="bao">
               <img src="../../../static/img/u269.png" width="40" height="40">
             </div>
-            <strong>Time</strong>
+            <strong>TIME</strong>
           </div>
           <div class="coinInner">
             <p class="banlance">{{timeNum | numFilter}}</p>
@@ -85,7 +93,7 @@
             <div class="bao">
               <img src="../../../static/img/u259.png" width="40" height="40">
             </div>
-            <strong>Hour</strong>
+            <strong>HOUR</strong>
           </div>
           <div class="coinInner">
             <p class="banlance">{{hourNum | numFilter}}</p>
@@ -105,14 +113,15 @@
               style="width: 100%"
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
-              <el-table-column prop="num" label="交易金额" width="140" id="color1" class="money">
+              <el-table-column label="交易金额" width="140" id="color1" class="money">
                 <template slot-scope="scope">
-                  <span :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
+                  <span
+                    :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
                   >{{scope.row.num}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="from" label="来源账户" width="296" class="from"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
+              <el-table-column prop="from" label="发款方" width="296" class="from"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -121,8 +130,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收入交易" name="first">
@@ -133,8 +142,8 @@
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
               <el-table-column prop="num" label="交易金额" width="140" class="color1"></el-table-column>
-              <el-table-column prop="from" label="来源账户" width="296"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
+              <el-table-column prop="from" label width="296"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -143,8 +152,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="支出交易">
@@ -155,12 +164,12 @@
             >
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
               <el-table-column label="交易金额" width="140">
-                 <template slot-scope="scope">
+                <template slot-scope="scope">
                   <span style="color:#F55436">{{scope.row.num}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="from" label="来源账户" width="296"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="296"></el-table-column>
+              <el-table-column prop="from" label="发款方" width="296"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="296"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -169,8 +178,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-pagination
@@ -197,7 +206,7 @@ export default {
   data() {
     return {
       server: "", //Stellar
-      sercet: this.$route.params.id, //私钥
+      sercet: "", //私钥
       publicKey: "XXX",
       oschNum: "0", //Osch余额
       timeNum: "0",
@@ -248,20 +257,17 @@ export default {
       this.maskCode = 0;
     },
     copy(weilei) {
-      console.log("hha");
       let clipboard = new Clipboard(weilei);
       clipboard.on("success", e => {
-        console.log("1111111");
         clipboard.destroy();
       });
       clipboard.on("error", e => {
-        console.log("2222");
         clipboard.destroy();
       });
       this.setMask();
     },
     showCode() {
-      this.maskCode = 2
+      this.maskCode = 2;
     },
     setMask() {
       this.mask1Tips = true;
@@ -293,7 +299,6 @@ export default {
           // console.log(res.data.result.price);
         })
         .catch(err => {
-          console.log(err);
         });
       // console.log("haha");
     },
@@ -309,10 +314,8 @@ export default {
       if (event.target.innerHTML == "全部交易记录") {
         this.tab = this.wArrPage.length;
       } else if (event.target.innerHTML == "收入交易") {
-      this.currpage = 1;
         this.tab = this.input.length;
       } else if (event.target.innerHTML == "支出交易") {
-      this.currpage = 1;
         this.tab = this.output.length;
       }
     },
@@ -327,8 +330,6 @@ export default {
     // 循环遍历数组，并抽取6个参数，然后放入wArrPage
     render(page) {
       let num = "5120.651605150";
-      console.log(parseFloat(num).toFixed(2));
-      console.log(page);
       for (let page1 of page) {
         let ob = {
           time: page1.created_at, //交易时间
@@ -342,7 +343,6 @@ export default {
           memo: "",
           from: page1.from
         };
-        console.log(ob.memo);
 
         //请求到transaction中的memo
 
@@ -356,11 +356,11 @@ export default {
         //   });
 
         if (ob.asset == "native") {
-          ob.asset = "Osch";
+          ob.asset = "OSCH";
         } else if (page1.asset_code == "hour") {
-          ob.asset = "Hour";
+          ob.asset = "HOUR";
         } else if (page1.asset_code == "time") {
-          ob.asset = "Time";
+          ob.asset = "TIME";
         }
         if (page1.type == "payment") {
           if (page1.from == this.publicKey) {
@@ -373,7 +373,7 @@ export default {
           (ob.num = parseFloat(page1.starting_balance).toFixed(2)), //交易数量
             // (ob.memo = '无'),
             (ob.to = page1.funder), //目标地址
-            (ob.asset = "Osch"); //交易币种
+            (ob.asset = "OSCH"); //交易币种
           ob.from = page1.account;
           if (page1.funder == this.publicKey) {
             ob.num = "-" + parseFloat(page1.starting_balance).toFixed(2);
@@ -408,11 +408,11 @@ export default {
       }
       //拿到数据列表然后筛选出翻入各自币种之中
       for (var osc of this.wArrPage) {
-        if (osc.asset == "Osch") {
+        if (osc.asset == "OSCH") {
           this.osch.push(osc);
-        } else if (osc.asset == "Time") {
+        } else if (osc.asset == "TIME") {
           this.time.push(osc);
-        } else if (osc.asset == "Hour") {
+        } else if (osc.asset == "HOUR") {
           this.hour.push(osc);
         }
       }
@@ -457,7 +457,6 @@ export default {
           _this.promiseFee = _this.account.balances.length * 10; //最低保证金
         })
         .catch(err => {
-          console.log(err);
           _this.validType = false;
         });
       // 获取历史交易
@@ -467,11 +466,9 @@ export default {
         .limit(this.limit)
         .call()
         .then(function(page) {
-          console.log(page);
           _this.wPage = page;
           //调用render方法wPage传入进去
           _this.render(_this.wPage.records);
-          console.log(_this.wArrPage);
         });
       _this.getPage();
       //保存用户的私钥
@@ -499,16 +496,17 @@ export default {
       sessionStorage.Hour = hour1;
     }
   },
-  created() {},
+  created() {
+    let user = JSON.parse(sessionStorage.userPr);
+    this.sercet = user.priv
+  },
+    
   mounted() {
     this.init();
-    console.log(this.hour);
-    console.log(this.time);
     this.getPrice();
     this.qrcode6();
     setInterval(() => {
       this.getPrice();
-      // console.log(this.getPrice());
     }, 15000);
   }
 };
@@ -551,6 +549,9 @@ export default {
   /* height: 20px; */
   vertical-align: middle;
 }
+.copy:hover{
+  cursor: pointer;
+}
 .code {
   /* padding-top: 4px; */
   margin-top: 4px;
@@ -565,8 +566,8 @@ export default {
 .coin {
   margin-right: 20px;
   display: inline-block;
-  width: 330px;
-  height: 100px;
+  width: 332px;
+  height: 94px;
   background-image: url("../../../static/img/coin.png");
   background-size: 100% 100%;
 
@@ -575,7 +576,7 @@ export default {
 .coinImg {
   float: left;
   padding-left: 19px;
-  margin-top: 29px;
+  margin-top: 20px;
   overflow: hidden;
 }
 .coinImg strong {
@@ -594,9 +595,10 @@ export default {
   float: right;
   margin-right: 16px;
   padding-left: 15px;
-  padding-top: 31px;
+  padding-top: 26px;
   height: 100%;
   font-size: 17px;
+  text-align: right;
 }
 .banlance {
   display: inline-block;
@@ -615,6 +617,7 @@ export default {
   margin-bottom: 30px;
 }
 .record {
+  margin-bottom: 16px;
   padding-left: 20px;
   padding-bottom: 20px;
 }
@@ -688,6 +691,7 @@ export default {
   overflow: hidden;
   margin: 16px 12px 16px 28px;
 }
+
 .mask1Inner {
   height: 60px;
   line-height: 60px;
@@ -697,29 +701,33 @@ export default {
   color: rgba(240, 240, 240, 1);
 }
 .mask {
-   position: fixed;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   z-index: 99999;
+  background: rgba(0.5, 0.5, 0.5, 0.5);
 }
 .close0 {
   position: absolute;
-  padding: 2px;
+  /* padding: 2px; */
   top: -20px;
   left: 60px;
   color: #ffffff;
   cursor: default;
   text-align: center;
-  height: 20px;
-  line-height: 20px;
-  width: 20px;
+  height: 32px;
+  line-height: 32px;
+  width: 32px;
   margin-left: 179px;
   border-radius: 50%;
   font-size: 13px;
-  background: #979191;
-  border: 1px solid darkgray;
+  background: #585858;
+  /* border: 1px solid darkgray; */
+}
+.close0:hover{
+  cursor: pointer;
 }
 .maskBackground {
   padding: 14px;
@@ -736,10 +744,10 @@ export default {
   padding-left: 65px;
   float: left;
   margin-top: -55px;
-  font-size: 18px;
+  font-size: 20px;
   font-family: MicrosoftYaHei;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 1);
+  font-weight: 600;
+  color: #e5e5e5;
 }
 .code1 {
   z-index: 9999;
@@ -747,6 +755,9 @@ export default {
 }
 .transactionMoney1 {
   color: #f55436;
+}
+.bigColor {
+  color: #ccc;
 }
 /* .element .el-table td:nth-child(1),
 td:nth-child(3),
@@ -759,7 +770,7 @@ td:nth-child(8) {
  .element .el-table td:nth-child(2) {
    color: rgba(1,227,181,1) !important
  } */
- /* .el-table .cell {
+/* .el-table .cell {
   font-size: 12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;

@@ -27,18 +27,18 @@
           <div class="coinInner">
             <h2 class="title">Hour</h2>
           </div>
-          <button class="btn" type="primary" @click="changeTrust(isHour)">信任Hour</button>
+          <button class="btn" type="primary" @click="changeTrust(isHour)">信任HOUR</button>
         </div>
         <div class="addTime" v-show="!timeNum">
           <div class="coinImg">
             <img src="../../../static/img/u269.png" width="44" height="44">
           </div>
           <div class="coinInner">
-            <h2 class="title">Time</h2>
+            <h2 class="title">TIME</h2>
           </div>
-          <button class="btn" type="primary" @click="changeTrust(isTime)">信任Time</button>
+          <button class="btn" type="primary" @click="changeTrust(isTime)">信任TIME</button>
         </div>
-        <hr>
+        <!-- <hr> -->
         <!-- <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button> -->
       </div>
     </div>
@@ -48,8 +48,7 @@
           <img src="../../../static/img/u15.png" width="32" height="32">
         </div>
         <div class="coinInner">
-          <span>Osch</span>
-          <!-- <p>余额: {{oschNum | numFilter}} Osch</p> -->
+          <span>OSCH</span>
         </div>
       </div>
       <div v-bind:class="{coin:true,back:back1 == 2}" v-show="timeNum" @click="getTime($event)">
@@ -57,8 +56,7 @@
           <img src="../../../static/img/u269.png" width="32" height="32">
         </div>
         <div class="coinInner">
-          <span>Time</span>
-          <!-- <p>余额: {{timeNum | numFilter}} Time</p> -->
+          <span>TIME</span>
         </div>
       </div>
       <div v-bind:class="{coin:true,back:back1 == 3}" v-show="hourNum" @click="getHour($event)">
@@ -66,13 +64,12 @@
           <img src="../../../static/img/u259.png" width="32" height="32">
         </div>
         <div class="coinInner">
-          <span>Hour</span>
-          <!-- <p>余额: {{hourNum | numFilter}} Hour</p> -->
+          <span>HOUR</span>
         </div>
       </div>
       <div class="addCoin" @click="openMask" v-show="allCoin">
         <!-- <div class="add">+</div> -->
-        <img src="../../../static/img/asd.png" width="15" height="15" class="add">
+        <img src="../../../static/img/asd.png" width="18" height="18" class="add">
         
         <span>添加资产</span>
       </div>
@@ -86,7 +83,7 @@
         <p class="mainFont">{{number | numFilter}}</p>
         <span class="word">{{unit}}</span>
         <div class="exchange">
-          <span class="rmb">RMB</span>
+          <span class="rmb">CNY</span>
           <span class="cash">≈ ￥ 0.01</span>
           <button v-show="showBtn" @click="cancelTrust" class="close">取消信任</button>
         </div>
@@ -107,8 +104,8 @@
                   >{{scope.row.num}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column prop="from" label="发款方" width="286"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -117,8 +114,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="收入交易" name="first">
@@ -133,8 +130,8 @@
                   <span>{{scope.row.num}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column prop="from" label="发款方" width="286"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -143,8 +140,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="支出交易">
@@ -159,8 +156,8 @@
                   <span style="color:#F55436">{{scope.row.num}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="from" label="来源账户" width="286"></el-table-column>
-              <el-table-column prop="to" label="目标账户" width="286"></el-table-column>
+              <el-table-column prop="from" label="发款方" width="286"></el-table-column>
+              <el-table-column prop="to" label="收款方" width="286"></el-table-column>
               <el-table-column label="交易号" width="388">
                 <template slot-scope="scope">
                   <el-button-group>
@@ -169,8 +166,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="activeType" label="交易类型" width="130"></el-table-column>
-              <el-table-column prop="asset" label="交易代币" width="100"></el-table-column>
-              <el-table-column prop="memo" label="备忘录"></el-table-column>
+              <el-table-column prop="asset" label="资产" width="100"></el-table-column>
+              <el-table-column prop="memo" label="备注"></el-table-column>
             </el-table>
           </el-tab-pane>
           <el-pagination
@@ -248,34 +245,31 @@ export default {
       return "";
     },
     getOsch(event) {
-      console.log(event.currentTarget);
       this.coin = this.osch;
       this.getPage(this.osch);
       this.tab = this.osch.length;
       this.number = this.oschNum;
-      this.unit = "Osch";
+      this.unit = "OSCH";
       this.oscImg = oschCoin;
       this.showBtn = false;
       this.back1 = 1;
     },
     getTime(event) {
-      console.log(event.currentTarget);
       this.coin = this.time;
       this.getPage(this.time);
       this.tab = this.time.length;
       this.number = this.timeNum;
-      this.unit = "Time";
+      this.unit = "TIME";
       this.oscImg = timeCoin;
       this.showBtn = true;
       this.back1 = 2;
     },
     getHour(event) {
-      console.log(event.currentTarget);
       this.coin = this.hour;
       this.getPage(this.hour);
       this.tab = this.hour.length;
       this.number = this.hourNum;
-      this.unit = "Hour";
+      this.unit = "HOUR";
       this.oscImg = hourCoin;
       this.showBtn = true;
       this.back1 = 3;
@@ -319,7 +313,6 @@ export default {
         "http://coast.oschain.io/transactions/" +
         event.target.innerHTML +
         "/operations";
-      console.log(event.target.innerHTML);
     },
     init() {
       let account1 = JSON.parse(sessionStorage.ueserInfo);
@@ -456,12 +449,10 @@ export default {
     for (var hour1 of hour.hour) {
       this.hour.push(hour1);
     }
-    console.log(this.hour);
     let time = JSON.parse(sessionStorage.Time);
     for (var time1 of time.time) {
       this.time.push(time1);
     }
-    console.log(this.time);
     let osch = JSON.parse(sessionStorage.Osch);
     for (var osch1 of osch.osch) {
       this.osch.push(osch1);
@@ -480,7 +471,6 @@ export default {
     _this.server = new StellarSdk.Server(_this.horizonUrl);
     _this.server.loadAccount(this.publick).then(function(account) {
       _this.account = account;
-      console.log(_this.account);
     });
   },
   mounted() {
@@ -493,8 +483,6 @@ export default {
       "hour",
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
-    console.log(this.coinPrice);
-    console.log(this.coin);
     for (var i of this.coin) {
       let semb = i.num.slice(0, 1);
       if (semb == "+") {
@@ -516,7 +504,7 @@ export default {
 }
 .coinList {
   float: left;
-  width: 145px;
+  width: 130px;
   /* height: 100%; */
   background: rgb(151, 182, 151);
   overflow: hidden;
@@ -524,19 +512,20 @@ export default {
 }
 
 .coin {
-  border-bottom: 1px solid #283242;
+  /* border-bottom: 1px solid #283242; */
 }
 .coin:hover {
+  cursor: pointer;
   background: #283242;
 }
 .coinImg {
   float: left;
   margin-top: 10px;
-  padding: 0 8px;
+  padding: 0 16px;
   overflow: hidden;
 }
 hr {
-  margin-top: 24px;
+  margin-top: 16px;
   border: 1px solid rgba(240, 240, 240, 1);
 }
 .coinInner {
@@ -570,13 +559,13 @@ hr {
 }
 .transactionMask {
   position: relative;
-  padding: 0.75rem;
+  padding: 20px;
   margin: 220px auto;
-  width: 360px;
+  width: 320px;
   /* height: 320px; */
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  /* border: 1px solid #ccc; */
+  border-radius: 4px;
 }
 .addTime {
   /* height: 120px; */
@@ -584,12 +573,13 @@ hr {
   /* vertical-align: middle; */
 }
 .title {
+  margin-left: 8px;
   font-size: 16px;
   font-family: MicrosoftYaHei-Bold;
   font-weight: bold;
   color: rgba(51, 51, 51, 1);
   height: 65px;
-  /* line-height: 65px; */
+  line-height: 65px;
 }
 .btn {
   float: right;
@@ -604,6 +594,10 @@ hr {
   color: rgba(255, 255, 255, 1);
   border: none;
 }
+.btn:hover{
+  cursor: pointer;
+  background:#15a376
+}
 .maskBtn {
   display: block;
   margin: 0 auto;
@@ -613,7 +607,7 @@ hr {
   background: rgb(163, 221, 221);
 }
 .main-right {
-  margin-left: 145px;
+  margin-left: 130px;
   padding-left: 33px;
   padding-top: 24px;
   min-height: 871px;
@@ -660,7 +654,7 @@ hr {
   color: rgba(153, 153, 153, 1);
 }
 .cash {
-  padding-left: 15px;
+  padding-left: 6px;
   font-size: 16px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
@@ -695,7 +689,7 @@ hr {
   color: rgba(164, 170, 179, 1);
 }
 .add {
-  margin: 22px 7px 10px 27px;
+  margin: 22px 7px 10px 17px;
 }
 .back {
   background: rgba(28, 35, 46, 1);
@@ -709,11 +703,11 @@ hr {
 }
 .closeMask {
   float: right;
-  margin-top: -35px;
-  margin-right: -50px;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
+  margin-top: -38px;
+  margin-right: -68px;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
   color: aliceblue;
   font-size: 18px;
   background: #585858;
