@@ -120,7 +120,14 @@ export default {
       this.price.toFixed(2);
     }
   },
-  created() {},
+  created() {
+    try {
+        let userPr = JSON.parse(sessionStorage.userPr);
+        this.$router.push("/inner/" + userPr.pub);
+      } catch (err) {
+        this.$router.push("/created/");
+      }
+  },
   mounted() {}
 };
 </script>

@@ -588,7 +588,7 @@ hr {
   height: 28px;
   background: rgba(16, 199, 150, 1);
   border-radius: 14px;
-  font-size: 14px;
+  font-size: 12px;
   font-family: MicrosoftYaHei;
   font-weight: 400;
   color: rgba(255, 255, 255, 1);
@@ -703,8 +703,8 @@ hr {
 }
 .closeMask {
   float: right;
-  margin-top: -38px;
-  margin-right: -68px;
+  margin-top: -50px;
+  margin-right: -60px;
   width: 32px;
   height: 32px;
   line-height: 32px;

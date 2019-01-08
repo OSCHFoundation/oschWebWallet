@@ -80,13 +80,14 @@
             <span class="address">私钥:</span>
             <div class="shuru">
               <input :type="arrt" class="pube" id="siyao" v-model="secret1">
+              <!-- <input type="text" class="pube" id="siyao1" v-model="secret1" v-if="false"> -->
               <img
                 src="../../static/img/copy@2x.png"
                 width="22"
                 height="22"
                 class="keyImg1"
                 @click="copy('.keyImg1')"
-                data-clipboard-target="#siyao"
+                v-bind:data-clipboard-text="secret1"
                 title="复制"
               >
               <img :src="dianji" width="22" height="22" alt class="eye" @click="show">
@@ -548,7 +549,7 @@ export default {
 }
 .eye {
   position: absolute;
-  margin-left: -35px;
+  margin-left: -25px;
   margin-top: 8px;
 }
 .eye:hover {
