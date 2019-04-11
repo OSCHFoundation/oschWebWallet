@@ -8,7 +8,7 @@ import Loging from '../components/Create/login.vue'
 import TransactionLogin from '../components/Transaction/Tlogin.vue'
 import loginInner from '../components/loginInner.vue'
 import Help from '../components/help.vue'
-import Created from '../components/created.vue'
+import Created from '../components/Created'
 import Service from '../components/helpList/service1.vue'
 
 Vue.use(Router)
