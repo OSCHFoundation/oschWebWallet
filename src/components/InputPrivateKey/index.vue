@@ -3,42 +3,56 @@
     <input
       :type="inputType"
       class="pube"
+      :style = "{ width: inputWidth+'px' }"
+      
       id="siyao"
       @input="updateValue($event.target.value)"
       :placeholder="placeholder"
     >
     <img
-      v-if="false"
+      v-if="copy"
       src="@/assets/img/copy@2x.png"
-      class="keyImg1"
+      class="copy"
       @click="copy('.keyImg1')"
       v-bind:data-clipboard-text="secret1"
       title="复制"
     >
-    <img :src="eye" alt class="keyImg" @click="show">
+    <img v-if="eye" :src="eyeState" alt class="keyImg" @click="show">
   </div>
 </template>
 <script>
 import showIcon from "./img/showIcon.png";
 import hiddenIcon from "./img/hiddenIcon.png";
 export default {
-  props: { placeholder: String, value: String },
+  props: { placeholder: String, value: String, copy: Boolean, eye: Boolean },
   data() {
     return {
-      eye: hiddenIcon,
-      inputType: "password"
+      eyeState: hiddenIcon,
+      inputType: "password",
+      secret1: "",
+      inputWidth: 300
     };
+  },
+  mounted: function () {
+    const { copy, eye } = this; 
+    if(copy && eye){
+      this.inputWidth = 600;
+    }else if(copy && eye){
+      this.inputWidth = 620;
+    }else{
+     this.inputWidth = 668;
+    }
   },
   methods: {
     updateValue(value) {
       this.$emit("input", value);
     },
     show() {
-      if (this.eye == showIcon) {
-        this.eye = hiddenIcon;
+      if (this.eyeState == showIcon) {
+        this.eyeState = hiddenIcon;
         this.inputType = "password";
       } else {
-        this.eye = showIcon;
+        this.eyeState = showIcon;
         this.inputType = "text";
       }
     }
@@ -54,10 +68,8 @@ export default {
   .pube {
     margin: 0;
     padding-left: 10px;
-    width: 623px;
+    width: 593px;
     height: 36px;
-    /* background: #2c3e50;
-                */
     background: #1e2430;
     border: none;
     font-size: 16px;
@@ -68,13 +80,13 @@ export default {
   .pube:focus {
     border: 1px solid #10c796;
   }
-  .keyImg {
+  .keyImg,
+  .copy {
     width: 22px;
     height: 22px;
     padding-top: 9px;
     padding-right: 5px;
     float: right;
-    overflow: hidden;
   }
   .keyImg:hover {
     cursor: pointer;

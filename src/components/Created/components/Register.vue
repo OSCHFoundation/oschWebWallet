@@ -8,7 +8,7 @@
     </div>
     <div class="key">
       <span class="address">公钥:</span>
-      <InputPrivateKey placeholder="输入钱包公钥匙" />
+      <InputPrivateKey placeholder="输入钱包公钥匙" eye copy />
       <!-- <div class="shuru">
         <input type="text" class="pube" v-model="publicKey" id="gongyao" title="显示/隐藏">
         <img
@@ -74,8 +74,14 @@ export default {
     return {
       inputType: "text",
       publicKey: "",
-      secret1: ""
+      secret1: "",
+      number: 0
     };
+  },
+  methods: {
+    show1: function(){
+      
+    }
   }
 };
 </script>
