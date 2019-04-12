@@ -5,11 +5,13 @@ import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
-import axios from 'axios'
+import axios from 'axios';
+import VueClipboard from 'vue-clipboard2';
 Vue.use(ElementUI)
+Vue.use(VueClipboard)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
-Vue.prototype.horizonUrl = 'http://coast.oschain.io'
+Vue.prototype.horizonUrl = 'http://coast.myoschain.com'
 Vue.prototype.horizonSecret = 'osch public network'
 
 /* eslint-disable no-new */

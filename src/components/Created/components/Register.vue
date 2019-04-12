@@ -8,36 +8,11 @@
     </div>
     <div class="key">
       <span class="address">公钥:</span>
-      <InputPrivateKey placeholder="输入钱包公钥匙" eye copy />
-      <!-- <div class="shuru">
-        <input type="text" class="pube" v-model="publicKey" id="gongyao" title="显示/隐藏">
-        <img
-          src="@/assets/img/copy@2x.png"
-          width="22"
-          height="22"
-          class="keyImg"
-          @click="copy('.keyImg')"
-          data-clipboard-target="#gongyao"
-          title="复制"
-        >
-      </div> -->
+      <InputPrivateKey v-model="publicKey" placeholder="输入钱包公钥匙" copy disabled/>
     </div>
     <div class="key">
       <span class="address">私钥:</span>
-      <InputPrivateKey  placeholder="输入钱包私钥" />
-      <!-- <div class="shuru">
-        <input :type="inputType" class="pube" id="siyao" v-model="secret1">
-        <img
-          src="@/assets/img/copy@2x.png"
-          width="22"
-          height="22"
-          class="keyImg1"
-          @click="copy('.keyImg1')"
-          v-bind:data-clipboard-text="secret1"
-          title="复制"
-        >
-        <img :src="dianji" width="22" height="22" alt class="eye" @click="show">
-      </div> -->
+      <InputPrivateKey v-model="secret" placeholder="输入钱包私钥" eye copy disabled/>
     </div>
     <div class="code">
       <div class="pub">
@@ -48,12 +23,10 @@
       </div>
       <div class="prev">
         <div>
-          <div class="mask" v-show="number == 0"></div>
-
+          <div class="mask" v-show="number != 0"></div>
           <div class="code-pading">
             <div class="code2" id="qrcode2"></div>
           </div>
-
           <span class="er">私钥二维码</span>
         </div>
       </div>
@@ -66,21 +39,45 @@
 </template>
 <script>
 import InputPrivateKey from "@/components/inputPrivateKey";
+import QRCode from "qrcodejs2";
+import OschSdk from "osch-sdk";
 export default {
+  props: ["router"],
   components: {
-    InputPrivateKey  
+    InputPrivateKey
   },
   data() {
     return {
       inputType: "text",
       publicKey: "",
-      secret1: "",
+      secret: "",
       number: 0
     };
   },
+  mounted: function() {
+    //生成keypair
+    this.createdKeypair();
+    //生成公钥私钥二维码
+    this.qrcode("qrcode1");
+    this.qrcode("qrcode2");
+  },
   methods: {
-    show1: function(){
-      
+    createdKeypair() {
+      var keypair = OschSdk.Keypair.random();
+      var strkey = OschSdk.StrKey;
+      this.publicKey = strkey.encodeEd25519PublicKey(keypair._publicKey);
+      this.secret = strkey.encodeEd25519SecretSeed(keypair._secretSeed);
+    },
+    show1: function() {},
+    //生成二维码
+    qrcode(id) {
+      new QRCode(id, {
+        width: 100,
+        height: 100,
+        text: this.publicKey,
+        colorDark: "#000",
+        colorLiht: "#fff"
+      });
     }
   }
 };
