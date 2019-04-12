@@ -10,11 +10,12 @@
       :disabled="disabled"
     >
     <img
-      v-if="copy"
+      v-show="copy"
       src="./img/copy@2x.png"
       class="copy"
       title="复制"
-      v-clipboard:copy="data"
+      @click="onCopy"
+      v-clipboard:copy="value"
       v-clipboard:success="onCopy"
     >
     <img v-if="eye" :src="eyeState" alt class="keyImg" @click="show">
@@ -24,12 +25,17 @@
 import showIcon from "./img/showIcon.png";
 import hiddenIcon from "./img/hiddenIcon.png";
 export default {
-  props: { placeholder: String, value: String, copy: Boolean, eye: Boolean, disabled: Boolean},
+  props: {
+    placeholder: String,
+    value: String,
+    copy: Boolean,
+    eye: Boolean,
+    disabled: Boolean
+  },
   data() {
     return {
       eyeState: hiddenIcon,
       inputType: "password",
-      data: "",
       inputWidth: 300
     };
   },
@@ -37,7 +43,6 @@ export default {
     //根据传入参数调整宽度
     const { copy, eye } = this;
     this.inputType = eye ? "password" : "text";
-
     if (copy && eye) {
       this.inputWidth = 600;
     } else if (copy || eye) {
@@ -48,20 +53,24 @@ export default {
   },
   methods: {
     updateValue(value) {
-      this.data = value; 
       this.$emit("input", value);
     },
     show() {
       if (this.eyeState == showIcon) {
         this.eyeState = hiddenIcon;
         this.inputType = "password";
+        this.$emit("eyeSwitch", false);
       } else {
         this.eyeState = showIcon;
         this.inputType = "text";
+        this.$emit("eyeSwitch", true);
       }
     },
-    onCopy: function(e){
-      alert("复制成功");
+    onCopy: function(e) {
+      this.$message({
+        message: "复制成功",
+        type: "success"
+      });
     }
   }
 };

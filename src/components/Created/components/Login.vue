@@ -37,9 +37,7 @@ export default {
       const _this = this;
       const { StrKey, Network, Server, Keypair } = OschSdk;
       if (!StrKey.isValidEd25519SecretSeed(this.secret)) {
-        this.$message.error(
-          "提示:您输入的私钥格式不正确或不符合格式，请确认后输入"
-        );
+        this.$message.error("提示:您输入的私钥格式不正确或不符合格式，请确认后输入");
         this.clearInput();
         return;
       }

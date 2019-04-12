@@ -10,19 +10,19 @@
         <div class="inner-header">帮助中心</div>
         <div class="inner-list">
           <div class="page" @click="show(1)">
-            <div class="page-header" >关于我们</div>
+            <div class="page-header">关于我们</div>
             <div
               class="page-inner"
             >指您在创建openwallet钱包过程中，软件操作界面提示您填写的密码，该密码用于加密保护私钥。作为去中心化的应用，钱包密码不存储在您的这台移动设备或瀚决的服务器，一旦丢失你需要借助明文私钥或助记词重置新密码。</div>
           </div>
           <div class="page" @click="show(2)">
-            <div class="page-header" >如何备份钱包？</div>
+            <div class="page-header">如何备份钱包？</div>
             <div
               class="page-inner"
             >指您在创建openwallet钱包过程中，软件操作界面提示您填写的密码，该密码用于加密保护私钥。作为去中心化的应用，钱包密码不存储在您的这台移动设备或瀚决的服务器，一旦丢失你需要借助明文私钥或助记词重置新密码。</div>
           </div>
           <div class="page" @click="show(3)">
-            <div class="page-header" >如何创建钱包</div>
+            <div class="page-header">如何创建钱包</div>
             <div
               class="page-inner"
             >指您在创建openwallet钱包过程中，软件操作界面提示您填写的密码，该密码用于加密保护私钥。作为去中心化的应用，钱包密码不存储在您的这台移动设备或瀚决的服务器，一旦丢失你需要借助明文私钥或助记词重置新密码。</div>
@@ -40,7 +40,7 @@
             >指您在创建openwallet钱包过程中，软件操作界面提示您填写的密码，该密码用于加密保护私钥。作为去中心化的应用，钱包密码不存储在您的这台移动设备或瀚决的服务器，一旦丢失你需要借助明文私钥或助记词重置新密码。</div>
           </div>
           <div class="page" @click="show(4)">
-            <div class="page-header" >如何进行转账、收款？</div>
+            <div class="page-header">如何进行转账、收款？</div>
             <div
               class="page-inner"
             >指您在创建openwallet钱包过程中，软件操作界面提示您填写的密码，该密码用于加密保护私钥。作为去中心化的应用，钱包密码不存储在您的这台移动设备或瀚决的服务器，一旦丢失你需要借助明文私钥或助记词重置新密码。</div>
@@ -85,17 +85,17 @@ export default {
   props: {},
   data() {
     return {
-        number:0
+      number: 0
     };
   },
   methods: {
-      show(num) {
-          this.number = num
-          console.log(this.number)
-      }
+    show(num) {
+      this.number = num;
+      console.log(this.number);
+    }
   },
   created() {
-      this.number = 0
+    this.number = 0;
   },
   mounted() {}
 };

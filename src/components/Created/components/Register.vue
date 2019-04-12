@@ -12,7 +12,7 @@
     </div>
     <div class="key">
       <span class="address">私钥:</span>
-      <InputPrivateKey v-model="secret" placeholder="输入钱包私钥" eye copy disabled/>
+      <InputPrivateKey v-model="secret" placeholder="输入钱包私钥" @eyeSwitch="eyeHandle" eye copy disabled/>
     </div>
     <div class="code">
       <div class="pub">
@@ -23,7 +23,7 @@
       </div>
       <div class="prev">
         <div>
-          <div class="mask" v-show="number != 0"></div>
+          <div class="mask" v-if="!isQrcode"></div>
           <div class="code-pading">
             <div class="code2" id="qrcode2"></div>
           </div>
@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="jump">
-      <button @click="show1" class="backups">我已备份</button>
+      <button @click="changePage(router.LOGIN)" class="backups">我已备份</button>
       <!-- <button @click="show">显示/隐藏</button> -->
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
       inputType: "text",
       publicKey: "",
       secret: "",
-      number: 0
+      isQrcode: false
     };
   },
   mounted: function() {
@@ -62,13 +62,18 @@ export default {
     this.qrcode("qrcode2");
   },
   methods: {
+    eyeHandle(data){
+      this.isQrcode = data;
+    },
     createdKeypair() {
       var keypair = OschSdk.Keypair.random();
       var strkey = OschSdk.StrKey;
       this.publicKey = strkey.encodeEd25519PublicKey(keypair._publicKey);
       this.secret = strkey.encodeEd25519SecretSeed(keypair._secretSeed);
     },
-    show1: function() {},
+    changePage: function(page) {
+      this.$emit("switchPage", page);
+    },
     //生成二维码
     qrcode(id) {
       new QRCode(id, {
