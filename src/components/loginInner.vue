@@ -1,6 +1,6 @@
 <template>
   <div class="inner">
-    <v-header class="header"></v-header>
+    <VHeader class="header"></VHeader>
     <main class="main">
       <div class="main-left">
         <div class="img">
@@ -8,46 +8,33 @@
         </div>
         <div class="coinName">
           <span>钱包名字</span>
-          <!-- <img class="coinImg" src="./img/u232.png" alt> -->
           <p class="cash">≈ ￥ {{price | numFilter}}</p>
         </div>
         <div class="operationList">
-          <ul class="opList" @click="handleClick">
-            <li  v-bind:class="{back:back1 == 1}" @click="num(1)">
-              <div class="li1" >
-                <img :src="come ==1? wallet1:wallet2" width="26" height="26" alt>
-                <span v-bind:class="{spanColor:come != 1,span1Color:come ==1}">钱包信息</span>
-              </div>
-            </li>
-            <li v-bind:class="{back:back1 == 2}" @click="num(2)">
+          <ul class="opList">
+            <li
+              v-bind:class="{back:page == item.page}"
+              @click="goPage(item.page)"
+              v-for="item in sonRouter"
+            >
               <div class="li1">
-                <img :src="come ==2 ?asset1:asset2" width="26" height="26" alt>
-                <span v-bind:class="{spanColor:come != 2,span1Color:come ==2}">资产</span>
-              </div>
-            </li>
-            <li v-bind:class="{back:back1 == 3}" @click="num(3)">
-              <div class="li1">
-                <img :src="come == 3 ? payment1:payment2 " width="26" height="26" alt>
-                <span v-bind:class="{spanColor:come != 3,span1Color:come ==3}">转账</span>
-              </div>
-            </li>
-            <li v-bind:class="{back:back1 == 4}" @click="num(4)">
-              <div class="li1">
-                <img :src="come == 4 ? code1:code2" width="26" height="26" alt>
-                <span v-bind:class="{spanColor:come != 4,span1Color:come ==4}">收款</span>
+                <img :src="page ==item.page ? item.icon : item.iconActive" alt>
+                <span
+                  v-bind:class="{spanColor:page != item.page,span1Color:page ==item.page}"
+                >{{item.mess}}</span>
               </div>
             </li>
           </ul>
         </div>
       </div>
       <div class="main-right">
-        <v-wallet v-if="come==1" v-on:listenPrice="showPrice"></v-wallet>
-        <v-asset v-if="come==2" :coinPrice="price"></v-asset>
-        <v-payments v-if="come==3"></v-payments>
-        <v-receivables  v-if="come==4"></v-receivables>
+        <VWallet v-if="page==1" v-on:listenPrice="showPrice"></VWallet>
+        <VAsset v-if="page==2" :coinPrice="price"></VAsset>
+        <VPayments v-if="page==3"></VPayments>
+        <VReceivables v-if="page==4"></VReceivables>
       </div>
     </main>
-    <v-footer></v-footer>
+    <VFooter></VFooter>
   </div>
 </template>
 
@@ -57,15 +44,7 @@ import VFooter from "./innerList/footer";
 import VWallet from "./innerList/wallet";
 import VAsset from "./innerList/asset";
 import VPayments from "./innerList/payments";
-import VReceivables from "./innerList/receivables"
-import wallet1 from '../../static/img/index_message@2x.png'
-import wallet2 from '../../static/img/index_message_default@2x.png'
-import asset1 from '../../static/img/index_pressed@2x.png'
-import asset2 from '../../static/img/index_zc_default@2x.png'
-import payment1 from '../../static/img/money.png'
-import payment2 from '../../static/img/money1.png'
-import code1 from '../../static/img/index_code_pressed@2x.png'
-import code2 from '../../static/img/index_code_default@2x.png'
+import VReceivables from "./innerList/receivables";
 
 export default {
   components: {
@@ -78,18 +57,34 @@ export default {
   },
   data() {
     return {
-      come: 1, //v-show
+      sonRouter: [
+        {
+          page: 1,
+          mess: "钱包信息",
+          icon: "../../static/img/index_message@2x.png",
+          iconActive: "../../static/img/index_message_default@2x.png"
+        },
+        {
+          page: 2,
+          mess: "资产",
+          icon: "../../static/img/index_pressed@2x.png",
+          iconActive: "../../static/img/index_zc_default@2x.png"
+        },
+        {
+          page: 3,
+          mess: "转账",
+          icon: "../../static/img/money.png",
+          iconActive: "../../static/img/money1.png"
+        },
+        {
+          page: 4,
+          mess: "收款",
+          icon: "../../static/img/index_code_pressed@2x.png",
+          iconActive: "../../static/img/index_code_default@2x.png"
+        }
+      ],
       price: 0,
-      back1:1,
-      wallet1,
-      wallet2,
-      asset1,
-      asset2,
-      payment1,
-      payment2,
-      code1,
-      code2
-      
+      page: 1
     };
   },
   filters: {
@@ -100,20 +95,8 @@ export default {
     }
   },
   methods: {
-    num(val) {
-      this.back1 = val
-    },
-    
-    handleClick(event) {
-      if (this.back1==1) {
-        this.come = 1;
-      } else if (this.back1==2) {
-        this.come = 2;
-      } else if (this.back1==3) {
-        this.come = 3;
-      } else if (this.back1==4) {
-        this.come = 4;
-      }   
+    goPage(val) {
+      this.page = val;
     },
     showPrice(data) {
       this.price = data;
@@ -122,11 +105,11 @@ export default {
   },
   created() {
     try {
-        let userPr = JSON.parse(sessionStorage.userPr);
-        this.$router.push("/inner/" + userPr.pub);
-      } catch (err) {
-        this.$router.push("/created/");
-      }
+      let userPr = JSON.parse(sessionStorage.userPr);
+      this.$router.push("/inner/" + userPr.pub);
+    } catch (err) {
+      this.$router.push("/created/");
+    }
   },
   mounted() {}
 };
@@ -199,7 +182,7 @@ export default {
 }
 .opList li:hover {
   background-color: #283242;
-  cursor:pointer
+  cursor: pointer;
 }
 .li1 {
   padding-top: 15px;
@@ -207,8 +190,10 @@ export default {
 }
 .li1 img {
   float: left;
+  width: 22px;
+  height: 26px;
   overflow: hidden;
-  margin-top: -1px
+  margin-top: -1px;
 }
 .li1 span {
   margin-left: 20px;
@@ -217,16 +202,16 @@ export default {
 
 .spanColor {
   margin-left: 20px;
-  color: #999999
+  color: #999999;
 }
-.span1Color{
-  font-size:16px;
-font-family:MicrosoftYaHei;
-font-weight:400;
-color:rgba(230,230,230,1);
+.span1Color {
+  font-size: 16px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(230, 230, 230, 1);
 }
 .back {
-  background:rgba(28,35,46,1);
-  color:rgba(229,229,229,1);
+  background: rgba(28, 35, 46, 1);
+  color: rgba(229, 229, 229, 1);
 }
 </style>

@@ -37,7 +37,9 @@ export default {
       const _this = this;
       const { StrKey, Network, Server, Keypair } = OschSdk;
       if (!StrKey.isValidEd25519SecretSeed(this.secret)) {
-        this.$message.error("提示:您输入的私钥格式不正确或不符合格式，请确认后输入");
+        this.$message.error(
+          "提示:您输入的私钥格式不正确或不符合格式，请确认后输入"
+        );
         this.clearInput();
         return;
       }
@@ -51,27 +53,12 @@ export default {
       _this.server = new Server(_this.horizonUrl);
       var keypair = Keypair.fromSecret(_this.secret);
       _this.publicKey = StrKey.encodeEd25519PublicKey(keypair.rawPublicKey());
-      _this.server
-        .loadAccount(_this.publicKey)
-        .then(function(account) {
-          _this.$message({
-            message: "登入成功",
-            type: "success"
-          });
-          const userPr = JSON.stringify({
-            priv: _this.secret,
-            pub: _this.publicKey
-          });
-          sessionStorage.userPr = userPr;
-          _this.$router.push("/inner/" + _this.publicKey);
-        })
-        .catch(err => {
-          console.log(err);
-          _this.$message({
-            message: "账户错误请重新输入",
-            type: "success"
-          });
-        });
+      const userPr = JSON.stringify({
+        priv: _this.secret,
+        pub: _this.publicKey
+      });
+      sessionStorage.userPr = userPr;
+      _this.$router.push("/inner/" + _this.publicKey);
     }
   }
 };
