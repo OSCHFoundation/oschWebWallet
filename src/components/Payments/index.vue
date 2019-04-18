@@ -1,7 +1,6 @@
 <template>
   <div class="payments">
     <div class="progressMask" v-if="showProgress">
-      <!-- <div class="progressMask" v-if="true"> -->
       <div class="progressInner">
         <span>正在提交</span>
         <el-progress :percentage="progress"></el-progress>
@@ -10,9 +9,7 @@
     </div>
     <div class="mask" v-if="maskTips">
       <div class="alertMask">
-        <!-- <div class="title">{{maskTitle}}</div> -->
         <div class="title">目标地址未激活</div>
-        <!-- <div class="alertInner">{{maskInner}}</div> -->
         <div class="alertInner">目标地址未激活，转大于100 OSCH 激活该账户</div>
         <button class="alertBtn" @click="closeMaskTips">确认</button>
       </div>
@@ -25,51 +22,26 @@
         <div class="mask1Inner">{{mask1Inner}}</div>
       </div>
     </div>
-
     <div v-show="page">
       <strong class="payHeader">选择转账资产</strong>
       <div class="choseCoin">
         <div class="coinList">
-          <div class="coin" @click="payOsch">
+          <div
+            class="coin"
+            v-for="item in balances.arr"
+            @click="selectAsset(item, balances[item].balance)"
+          >
             <div class="coin-left">
-              <img :src="selectType =='OSCH' ? yc :xianshi" width="22" height="22">
+              <img :src="selectType == item ? yc :xianshi" width="22" height="22">
             </div>
             <div class="coin-right">
               <div class="coinImg">
-                <img src="../../../static/img/u15.png" width="40" height="40">
+                <img :src="balances[item].ico" width="40" height="40">
               </div>
               <div class="coinInner">
-                <strong class="stron">OSCH</strong>
+                <strong class="stron">{{item}}</strong>
               </div>
-              <span class="balance1">{{oschNum | numFilter}}</span>
-            </div>
-          </div>
-          <div class="coin" v-show="isTime" @click="payTime">
-            <div class="coin-left">
-              <img :src="selectType =='TIME' ? yc :xianshi" width="22" height="22">
-            </div>
-            <div class="coin-right">
-              <div class="coinImg">
-                <img src="../../../static/img/u269.png" width="40" height="40">
-              </div>
-              <div class="coinInner">
-                <strong class="stron">TIME</strong>
-              </div>
-              <span class="balance1">{{timeNum | numFilter}}</span>
-            </div>
-          </div>
-          <div class="coin" v-show="isHour" @click="payHour">
-            <div class="coin-left">
-              <img :src="selectType =='HOUR' ? yc :xianshi" width="22" height="22">
-            </div>
-            <div class="coin-right">
-              <div class="coinImg">
-                <img src="../../../static/img/u259.png" width="40" height="40">
-              </div>
-              <div class="coinInner">
-                <strong class="stron">HOUR</strong>
-              </div>
-              <span class="balance1">{{hourNum | numFilter}}</span>
+              <span class="balance1">{{ balances[item].balance}}</span>
             </div>
           </div>
         </div>
@@ -84,19 +56,18 @@
         <span class="star">*</span>
       </div>
       <input
-        type="text"
         placeholder="输入对方公钥地址"
         class="writeInput"
-        v-model="toPublic"
+        v-model="toAccount.public"
         onkeyup="this.value=this.value.replace(/(^\s*)|(\s*$)/g,'')"
         maxlength="57"
+        @blur="verifToPublic"
       >
       <div class="write-title">
         <span class="title-left">转账数量</span>
         <span class="star">*</span>
       </div>
       <input
-        type="text"
         placeholder="输入转账数量"
         class="writeInput"
         v-model="toOschNum"
@@ -108,7 +79,6 @@
         <img src="../../../static/img/u897.png" width="16" height="16" class="ques">
       </div>
       <input
-        type="text"
         placeholder="输入交易矿工费"
         v-model="baseFee"
         class="writeInput"
@@ -120,7 +90,6 @@
         <el-switch v-model="value2" active-color="#10C796" inactive-color="#666566"></el-switch>
       </div>
       <input
-        type="text"
         placeholder="最多可输入10个字符"
         class="writeInput"
         v-model="memo"
@@ -137,40 +106,26 @@
     <div class="confrimTransaction" v-show="close">
       <div class="transactionMask">
         <h2 class="maskTitle">转账信息</h2>
-        <!-- <div class="maskHeader mBorder">
-          <div class="maskAccount">当前地址: {{publicKey}}</div>
-          <div class="maskAccount">目标地址: {{toPublic}}</div>
-          <div class="masknum">交易额: {{toOschNum}} {{selectType}}</div>
-        </div>-->
         <div class="maskInner mBorder">
           <p class="maskInnerList">
             <span class="maskListLeft">转账地址:</span>
-            <span class="maskListRight">{{publicKey}}</span>
+            <span class="maskListRight">{{walletBaseMsg.publicKey}}</span>
           </p>
           <p class="maskInnerList">
             <span class="maskListLeft">收款地址:</span>
             <span class="maskListRight">{{toPublic}}</span>
           </p>
-          <!-- <p class="maskInnerList" v-show="memo">
-            <span class="maskListLeft">备忘录:</span>
-            <span class="maskListRight">{{memo}}</span>
-          </p>-->
           <p class="maskInnerList">
             <span class="maskListLeft">账户余额:</span>
             <br>
-            <span class="maskListRight ">{{allCoin | numFilter}}</span>
+            <span class="maskListRight">{{allCoin | numFilter}}</span>
             <span class="unit">{{selectType}}</span>
           </p>
           <p class="maskInnerList">
-            <span class="maskListLeft ">交易额:</span>
+            <span class="maskListLeft">交易额:</span>
             <br>
             <span class="maskListRight coinColor">{{toOschNum | numFilter}}&nbsp {{selectType}}</span>
           </p>
-          <!-- <p class="maskInnerList">
-            <span class="maskListLeft">币种:</span>
-            <br>
-            <span class="maskListRight">{{selectType}}</span>
-          </p> -->
           <p class="maskInnerList">
             <span class="maskListLeft">备注:</span>
             <br>
@@ -178,32 +133,43 @@
           </p>
           <div class="btnBox">
             <button class="maskBtn cancel" @click="closeMask">取消交易</button>
-          <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
+            <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button>
           </div>
-          <!-- <button class="maskBtn cancel" @click="closeMask">取消交易</button>
-          <button class="maskBtn send" @click="sendClick">确认无误,发送交易</button> -->
         </div>
-        <!-- <div class="maskFooter mBorder">
-          <h1 class="mskFooterTitle">你已经确定发送&nbsp{{toOschNum}}&nbsp {{selectType}} 到：</h1>
-          <h2>{{toPublic}}</h2>
-        </div>-->
       </div>
     </div>
-    <!-- <div class="back-mask"></div> -->
-    <!-- <div class="backgroundImg">
-      <img src="../../../static/img/sk_bg@2x.png" width="100%">
-    </div>-->
   </div>
 </template>
 
 <script>
+import OschSdk from "osch-sdk";
 import select from "../../../static/img/set.png";
 import noSelect from "../../../static/img/set1.png";
 export default {
+  props: ["walletBaseMsg", "account"],
   components: {},
-  props: {},
   data() {
     return {
+      balances: {
+        OSCH: {
+          ico: "../../../static/img/u15.png"
+        },
+        HOUR: {
+          ico: "../../../static/img/u259.png"
+        },
+        TIME: {
+          ico: "../../../static/img/u269.png"
+        },
+        arr: ["OSCH"]
+      },
+      toPublic: "", // 目标账户
+      toAccount: {
+        public: "",
+        isActive: false,
+        isValid: false,
+        trustArr: []
+      },
+      selectType: "OSCH", // 资产类型
       value1: true,
       value2: false,
       // 开关插件
@@ -211,7 +177,6 @@ export default {
       isTime: false,
       page: true, //进入页面
       page1: false, //转账页面
-      selectType: "OSCH", // 资产类型
       // choseSelect: 1,
       xianshi: select,
       yc: noSelect,
@@ -222,14 +187,9 @@ export default {
       timeCode: "",
       hourIssuer: "",
       timeIssuer: "",
-      toPublic: "", // 目标账户
       trueToPublic: true,
       toOschNum: "", // 交易数量
-      server: "", //Stellar
-      stellarServer: "", //Stellar
-      account: "", //每次请求stellar返回的账户详情
-      secret: "", //私钥
-      publicKey: "",
+      oschServer: "", //Stellar
       valid: 1, //判断目的地地址
       transactionType: "", //交易类型
       memo: "", //备忘录
@@ -237,7 +197,7 @@ export default {
       baseFee: "", //愿意在此交易中按操作支付的最高费用
       trustHour: false,
       trustTime: false,
-      promiseFee: 0,
+      promiseFee: 10,
       maskTips: false,
       maskTitle: "",
       maskInner: "",
@@ -256,12 +216,39 @@ export default {
     }
   },
   methods: {
+    verifToPublic() {
+      const _this = this;
+      const { oschServer } = this.walletBaseMsg;
+      const { StrKey } = OschSdk;
+      if (!StrKey.isValidEd25519PublicKey(this.toAccount.public)) {
+        this.$message.error("目标账户格式不对");
+        return;
+      }
+      this.toAccount.isValid = true;
+      this.oschServer
+        .loadAccount(this.toPublic)
+        .then(function(account) {
+          this.toAccount.isActive = true;
+          for (var num of account.balances) {
+            if (num.asset_code) {
+              this.toAccount.trustArr.push(num.asset_code);
+            }
+            
+          }
+        })
+        .catch(err => {
+          if(_this.selectType === "OSCH"){
+            _this.toAccount.isValid = true;
+          }
+          this.toAccount.isActive = false;
+        });
+    },
     addProgress() {
       // this.progress = 0;
       setInterval(() => {
-          this.progress++;
+        this.progress++;
         if (this.mask1Tips == true) {
-          this.progress = 99
+          this.progress = 99;
         }
       }, 50);
       this.progress = 0;
@@ -289,17 +276,9 @@ export default {
       this.page1 = false;
       this.page = true;
     },
-    payOsch() {
-      this.selectType = "OSCH";
-      this.allCoin = this.oschNum;
-    },
-    payTime() {
-      this.selectType = "TIME";
-      this.allCoin = this.timeNum;
-    },
-    payHour() {
-      this.selectType = "HOUR";
-      this.allCoin = this.hourNum;
+    selectAsset(type, num) {
+      this.selectType = type;
+      this.allCoin = num;
     },
     closeMask() {
       this.close = false;
@@ -307,136 +286,98 @@ export default {
     //打开遮罩层
     openMask() {
       var _this = this;
+      const { StrKey } = OschSdk;
+      const { publicKey } = this.walletBaseMsg;
       _this.trueToPublic = true;
       let payMoney = parseInt(_this.toOschNum);
       let quick = parseInt(_this.baseFee);
-      try {
-        //判断目标地址是否合法
-        let strkey = StellarSdk.StrKey;
-        let arrPrivate = strkey.decodeEd25519PublicKey(_this.toPublic);
-      } catch (err) {
-        _this.trueToPublic = false;
+      if (!StrKey.isValidEd25519PublicKey(_this.toPublic)) {
+        this.$message.error("目标地址不符合规则，请确认后重试");
+        return;
       }
-      if (_this.trueToPublic == false) {
-        _this.close = false;
-        _this.mask1Inner = "目标地址不符合规则，请确认后重试";
-        _this.setMask(); //弹出遮罩
-      } else if (_this.toPublic == _this.publicKey) {
-        _this.close = false;
-        _this.mask1Inner = "目标地址不能为当前账户地址,请重试";
-        _this.setMask(); //弹出遮罩
-      } else if (_this.allCoin - _this.toOschNum < 0) {
-        _this.close = false;
-        _this.mask1Inner = "余额不足，请稍后再试";
-        _this.setMask(); //弹出遮罩
-      } else if (typeof payMoney != "number") {
-        _this.close = false;
-        _this.mask1Inner = "请输入正确的数字格式";
-        _this.setMask(); //弹出遮罩
+      if (_this.toPublic == publicKey) {
+        this.$message.error = "目标地址不能为当前账户地址,请重试";
+        return;
+      }
+      if (_this.allCoin - _this.toOschNum < 0) {
+        this.$message.error = "余额不足，请稍后再试";
+        return;
+      }
+      if (typeof payMoney != "number") {
+        this.$message.error = "请输入正确的数字格式";
+        return;
+      }
+      if (_this.baseFee == "") {
+        _this.baseFee = 10;
+      }
+      let fees = this.allCoin - this.promiseFee;
+      if (_this.baseFee < 10) {
+        this.$message.error = "基本费用不可小于10";
+      } else if (typeof quick != "number") {
+        this.$message.error = "请输入正确的数字格式";
+      } else if (fees < 0) {
+        this.$message.error = "此操作小于基本费用";
       } else {
-        // 目标地址合法执行
-        _this.stellarServer
-          .loadAccount(_this.toPublic)
-          .then(function(account) {
-            for (var num of account.balances) {
-              if (num.asset_code == "hour") {
-                _this.trustHour = true; //确认账户中信任过Huor资产
-              } else if (num.asset_code == "time") {
-                _this.trustTime = true; //确认账户中信任过Time资产
-              }
-            }
-            // _this.close = true;
-          })
-          .catch(err => {
-            _this.close = false;
-            _this.maskTips = true;
-            _this.valid = 2; //转账操作
-          });
-        //交易数量不能为空
-        //做判断基础交易费用
-        let fees = this.allCoin - this.promiseFee;
-        if (_this.baseFee == "") {
-          _this.baseFee = 10;
-        } else if (_this.baseFee < 10) {
-          _this.mask1Inner = "基本费用不可小于10";
-          _this.setMask(); //弹出遮罩
-          _this.close = false;
-        } else if (typeof quick != "number") {
-          _this.close = false;
-          _this.mask1Inner = "请输入正确的数字格式";
-          _this.setMask(); //弹出遮罩
-        } else if (fees < 0) {
-          _this.close = false;
-          _this.mask1Inner = "此操作小于基本费用";
-          _this.setMask(); //弹出遮罩
-        } else {
-          _this.close = true;
-        }
+        console.log("login 1");
+        _this.close = true;
       }
+      //交易数量不能为空
     },
     sendClick() {
+      const _this = this;
+      const trueFee = {
+        fee: _this.baseFee * 10000000
+      };
+      const { TransactionBuilder, Operation, Asset, Memo, Keypair } = OschSdk;
+      const { publicKey, secret, oschServer } = this.walletBaseMsg;
+      //开机计时
       this.addProgress();
       this.showProgress = true;
       this.close = false;
-
-      // this.close = true
-      var _this = this;
-      let bulid = {
-        fee: _this.baseFee * 10000000
-      };
       // _this.selectType = "Osch"
       //判断选择类型
       //当valid的值为1是,则进行转账交易
+      const transaction = new TransactionBuilder(_this.account, trueFee);
       if (_this.valid == 1) {
         if (_this.selectType == "OSCH") {
-          var transaction = new StellarSdk.TransactionBuilder(
-            _this.account,
-            bulid
-          )
+          transaction
             .addOperation(
-              StellarSdk.Operation.payment({
+              Operation.payment({
                 destination: _this.toPublic,
-                asset: StellarSdk.Asset.native(),
+                asset: Asset.native(),
                 amount: _this.toOschNum
               })
             )
-            .addMemo(StellarSdk.Memo.text(_this.memo))
+            .addMemo(Memo.text(_this.memo))
+            .setTimeout(30)
             .build();
-          transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
-          // 提交交易信息
-          _this.stellarServer
-            .submitTransaction(transaction)
-            .then(function(res) {
-              _this.close = false;
-              _this.progress = 99;
-              _this.showProgress = false;
-              // alert("发送成功");
-              _this.mask1Inner = "发送成功";
-              _this.setMask(); //弹出遮罩
-              // location.reload();
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
-            })
-            .catch(err => {
-            });
+          transaction.sign(Keypair.fromSecret(secret)); // sign the transaction
         }
+        // 提交交易信息
+        this.oschServer
+          .submitTransaction(transaction)
+          .then(function(res) {
+            _this.close = false;
+            _this.progress = 99;
+            _this.showProgress = false;
+            // alert("发送成功");
+            _this.mask1Inner = "发送成功";
+            _this.setMask(); //弹出遮罩
+            // location.reload();
+            setTimeout(() => {
+              location.reload();
+            }, 2000);
+          })
+          .catch(err => {});
         if (_this.selectType == "TIME") {
           if (_this.trustTime == false) {
-            // alert(
-            //   "你所转到的账户未信任“Time币”，可通知其开启“Time币”信任，再次进行尝试"
-            // );
             _this.close = false;
             _this.showProgress = false;
             _this.mask1Inner =
               "你所转到的账户未信任“TIME币”，可通知其开启“TIME币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
-            // location.reload();
           } else {
-            var transaction = new StellarSdk.TransactionBuilder(
-              _this.account,
-              bulid
-            )
+            transaction
               .addOperation(
                 StellarSdk.Operation.payment({
                   destination: _this.toPublic,
@@ -446,23 +387,7 @@ export default {
               )
               .addMemo(StellarSdk.Memo.text(_this.memo))
               .build();
-            transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
-            // 提交交易信息
-            _this.stellarServer
-              .submitTransaction(transaction)
-              .then(function(res) {
-                // alert("发送成功");
-                _this.showProgress = false;
-                _this.close = false;
-                _this.mask1Inner = "发送成功";
-                _this.setMask(); //弹出遮罩
-                setTimeout(() => {
-                  location.reload();
-                }, 2000);
-                // location.reload();
-              })
-              .catch(err => {
-              });
+            transaction.sign(StellarSdk.Keypair.fromSecret(secret)); // sign the transaction
           }
         }
         if (_this.selectType == "HOUR") {
@@ -473,10 +398,7 @@ export default {
               "你所转到的账户未信任“HOUR币”，可通知其开启“HOUR币”信任，再次进行尝试";
             _this.setMask(); //弹出遮罩
           } else {
-            var transaction = new StellarSdk.TransactionBuilder(
-              _this.account,
-              bulid
-            )
+            transaction
               .addOperation(
                 StellarSdk.Operation.payment({
                   destination: _this.toPublic,
@@ -486,57 +408,24 @@ export default {
               )
               .addMemo(StellarSdk.Memo.text(_this.memo))
               .build();
-            transaction.sign(StellarSdk.Keypair.fromSecret(this.secret)); // sign the transaction
-            // 提交交易信息
-            _this.stellarServer
-              .submitTransaction(transaction)
-              .then(function(res) {
-                // alert("发送成功");
-                _this.showProgress = false;
-                _this.close = false;
-                _this.mask1Inner = "发送成功";
-                _this.setMask(); //弹出遮罩
-                setTimeout(() => {
-                  location.reload();
-                }, 2000);
-                // location.reload();
-              });
+            transaction.sign(StellarSdk.Keypair.fromSecret(secret)); // sign the transaction
           }
         }
         //如果valid 的值为2 则进行激活事件
       } else if (_this.valid == 2) {
         if (_this.selectType == "Osch") {
-          this.stellarServer
-            .loadAccount(_this.publicKey)
-            .then(function(account) {
-              var transaction = new StellarSdk.TransactionBuilder(account, {
-                fee: _this.baseFee * 10000000
-              })
-                .addOperation(
-                  StellarSdk.Operation.createAccount({
-                    destination: _this.toPublic, //需要激活的账户
-                    startingBalance: _this.toOschNum //激活账户最低余额 in XLM
-                  })
-                )
-                .addMemo(StellarSdk.Memo.text(_this.memo)) // 添加备忘录
-                .build();
-              transaction.sign(StellarSdk.Keypair.fromSecret(_this.secret));
-              _this.stellarServer
-                .submitTransaction(transaction)
-                .then(function(res) {
-                  _this.showProgress = false;
-                  _this.close = false;
-                  _this.mask1Inner = "目标地址初始化成功";
-                  _this.setMask(); //弹出遮罩
-                  setTimeout(() => {
-                    location.reload();
-                  }, 2000);
-                });
-            });
-        } else {
-          // this.maskTips = true
-          // alert("目标账户尚未为激活，无法进行其他操作，激活请用本币Osch激活");
-          // location.reload();
+          this.oschServer.loadAccount(publicKey).then(function(account) {
+            transaction
+              .addOperation(
+                StellarSdk.Operation.createAccount({
+                  destination: _this.toPublic, //需要激活的账户
+                  startingBalance: _this.toOschNum //激活账户最低余额 in XLM
+                })
+              )
+              .addMemo(StellarSdk.Memo.text(_this.memo)) // 添加备忘录
+              .build();
+            transaction.sign(StellarSdk.Keypair.fromSecret(secret));
+          });
         }
       }
     }
@@ -544,50 +433,47 @@ export default {
   created() {
     this.select = 1;
     this.value1 = 1;
-    let userPr= JSON.parse(sessionStorage.userPr)
-    this.secret = userPr.priv
   },
   mounted() {
-    var _this = this;
-    StellarSdk.Config.setAllowHttp(true);
-    StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
-    _this.stellarServer = new StellarSdk.Server(_this.horizonUrl);
-    _this.server = new StellarSdk.Server(_this.horizonUrl);
-
-    //init secret tool
-    var strkey = StellarSdk.StrKey;
-    var arrPrivate = strkey.decodeEd25519SecretSeed(_this.secret);
-    var keypair = new StellarSdk.Keypair({
-      type: "ed25519",
-      secretKey: arrPrivate
-    });
-    _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
+    const _this = this;
+    const { Config, Network, Server, StrKey, Keypair } = OschSdk;
+    const { publicKey, secret, oschServer } = this.walletBaseMsg;
     //找到账户信息
-    _this.server
-      .loadAccount(this.publicKey)
-      .then(function(account) {
-        _this.account = account;
-        for (var num of account.balances) {
-          if (num.asset_code == "hour") {
-            _this.hourNum = num.balance;
-            _this.hourIssuer = num.asset_issuer;
-            _this.hourCode = num.asset_code;
-            _this.isHour = true;
-          } else if (num.asset_code == "time") {
-            _this.timeNum = num.balance;
-            _this.timeIssuer = num.asset_issuer;
-            _this.timeCode = num.asset_code;
-            _this.isTime = true;
-          } else if (num.asset_type == "native") {
-            _this.oschNum = num.balance;
-            _this.allCoin = num.balance;
-          }
-        }
-      })
-      .catch(err => {
-      });
-    let user = JSON.parse(sessionStorage.user);
-    this.promiseFee = user.fee;
+    for (var item of this.account.balances) {
+      item.balance = parseInt(item.balance);
+      if (item.asset_type == "native") {
+        this.balances["OSCH"] = {
+          ...this.balances["OSCH"],
+          ...item
+        };
+      } else {
+        const type = item.asset_code.toUpperCase();
+        this.balances[type] = {
+          ...this.balances[type],
+          ...item
+        };
+        this.balances.arr.push(type);
+      }
+    }
+    for (var num of this.account.balances) {
+      if (num.asset_code == "hour") {
+        this.balances.TIME = {
+          ...this.balances.TIME,
+          ...num
+        };
+        _this.hourIssuer = num.asset_issuer;
+        _this.hourCode = num.asset_code;
+        _this.isHour = true;
+      } else if (num.asset_code == "time") {
+        _this.timeNum = num.balance;
+        _this.timeIssuer = num.asset_issuer;
+        _this.timeCode = num.asset_code;
+        _this.isTime = true;
+      } else if (num.asset_type == "native") {
+        _this.oschNum = num.balance;
+        _this.allCoin = num.balance;
+      }
+    }
     this.allCoin = this.oschNum;
   }
 };
@@ -701,7 +587,8 @@ export default {
 .transactionMask {
   position: relative;
   padding: 15px;
-  margin: 160px auto;
+  margin: 0 auto;
+  margin-top: 7%;
   width: 444px;
   min-height: 515px;
   background: rgba(255, 255, 255, 1);
@@ -852,7 +739,7 @@ export default {
   color: rgba(255, 255, 255, 1);
   background: rgba(179, 179, 179, 1);
 }
-.cancel:hover{
+.cancel:hover {
   cursor: pointer;
 }
 .send {
@@ -988,6 +875,5 @@ export default {
 .btnBox {
   margin: 0 auto;
   width: 400px;
-  
 }
 </style>  

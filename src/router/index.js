@@ -6,7 +6,7 @@ import Wallet from '../components/Wallet/wallet.vue'
 import Transaction from '../components/Transaction/transaction.vue'
 import Loging from '../components/Create/login.vue'
 import TransactionLogin from '../components/Transaction/Tlogin.vue'
-import loginInner from '../components/loginInner.vue'
+import Main from '../components/main.vue'
 import Help from '../components/help.vue'
 import Created from '../components/Created'
 import Service from '../components/helpList/service1.vue'
@@ -18,6 +18,11 @@ export default new Router({
     {
       path: '/',
       redirect: '/created'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Loging
     },
     {
       path: '/transactionlogin',
@@ -35,11 +40,6 @@ export default new Router({
       component: Wallet
     },
     {
-      path: '/login',
-      name: 'login',
-      component: Loging
-    },
-    {
       path: '/transaction/:id',
       name: 'transaction',
       component: Transaction
@@ -47,7 +47,7 @@ export default new Router({
     {
       path: '/inner/:id',
       name: 'inner',
-      component: loginInner
+      component: Main
     },
     {
       path: '/help',

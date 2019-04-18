@@ -7,7 +7,7 @@
           <img src="../../static/img/index_tx@2x.png" width="48" height="48" alt="头像">
         </div>
         <div class="coinName">
-          <span>钱包名字</span>
+          <span>钱包</span>
           <p class="cash">≈ ￥ {{price | numFilter}}</p>
         </div>
         <div class="operationList">
@@ -30,7 +30,7 @@
       <div class="main-right">
         <VWallet v-if="page==1" v-on:listenPrice="showPrice"></VWallet>
         <VAsset v-if="page==2" :coinPrice="price"></VAsset>
-        <VPayments v-if="page==3"></VPayments>
+        <VPayments v-if="page==3" :walletBaseMsg="walletBaseMsg" :account="account"></VPayments>
         <VReceivables v-if="page==4"></VReceivables>
       </div>
     </main>
@@ -39,11 +39,12 @@
 </template>
 
 <script>
+import OschSdk from "osch-sdk";
 import VHeader from "./innerList/header";
 import VFooter from "./innerList/footer";
 import VWallet from "./innerList/wallet";
 import VAsset from "./innerList/asset";
-import VPayments from "./innerList/payments";
+import VPayments from "./Payments";
 import VReceivables from "./innerList/receivables";
 
 export default {
@@ -57,6 +58,13 @@ export default {
   },
   data() {
     return {
+      walletBaseMsg: {
+        oschServer: "",
+        keypair: "",
+        secret: "",
+        publicKey: ""
+      },
+      account: "",
       sonRouter: [
         {
           page: 1,
@@ -87,12 +95,39 @@ export default {
       page: 1
     };
   },
+  
   filters: {
     numFilter(value) {
       let transformVal = Number(value).toFixed(3);
       let realVal = transformVal.substring(0, transformVal.length - 1);
       return Number(realVal);
     }
+  },
+  created() {
+    const _this = this;
+    /**
+     * 存储基本信息
+     */
+    let userPr = JSON.parse(sessionStorage.userPr);
+    this.walletBaseMsg.secret = userPr.priv;
+    const { Config, Network, Server, StrKey, Keypair } = OschSdk;
+    Config.setAllowHttp(true);
+    Network.use(new Network(_this.horizonSecret));
+    this.walletBaseMsg.oschServer = new Server(_this.horizonUrl);
+    this.walletBaseMsg.keypair = Keypair.fromSecret(_this.walletBaseMsg.secret);
+    this.walletBaseMsg.publicKey = StrKey.encodeEd25519PublicKey(this.walletBaseMsg.keypair.rawPublicKey());
+    const { oschServer, keypair, publicKey } = this.walletBaseMsg;
+    oschServer
+      .loadAccount(publicKey)
+      .then(function(account){
+        _this.account = account;
+      }).catch(err => {
+        this.$Message.error('请求失败');
+        this.$router.push("/created/");
+      })
+  },
+  mounted() {
+
   },
   methods: {
     goPage(val) {
@@ -102,16 +137,7 @@ export default {
       this.price = data;
       this.price.toFixed(2);
     }
-  },
-  created() {
-    try {
-      let userPr = JSON.parse(sessionStorage.userPr);
-      this.$router.push("/inner/" + userPr.pub);
-    } catch (err) {
-      this.$router.push("/created/");
-    }
-  },
-  mounted() {}
+  }
 };
 </script>
 <style scoped>
