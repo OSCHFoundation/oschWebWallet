@@ -57,4 +57,6 @@ export default {
   }
 };
 </script>
-<style  lang="scss" src="./style.css"></style>
+<style  lang="scss"  >
+  @import "./style.scss";
+</style>
