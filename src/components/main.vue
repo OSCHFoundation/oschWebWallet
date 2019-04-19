@@ -217,7 +217,7 @@ export default {
 .li1 img {
   float: left;
   width: 22px;
-  height: 26px;
+  height: 22px;
   overflow: hidden;
   margin-top: -1px;
 }
