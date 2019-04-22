@@ -20,14 +20,6 @@
       <div class="my">
         <span class="small">我的地址：</span>
         <span class="big" id="big">{{publicKey}}</span>
-        <!-- <img
-          class="copy"
-          src="../../../static/img/index_code@2x.png"
-          width="22"
-          height="22"
-          title="二维码"
-          @click="showCode"
-        >-->
         <img
           class="copy"
           src="../../../static/img/biger.png"
@@ -36,15 +28,6 @@
           title="查看二维码"
           @click="showCode"
         >
-        <!-- <img
-          class="code"
-          src="../../../static/img/biger.png"
-          width="18"
-          height="18"
-          @click="copy('.code')"
-          data-clipboard-target="#big"
-          title="复制地址"
-        >-->
       </div>
 
       <div class="state" v-show="validType">
@@ -54,8 +37,6 @@
       <div class="state" v-show="!validType">
         <span class="small">当前状态：</span>
         <span class="big bigColor">未激活</span>
-
-        <!-- <button class="activation">点击激活</button> -->
       </div>
       <div class="promise">
         <span class="small">保证金：</span>
@@ -199,20 +180,20 @@
 <script>
 import Clipboard from "clipboard";
 import QRCode from "qrcodejs2";
-
+import OschSdk from "osch-sdk"
 export default {
   components: {},
-  props: {},
+  props: ['walletBaseMsg'],
   data() {
     return {
-      server: "", //Stellar
+      server: "", //
       sercet: "", //私钥
       publicKey: "XXX",
       oschNum: "0", //Osch余额
       timeNum: "0",
       hourNum: "0",
       oschPrice: 0, //汇率
-      account: "", //每次请求stellar返回的账户详情
+      account: "", //每次请求oschain返回的账户详情
       tableData: [],
       currpage: 1,
       pagesize: 10,
@@ -419,21 +400,18 @@ export default {
     },
     //初始化
     init: async function() {
+      const { StrKey, Keypair } = OschSdk;
+      const { oschServer } = this.walletBaseMsg;
       var _this = this;
-      StellarSdk.Config.setAllowHttp(true);
-      StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
-      _this.server = new StellarSdk.Server(_this.horizonUrl);
-
-      var strkey = StellarSdk.StrKey;
-      var arrPrivate = strkey.decodeEd25519SecretSeed(_this.sercet);
-      var keypair = new StellarSdk.Keypair({
+      var arrPrivate = StrKey.decodeEd25519SecretSeed(_this.sercet);
+      var keypair = new Keypair({
         type: "ed25519",
         secretKey: arrPrivate
       });
-      _this.publicKey = strkey.encodeEd25519PublicKey(keypair.rawPublicKey());
+      _this.publicKey = StrKey.encodeEd25519PublicKey(keypair.rawPublicKey());
       //查看资产
       //判断账户是否激活, 如果未激活,则不现实交易记录
-      _this.server
+      oschServer
         .loadAccount(this.publicKey)
         .then(function(account) {
           _this.account = account;
@@ -460,7 +438,7 @@ export default {
           _this.validType = false;
         });
       // 获取历史交易
-      await _this.server
+      await oschServer
         .operations()
         .forAccount(this.publicKey)
         .limit(this.limit)

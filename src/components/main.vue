@@ -28,8 +28,8 @@
         </div>
       </div>
       <div class="main-right">
-        <VWallet v-if="page==1" v-on:listenPrice="showPrice"></VWallet>
-        <VAsset v-if="page==2" :coinPrice="price"></VAsset>
+        <VWallet v-if="page==1" v-on:listenPrice="showPrice" :walletBaseMsg="walletBaseMsg" ></VWallet>
+        <VAsset v-if="page==2" :coinPrice="price" :walletBaseMsg="walletBaseMsg" ></VAsset>
         <VPayments v-if="page==3" :walletBaseMsg="walletBaseMsg" :account="account" @goPage="goPage"></VPayments>
         <VReceivables v-if="page==4"></VReceivables>
       </div>

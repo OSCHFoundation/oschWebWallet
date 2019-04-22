@@ -20,7 +20,7 @@
       <div class="transactionMask">
         <div class="closeMask" @click="closeClick">X</div>
         <p class="addCoinTitle">添加资产</p>
-        <div class="addTime" v-show="!hourNum" >
+        <div class="addTime" v-show="!hourNum">
           <div class="coinImg">
             <img src="../../../static/img/u259.png" width="44" height="44">
           </div>
@@ -70,7 +70,7 @@
       <div class="addCoin" @click="openMask" v-show="allCoin">
         <!-- <div class="add">+</div> -->
         <img src="../../../static/img/asd.png" width="18" height="18" class="add">
-        
+
         <span>添加资产</span>
       </div>
     </div>
@@ -100,7 +100,8 @@
               <el-table-column prop="time" label="交易时间" width="100"></el-table-column>
               <el-table-column label="交易金额" width="120">
                 <template slot-scope="scope">
-                  <span :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
+                  <span
+                    :class="{transactionMoney1:scope.row.num.slice(0, 1)=='-'}"
                   >{{scope.row.num}}</span>
                 </template>
               </el-table-column>
@@ -189,11 +190,15 @@
 import timeCoin from "../../../static/img/u269.png";
 import oschCoin from "../../../static/img/u15.png";
 import hourCoin from "../../../static/img/u259.png";
+import OschSdk from "osch-sdk";
+
 export default {
-  components: {},
-  props: ["coinPrice"],
+  props: ["coinPrice", "walletBaseMsg"],
   data() {
     return {
+      actionState: "操作成功",
+      actionShow: false,
+      actionShow1: false,
       allCoin: true,
       coin: [],
       oschNum: "",
@@ -221,10 +226,7 @@ export default {
       showBtn: false, //取消信任按钮
       back1: 1,
       loading: true,
-      moneyColor: 1,
-      actionState: "操作成功",
-      actionShow: false,
-      actionShow1: false
+      moneyColor: 1
     };
   },
   filters: {
@@ -285,13 +287,13 @@ export default {
     handleClose(key, keyPath) {},
     handleClick(res, event) {
       if (event.target.innerHTML == "全部交易记录") {
-        this.currpage = 1
+        this.currpage = 1;
         this.tab = this.osch.length;
       } else if (event.target.innerHTML == "收入交易") {
-        this.currpage = 1
+        this.currpage = 1;
         this.tab = this.input.length;
       } else if (event.target.innerHTML == "支出交易") {
-        this.currpage = 1
+        this.currpage = 1;
         this.tab = this.output.length;
       }
     },
@@ -333,6 +335,7 @@ export default {
     },
     //点击信任
     changeTrust(coin) {
+      const { TransactionBuilder, Operation, Keypair } = OschSdk;
       this.open = false;
       const loading = this.$loading({
         lock: false,
@@ -340,72 +343,71 @@ export default {
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)"
       });
-      let _this = this
-      var transaction = new StellarSdk.TransactionBuilder(_this.account, {
+      let _this = this;
+      var transaction = new TransactionBuilder(_this.account, {
         fee: "100000000"
       })
         .addOperation(
-          StellarSdk.Operation.changeTrust({
+          Operation.changeTrust({
             asset: coin
           })
         )
         .build();
-      transaction.sign(StellarSdk.Keypair.fromSecret(_this.sercet));
+      transaction.sign(Keypair.fromSecret(_this.sercet));
       _this.server
         .submitTransaction(transaction)
         .then(function(res) {
           // _this.fullscreenLoading = false;
           loading.close();
           _this.actionShow = true;
-          setTimeout(()=>{
-            location.reload()
-          },2000)
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         })
         .catch(function(err) {
           loading.close();
           _this.actionShow1 = true;
-          setTimeout(()=>{
-            location.reload()
-         },2000)
-          
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         });
     },
     cancelTrust() {
-      
       if (this.unit == "Time") {
         if (this.timeNum > 0) {
-          this.actionShow1 = true
-          setTimeout(()=>{
-          this.actionShow1 = false
-          },3000)
+          this.actionShow1 = true;
+          setTimeout(() => {
+            this.actionShow1 = false;
+          }, 3000);
         } else {
           this.closeTrust(this.isTime);
         }
       }
       if (this.unit == "Hour") {
         if (this.hourNum > 0) {
-          this.actionShow1 = true
-          setTimeout(()=>{
-          this.actionShow1 = false
-          },3000)
+          this.actionShow1 = true;
+          setTimeout(() => {
+            this.actionShow1 = false;
+          }, 3000);
         } else {
           this.closeTrust(this.isHour);
         }
       }
     },
     closeTrust(asCoin) {
+      const { TransactionBuilder, Operation, Keypair } = OschSdk;
       const loading = this.$loading({
         lock: false,
         text: "玩命加载中...",
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)"
       });
-      let _this =this
-      var transaction = new StellarSdk.TransactionBuilder(this.account, {
+      let _this = this;
+      var transaction = new TransactionBuilder(this.account, {
         fee: "100000000"
       })
         .addOperation(
-          StellarSdk.Operation.changeTrust({
+          Operation.changeTrust({
             // asset: this.isHour,
             asset: asCoin,
             source: this.publicKey,
@@ -413,22 +415,22 @@ export default {
           })
         )
         .build();
-      transaction.sign(StellarSdk.Keypair.fromSecret(this.sercet));
+      transaction.sign(Keypair.fromSecret(this.sercet));
       this.server
         .submitTransaction(transaction)
         .then(function(res) {
           loading.close();
           _this.actionShow = true;
-          setTimeout(()=>{
-            location.reload()
-         },2000)
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
         })
         .catch(function(err) {
           loading.close();
           _this.actionShow1 = true;
-          setTimeout(()=>{
-            location.reload()
-         },2000)
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
           // alert("授权失败");
         });
     },
@@ -445,6 +447,7 @@ export default {
     }
   },
   created() {
+    const { oschServer } = this.walletBaseMsg;
     let hour = JSON.parse(sessionStorage.Hour);
     for (var hour1 of hour.hour) {
       this.hour.push(hour1);
@@ -466,20 +469,18 @@ export default {
     this.sercet = user.priv;
     this.publick = user.pub;
     var _this = this;
-    StellarSdk.Config.setAllowHttp(true);
-    StellarSdk.Network.use(new StellarSdk.Network(_this.horizonSecret));
-    _this.server = new StellarSdk.Server(_this.horizonUrl);
-    _this.server.loadAccount(this.publick).then(function(account) {
+    oschServer.loadAccount(this.publick).then(function(account) {
       _this.account = account;
     });
   },
   mounted() {
+    const { Asset } = OschSdk;
     this.init();
-    this.isTime = new StellarSdk.Asset(
+    this.isTime = new Asset(
       "time",
       "GDH2OGN3UJXKIVYELLPCJUSNG7KBNHYSA5QFIV2ZZWUJJAWYDQAAFJZW"
     );
-    this.isHour = new StellarSdk.Asset(
+    this.isHour = new Asset(
       "hour",
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
@@ -594,9 +595,9 @@ hr {
   color: rgba(255, 255, 255, 1);
   border: none;
 }
-.btn:hover{
+.btn:hover {
   cursor: pointer;
-  background:#15a376
+  background: #15a376;
 }
 .maskBtn {
   display: block;

@@ -12,9 +12,6 @@
     <img class="logo" src="../../../static/img/logo.png" width="180" height="40" @click="back">
     <div class="headerList">
       <ul>
-        <!-- <li v-bind:class="{butn:clas==4}" @click="come" v-show="login ==2">
-          <span :class="{font:true,co:clas == 4}">首页</span>
-        </li> -->
         <li @click="numb(3)">
           <span @click="download">下载App</span>
         </li>
@@ -26,12 +23,10 @@
           <router-link to="/created" :class="{font:true,co:clas == 2}">创建/登录</router-link>
         </li>
         <li v-bind:class="{butn:li1==2,imghover:true}" v-if="login == 2" >
-          <!-- <router-link to="/" :class="{font:true}">退出</router-link> -->
           <img src="../../../static/img/index_tx@2x.png" width="32" height="32" class="Personal">
            <ol class="PersonalCenter">
           <li @click="come">我的钱包</li>
           <li>
-          <!-- <router-link to="/" @click="out" class="outin">退出</router-link> -->
           <span to="/" @click="out" class="outin">退出</span>
           </li>
         </ol>

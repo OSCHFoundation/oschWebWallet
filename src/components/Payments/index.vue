@@ -160,7 +160,7 @@ export default {
       showIcon: select,
       hiddenIcon: noSelect,
       trueToPublic: true,
-      oschServer: "", //Stellar
+      oschServer: "", 
       valid: 1, //判断目的地地址
       transactionType: "", //交易类型
       memo: "", //备忘录
