@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Main from '../components/main.vue'
 import Help from '../components/help.vue'
 import Created from '../components/Created'
 import Service from '../components/helpList/service1.vue'
@@ -17,7 +16,7 @@ export default new Router({
     {
       path: '/inner/:id',
       name: 'inner',
-      component: Main
+      component: resolve => require(['../components/main.vue'], resolve)
     },
     {
       path: '/help',

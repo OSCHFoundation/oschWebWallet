@@ -22,24 +22,27 @@ const webpackConfig = merge(baseWebpackConfig, {
         })
     },
     optimization: {
-        runtimeChunk: "single",
         splitChunks: {
-            chunks: "all",
-            maxInitialRequests: Infinity,
-            minSize: 80000,
+            chunks: "async",
+            minSize: 30000,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            name: true,
             cacheGroups: {
+                osch: {
+                    name: "osch",
+                    test: /node_modules\/osch-sdk\/(.*)\.js/,
+                    chunks: "initial",
+                    priority: -5,
+                    reuseExistingChunk: false
+                },
                 vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name(module) {
-                        // get the name. E.g. node_modules/packageName/not/this/part.js
-                        // or node_modules/packageName
-                        const packageName = module.context.match(
-                            /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-                        )[1];
-
-                        // npm package names are URL-safe, but some servers don't like @ symbols
-                        return `npm.${packageName.replace("@", "")}`;
-                    }
+                    name: "vendor",
+                    test: /node_modules\/(.*)\.js/,
+                    chunks: "initial",
+                    priority: -4,
+                    reuseExistingChunk: false
                 }
             }
         },

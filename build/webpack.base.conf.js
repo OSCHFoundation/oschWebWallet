@@ -3,7 +3,6 @@ const path = require("path");
 const utils = require("./utils");
 const config = require("../config");
 const vueLoaderConfig = require("./vue-loader.conf");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 function resolve(dir) {
     return path.join(__dirname, "..", dir);
@@ -43,21 +42,6 @@ module.exports = {
     module: {
         rules: [
             ...(config.dev.useEslint ? [createLintingRule()] : []),
-            {
-                test: /\.sass$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            // you can specify a publicPath here
-                            // by default it uses publicPath in webpackOptions.output
-                            publicPath: "../",
-                            hmr: process.env.NODE_ENV === "development"
-                        }
-                    },
-                    "css-loader"
-                ],
-            },
             {
                 test: /\.vue$/,
                 loader: "vue-loader",
