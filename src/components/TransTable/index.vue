@@ -109,6 +109,11 @@ export default {
     console.log(this.wArrPage);
     this.tab = this.wArrPage.length;
   },
+  watch: {
+    wArrPage(val) {
+      this.tab = val.length;
+    }
+  },
   methods: {
     getPage: function() {
       for (var i = 0; i < this.wArrPage.length; i++) {

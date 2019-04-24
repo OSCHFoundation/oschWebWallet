@@ -1,21 +1,5 @@
 <template>
   <div class="asset">
-    <div class="mask1" v-if="actionShow">
-      <div class="mask1Box">
-        <div class="mask1Title">
-          <img src="../../../static/img/true.png" width="28px" height="28px">
-        </div>
-        <div class="mask1Inner">{{actionState}}</div>
-      </div>
-    </div>
-    <div class="mask1" v-if="actionShow1">
-      <div class="mask1Box1">
-        <div class="mask1Title">
-          <!-- <img src="../../../static/img/true.png" width="28px" height="28px"> -->
-        </div>
-        <div class="mask1Inner">操作失败，当前代币尚有余额，请稍后重试</div>
-      </div>
-    </div>
     <div class="mask" v-show="open">
       <div class="transactionMask">
         <div class="closeMask" @click="closeClick">X</div>
@@ -38,12 +22,14 @@
           </div>
           <button class="btn" type="primary" @click="changeTrust(isTime)">信任TIME</button>
         </div>
-        <!-- <hr> -->
-        <!-- <button class="maskBtn send" @click="closeClick">确认无误(关闭遮罩层)</button> -->
       </div>
     </div>
     <div class="coinList">
-      <div v-bind:class="{coin:true,back: isActiveAsset == item}" v-for="item in balances.arr" @click="switchAsset(item)"> 
+      <div
+        v-bind:class="{coin:true,back: isActiveAsset == item}"
+        v-for="item in balances.arr"
+        @click="switchAsset(item)"
+      >
         <div class="coinImg">
           <img :src="balances[item].ico" width="32" height="32">
         </div>
@@ -52,7 +38,6 @@
         </div>
       </div>
       <div class="addCoin" @click="openMask" v-show="allCoin">
-        <!-- <div class="add">+</div> -->
         <img src="../../../static/img/asd.png" width="18" height="18" class="add">
         <span>添加资产</span>
       </div>
@@ -73,7 +58,7 @@
         <span class="transaction1">交易记录</span>
       </div>
       <div class="history">
-        <TransTable :wArrPage="operations"/>
+        <TransTable :wArrPage="filterOperation"/>
       </div>
     </div>
   </div>
@@ -86,44 +71,25 @@ import TransTable from "../TransTable";
 import OschSdk from "osch-sdk";
 
 export default {
-  props: ["coinPrice", "walletBaseMsg", "balances", "operations"],
+  props: ["coinPrice", "walletBaseMsg", "balances", "operations", "account"],
   components: {
     TransTable
   },
   data() {
     return {
-      actionState: "操作成功",
-      actionShow: false,
-      actionShow1: false,
+      isActiveAsset: "OSCH", //当前选中的资产
+      activeAssetsArr: [], //选中资产列表
+      filterOperation: [], //分为osch，time，hour等操作
+      number: 0,            //当前选中token数量       
       allCoin: true,
-      coin: [],
-      oschNum: "",
       timeNum: "",
       hourNum: "",
       open: false,
       isTime: {},
-      isActiveAsset: "OSCH",
-      activeAssetsArr: [],
-
-      activeName: "second",
       isHour: {},
-      sercet: "",
-      publick: "",
-      account: "",
-      server: "",
-      tab: 10,
-      osch: [], //osch代币
-      time: [], //time代币
-      hour: [], // hour 代币
-      currpage: 1,
-      pagesize: 10,
-      input: [],
-      output: [],
-      number: 0,
-      unit: "",
+      unit: "OSCH",
       showBtn: false, //取消信任按钮
-      loading: true,
-      moneyColor: 1
+      loading: true
     };
   },
   filters: {
@@ -134,73 +100,14 @@ export default {
     }
   },
   methods: {
-    //loading 插件
-    tableRowClassName({ row, rowIndex }) {
-      if (rowIndex % 2 === 0) {
-        return "warning-row";
-      } else if (rowIndex % 2 === 1) {
-        return "success-row";
-      }
-      return "";
-    },
-    switchAsset(type){
+    switchAsset(type) {
       this.isActiveAsset = type;
       this.activeAssetsArr = this[type];
-    },
-    getOsch(event) {
-      this.coin = this.osch;
-      this.getPage(this.osch);
-      this.number = this.oschNum;
-      this.unit = "OSCH";
-      this.showBtn = false;
-    },
-    getTime(event) {
-      this.coin = this.time;
-      this.getPage(this.time);
-      this.number = this.timeNum;
-      this.unit = "TIME";
-      this.showBtn = true;
-    },
-    getHour(event) {
-      this.coin = this.hour;
-      this.getPage(this.hour);
-      this.number = this.hourNum;
-      this.unit = "HOUR";
-      this.showBtn = true;
-    },
-    //分页
-    handleCurrentChange(cpage) {
-      this.currpage = cpage;
-    },
-    handleSizeChange(psize) {
-      this.pagesize = psize;
-    },
-    handleOpen(key, keyPath) {},
-    handleClose(key, keyPath) {},
-    handleClick(res, event) {
-      if (event.target.innerHTML == "全部交易记录") {
-        this.currpage = 1;
-        this.tab = this.osch.length;
-      } else if (event.target.innerHTML == "收入交易") {
-        this.currpage = 1;
-        this.tab = this.input.length;
-      } else if (event.target.innerHTML == "支出交易") {
-        this.currpage = 1;
-        this.tab = this.output.length;
-      }
-    },
-    getPage(osch) {
-      this.input = [];
-      this.output = [];
-      for (var i = 0; i < osch.length; i++) {
-        var num = osch[i].num;
-        if (num.substr(0, 1) == "+") {
-          this.input.push(osch[i]);
-        }
-        if (num.substr(0, 1) == "-") {
-          this.output.push(osch[i]);
-        }
-      }
+      this.number = this.balances[type].balance;
+      this.filterOperation = this.operations.filter(item => {
+        return type == item.asset;
+      });
+      this.showBtn = this.isActiveAsset != "OSCH";
     },
     transactionInfo() {
       window.location.href =
@@ -208,11 +115,10 @@ export default {
         event.target.innerHTML +
         "/operations";
     },
-    init() {
-    },
     //点击信任
     changeTrust(coin) {
       const { TransactionBuilder, Operation, Keypair } = OschSdk;
+      const { publicKey, secret, oschServer } = this.walletBaseMsg;
       this.open = false;
       const loading = this.$loading({
         lock: false,
@@ -230,20 +136,20 @@ export default {
           })
         )
         .build();
-      transaction.sign(Keypair.fromSecret(_this.sercet));
-      _this.server
+      transaction.sign(Keypair.fromSecret(secret));
+      oschServer
         .submitTransaction(transaction)
         .then(function(res) {
           // _this.fullscreenLoading = false;
           loading.close();
-          _this.actionShow = true;
+          this.$message.success("添加成功");
           setTimeout(() => {
             location.reload();
           }, 2000);
         })
         .catch(function(err) {
           loading.close();
-          _this.actionShow1 = true;
+          this.$message.success("添加失败");
           setTimeout(() => {
             location.reload();
           }, 2000);
@@ -252,35 +158,30 @@ export default {
     cancelTrust() {
       if (this.unit == "Time") {
         if (this.timeNum > 0) {
-          this.actionShow1 = true;
-          setTimeout(() => {
-            this.actionShow1 = false;
-          }, 3000);
+          this.$message.error("操作失败，当前代币尚有余额，请稍后重试");
         } else {
           this.closeTrust(this.isTime);
         }
       }
       if (this.unit == "Hour") {
         if (this.hourNum > 0) {
-          this.actionShow1 = true;
-          setTimeout(() => {
-            this.actionShow1 = false;
-          }, 3000);
+          this.$message.error("操作失败，当前代币尚有余额，请稍后重试");
         } else {
           this.closeTrust(this.isHour);
         }
       }
     },
     closeTrust(asCoin) {
+      const _this = this;
       const { TransactionBuilder, Operation, Keypair } = OschSdk;
+      const { oschServer, sercet } = this.walletBaseMsg;
       const loading = this.$loading({
         lock: false,
         text: "玩命加载中...",
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)"
       });
-      let _this = this;
-      var transaction = new TransactionBuilder(this.account, {
+      var transaction = new TransactionBuilder(_this.account, {
         fee: "100000000"
       })
         .addOperation(
@@ -292,23 +193,16 @@ export default {
           })
         )
         .build();
-      transaction.sign(Keypair.fromSecret(this.sercet));
-      this.server
+      transaction.sign(Keypair.fromSecret(sercet));
+      oschServer
         .submitTransaction(transaction)
         .then(function(res) {
           loading.close();
-          _this.actionShow = true;
-          setTimeout(() => {
-            location.reload();
-          }, 2000);
+          _this.$message.success("新人成功");
         })
         .catch(function(err) {
           loading.close();
-          _this.actionShow1 = true;
-          setTimeout(() => {
-            location.reload();
-          }, 2000);
-          // alert("授权失败");
+          this.$message.error("操作失败，当前代币尚有余额，请稍后重试");
         });
     },
     //打开遮罩层
@@ -325,11 +219,13 @@ export default {
   },
   created() {
     const { oschServer } = this.walletBaseMsg;
-     this.init();
   },
   mounted() {
     const { Asset } = OschSdk;
-    
+    this.filterOperation = this.operations.filter(item => {
+      return "OSCH" == item.asset;
+    });
+    this.number = this.balances["OSCH"].balance;
     this.isTime = new Asset(
       "time",
       "GDH2OGN3UJXKIVYELLPCJUSNG7KBNHYSA5QFIV2ZZWUJJAWYDQAAFJZW"
@@ -338,17 +234,9 @@ export default {
       "hour",
       "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
     );
-    for (var i of this.coin) {
-      let semb = i.num.slice(0, 1);
-      if (semb == "+") {
-        this.moneyColor = 2;
-      } else {
-        this.moneyColor = 3;
-      }
-    }
   }
 };
 </script>
 <style  lang="scss" scoped>
-     @import "./style.scss";
+@import "./style.scss";
 </style>  
