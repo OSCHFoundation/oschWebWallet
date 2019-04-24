@@ -1,0 +1,247 @@
+/* 饿了么 */
+.el-table .warning-row {
+  background: red;
+}
+.from {
+  font-size: 12px;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: rgba(202, 208, 219, 1);
+}
+.el-table .success-row {
+  background: blue;
+}
+
+.walletInfo {
+  min-height: 895px;
+  background-color: #171d26;
+  text-align: left;
+  .title {
+    padding: 20px 0 0 20px;
+    font-size: 22px;
+    font-family: MicrosoftYaHei-Bold;
+    font-weight: bold;
+    color: rgba(240, 240, 240, 1);
+  }
+  .address {
+    padding-top: 20px;
+    padding-left: 20px;
+    font-size: 20px;
+  }
+  .copy {
+    margin-left: 0px;
+    /* width: 20px; */
+    /* height: 20px; */
+    vertical-align: middle;
+  }
+  .copy:hover{
+    cursor: pointer;
+  }
+  .code {
+    /* padding-top: 4px; */
+    margin-top: 4px;
+    /* padding-left: 3px; */
+    margin-left: 3px;
+  }
+  .question {
+    margin-left: 15px;
+    width: 20px;
+    height: 20px;
+  }
+  .coin {
+    margin-right: 20px;
+    display: inline-block;
+    width: 332px;
+    height: 94px;
+    background-image: url("../../../static/img/coin.png");
+    background-size: 100% 100%;
+  
+    border-radius: 5px;
+  }
+  .coinImg {
+    float: left;
+    padding-left: 19px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .coinImg strong {
+    margin-left: 9px;
+    font-size: 18px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(230, 230, 230, 1);
+  }
+  .coinImg img {
+    vertical-align: middle;
+    margin-top: 3px;
+    margin-left: 3px;
+  }
+  .coinInner {
+    float: right;
+    margin-right: 16px;
+    padding-left: 15px;
+    padding-top: 26px;
+    height: 100%;
+    font-size: 17px;
+    text-align: right;
+  }
+  .banlance {
+    display: inline-block;
+    color: #01e3b5;
+  }
+  .my {
+    margin-bottom: 15px;
+  }
+  .promise {
+    margin-bottom: 15px;
+  }
+  .state {
+    margin-bottom: 15px;
+  }
+  .coinList {
+    margin-bottom: 30px;
+  }
+  .record {
+    margin-bottom: 16px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+  }
+  .transac {
+    margin-bottom: 30px;
+    width: 200px;
+    font-size: 22px;
+    font-family: MicrosoftYaHei-Bold;
+    font-weight: bold;
+    color: rgba(240, 240, 240, 1);
+  }
+  /* 交易号 */
+  .el-button-group .el-button {
+    white-space: pre-wrap;
+  }
+  .small {
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+    font-size: 14px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(153, 153, 153, 1);
+  }
+  .big {
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(240, 240, 240, 1);
+  }
+  .ren {
+    padding-top: 3px;
+    font-size: 14px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(179, 179, 179, 1);
+  }
+  .bao {
+    display: inline-block;
+    width: 46px;
+    height: 46px;
+  
+    border: 3px solid rgba(104, 104, 104, 0.2);
+    border-radius: 50%;
+  }
+  .element #color1 {
+    color: #01e3b5;
+  }
+  .el-table__row .el-table_1_column_2 {
+    color: aqua;
+  }
+  .mask1 {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99999;
+  }
+  .mask1Box {
+    position: relative;
+    margin: 20% auto;
+    width: 142px;
+    height: 60px;
+    background: rgba(0, 0, 0, 1);
+    opacity: 0.6;
+    border-radius: 4px;
+  }
+  .mask1Title {
+    float: left;
+    overflow: hidden;
+    margin: 16px 12px 16px 28px;
+  }
+  
+  .mask1Inner {
+    height: 60px;
+    line-height: 60px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(240, 240, 240, 1);
+  }
+  .mask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99999;
+    background: rgba(0.5, 0.5, 0.5, 0.5);
+  }
+  .close0 {
+    position: absolute;
+    /* padding: 2px; */
+    top: -20px;
+    left: 60px;
+    color: #ffffff;
+    cursor: default;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    width: 32px;
+    margin-left: 179px;
+    border-radius: 50%;
+    font-size: 13px;
+    background: #585858;
+    /* border: 1px solid darkgray; */
+  }
+  .close0:hover{
+    cursor: pointer;
+  }
+  .maskBackground {
+    padding: 14px;
+    /* position: relative; */
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    margin: -50px 0 0 -50px;
+    width: 200px;
+    height: 200px;
+    background: #ffffff;
+  }
+  .code-title {
+    padding-left: 65px;
+    float: left;
+    margin-top: -55px;
+    font-size: 20px;
+    font-family: MicrosoftYaHei;
+    font-weight: 600;
+    color: #e5e5e5;
+  }
+  .code1 {
+    z-index: 9999;
+    background-repeat: no-repeat;
+  }
+  .transactionMoney1 {
+    color: #f55436;
+  }
+  .bigColor {
+    color: #ccc;
+  }
+}

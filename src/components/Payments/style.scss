@@ -1,0 +1,324 @@
+.payments {
+  padding: 0 0 0 32px;
+  min-height: 895px;
+  background: rgba(23, 29, 38, 1);
+  background-image: url("../../../static/img/sk_bg@2x.png");
+  background-repeat: no-repeat;
+  background-size: 100% 50%;
+  background-position: 0% 100%;
+  .payHeader {
+    padding-top: 24px;
+    font-size: 22px;
+    font-family: MicrosoftYaHei-Bold;
+    font-weight: bold;
+    color: rgba(240, 240, 240, 1);
+    display: block;
+  }
+  .coin {
+    margin-right: 20px;
+    display: inline-block;
+  }
+  .coin:hover {
+    cursor: pointer;
+  }
+  .coinImg {
+    float: left;
+    margin: 14px 0 0 14px;
+    width: 46px;
+    height: 46px;
+    border: 3px solid rgba(104, 104, 104, 0.2);
+    border-radius: 50%;
+  }
+  .coinImg img {
+    width: 40px;
+    height: 40px;
+    padding-top: 3px;
+    padding-left: 3px;
+    /* vertical-align: middle; */
+  }
+  .coinInner {
+    display: inline-block;
+    padding-left: 15px;
+    line-height: 80px;
+    font-size: 17px;
+  }
+  .choseCoin {
+    width: 100%;
+  }
+  .coinList {
+    margin-top: 40px;
+  }
+  .payInner {
+    margin: 0 auto;
+    width: 80%;
+    height: 1200px;
+    background: aliceblue;
+  }
+  .payHea {
+    padding-top: 50px;
+    font-size: 40px;
+    text-align: center;
+  }
+  .innerList {
+    padding: 10px;
+    margin: 30px auto;
+    width: 90%;
+  }
+  .inner-left {
+    display: inline-block;
+    font-size: 20px;
+    width: 250px;
+    height: 34px;
+    line-height: 34px;
+    text-align: right;
+  }
+  .inner-right {
+    display: inline-block;
+    margin-left: 20px;
+  }
+  .inner-right input {
+    width: 700px;
+    height: 40px;
+  }
+  .btn {
+    margin-top: 150px;
+  }
+  .next {
+    margin-left: 30px;
+    height: 30px;
+    width: 200px;
+    background: aliceblue;
+  }
+  .prev {
+    margin-left: 100px;
+    height: 30px;
+    width: 200px;
+    background: antiquewhite;
+  }
+  .confrimTransaction {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 99999;
+  }
+  .transactionMask {
+    position: relative;
+    padding: 15px;
+    margin: 0 auto;
+    margin-top: 7%;
+    width: 444px;
+    min-height: 515px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 4px;
+  }
+  .maskTitle {
+    margin: 0 0 40px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .maskHeader {
+    width: 100%;
+    height: 115px;
+  }
+  .maskInner {
+    height: 305px;
+  }
+  .maskFooter {
+    padding: 20px;
+    text-align: center;
+    height: 150px;
+  }
+  .maskBtn {
+    width: 188px;
+    height: 44px;
+    border-radius: 4px;
+    border: 1px;
+    border: none;
+  }
+  .coin-left {
+    float: left;
+    margin-top: 31px;
+  }
+  .coin-left img {
+    width: 22px;
+    height: 22px;
+  }
+  .coin-right {
+    margin-bottom: 20px;
+    height: 80px;
+    width: 286px;
+    margin-left: 38px;
+    background: rgba(42, 53, 69, 1);
+    border-radius: 6px;
+    background-image: url("../../../static/img/coin.png");
+    background-size: 100% 100%;
+  }
+  .stron {
+    font-size: 18px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(230, 230, 230, 1);
+  }
+  .balance1 {
+    float: right;
+    margin: 30px 16px 0 0;
+    text-align: right;
+    font-size: 18px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(1, 227, 181, 1);
+  }
+  .title1 {
+    margin-top: 34px;
+    font-size: 22px;
+    font-family: MicrosoftYaHei-Bold;
+    font-weight: bold;
+    color: rgba(240, 240, 240, 1);
+  }
+  .title-left {
+    font-size: 14px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(153, 153, 153, 1);
+  }
+  .star {
+    font-size: 16px;
+    color: #e84949;
+  }
+  .writeInput {
+    letter-spacing: 1px;
+    color: #fff;
+    padding-left: 8px;
+    width: 690px;
+    height: 40px;
+    border: 1px solid #2f3d4d;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  .writeInput:focus {
+    color: #fff;
+    border: 1px solid rgba(16, 199, 150, 1);
+  }
+  .write-title {
+    height: 52px;
+    line-height: 52px;
+  }
+  .ques {
+    padding-top: 20px;
+  }
+  .sure {
+    font-size: 16px;
+    color: aliceblue;
+    border: none;
+    margin-top: 48px;
+    display: block;
+    width: 212px;
+    height: 44px;
+    /* border: 1px solid #fff; */
+    background: rgba(99, 98, 102, 1);
+    border-radius: 4px;
+  }
+  .sure1 {
+    font-size: 16px;
+    color: aliceblue;
+    margin-top: 48px;
+    display: block;
+    width: 212px;
+    height: 44px;
+    /* border: 1px solid #fff; */
+  
+    background: #10c796;
+    border-radius: 4px;
+  }
+  .sure1:hover {
+    cursor: pointer;
+  }
+  .maskListLeft {
+    display: inline-block;
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(102, 102, 102, 1);
+  }
+  .maskListRight {
+    margin-bottom: 16px;
+    display: inline-block;
+    max-width: 382px;
+    word-wrap: break-word;
+    word-break: normal;
+    font-size: 14px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(26, 26, 26, 1);
+  }
+  .cancel {
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 1);
+    background: rgba(179, 179, 179, 1);
+  }
+  .cancel:hover {
+    cursor: pointer;
+  }
+  .send {
+    margin-left: 15px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 1);
+    background: rgba(16, 199, 150, 1);
+    border-radius: 4px;
+  }
+  .send:hover {
+    cursor: pointer;
+  }
+  .progressMask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99999;
+  }
+  .progressInner {
+    margin: 15% auto;
+    padding: 24px 40px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 4px;
+    width: 514px;
+    height: 150px;
+  }
+  .progressInner span {
+    display: inline-block;
+    margin-bottom: 32px;
+    font-size: 18px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(51, 51, 51, 1);
+  }
+  .second {
+    margin-top: 24px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: rgba(102, 102, 102, 1);
+  }
+  
+  .coinColor {
+    color: #fe8740;
+  }
+  .unit {
+    margin-left: 7px;
+    font-size: 15px;
+  }
+  .btnBox {
+    margin: 0 auto;
+    width: 400px;
+  }
+}

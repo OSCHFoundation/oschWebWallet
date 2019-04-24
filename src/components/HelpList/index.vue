@@ -65,18 +65,16 @@
 </template>
 
 <script>
-import VHeader from "./innerList/header";
-import VFooter from "./innerList/footer";
-import VService from "./helpList/service1";
-import VAbout from "./helpList/abooutus";
-import VBackup from "./helpList/backups";
-import VPaymen from "./helpList/paymen";
-import VCreat from "./helpList/create0";
+import VHeader from "../innerList/header";
+import VFooter from "../innerList/footer";
+import VAbout from "./abooutus";
+import VBackup from "./backups";
+import VPaymen from "./paymen";
+import VCreat from "./create0";
 export default {
   components: {
     VHeader,
     VFooter,
-    VService,
     VAbout,
     VBackup,
     VPaymen,
@@ -111,7 +109,7 @@ export default {
   /* margin: 0 auto; */
   /* width: 80%; */
   min-height: 900px;
-  background-image: url("../../static/img/diandian.png");
+  /* background-image: url("../../static/img/diandian.png"); */
   background-size: 140% 100%;
   z-index: 2;
 }

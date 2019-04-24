@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Help from '../components/help.vue'
 import Created from '../components/Created'
-import Service from '../components/helpList/service1.vue'
-
+import Privacy from '../components/HelpList/Privacy.vue'
+//import Help from '../components/HelpList'
 Vue.use(Router)
 
 export default new Router({
@@ -21,7 +20,7 @@ export default new Router({
     {
       path: '/help',
       name: 'help',
-      component: Help
+      component: resolve => require(['../components/HelpList'], resolve)
     },
     {
       path: '/created',
@@ -31,7 +30,7 @@ export default new Router({
     {
       path: '/service',
       name: 'service',
-      component: Service
+      component: Privacy
     },
   ]
 })

@@ -8,7 +8,7 @@
         </div>
         <div class="coinName">
           <span>钱包</span>
-          <p class="cash">≈ ￥ {{price | numFilter}}</p>
+          <p class="cash">≈ ￥ {{balances['OSCH'].price | numFilter}}</p>
         </div>
         <div class="operationList">
           <ul class="opList">
@@ -27,10 +27,26 @@
           </ul>
         </div>
       </div>
-      <div class="main-right">
-        <VWallet v-if="page==1" v-on:listenPrice="showPrice" :walletBaseMsg="walletBaseMsg" ></VWallet>
-        <VAsset v-if="page==2" :coinPrice="price" :walletBaseMsg="walletBaseMsg" ></VAsset>
-        <VPayments v-if="page==3" :walletBaseMsg="walletBaseMsg" :account="account" @goPage="goPage"></VPayments>
+      <div class="main-right" v-if="initState">
+        <VWallet
+          v-if="page==1"
+          :account="account"
+          :walletBaseMsg="walletBaseMsg"
+          :balances="balances"
+          :operations="operations"
+        ></VWallet>
+        <VAsset
+          v-if="page==2"
+          :balances="balances"
+          :walletBaseMsg="walletBaseMsg"
+          :operations="operations"
+        ></VAsset>
+        <VPayments
+          v-if="page==3"
+          :walletBaseMsg="walletBaseMsg"
+          :account="account"
+          @goPage="goPage"
+        ></VPayments>
         <VReceivables v-if="page==4"></VReceivables>
       </div>
     </main>
@@ -42,11 +58,14 @@
 import OschSdk from "osch-sdk";
 import VHeader from "./innerList/header";
 import VFooter from "./innerList/footer";
-import VWallet from "./innerList/wallet";
-import VAsset from "./innerList/asset";
+import VWallet from "./Wallet";
+import VAsset from "./Assets";
 import VPayments from "./Payments";
 import VReceivables from "./innerList/receivables";
 
+import oschICon from "@/assets/img/u15.png";
+import hourICon from "@/assets/img/u259.png";
+import timeICon from "@/assets/img/u269.png";
 export default {
   components: {
     VHeader,
@@ -58,13 +77,36 @@ export default {
   },
   data() {
     return {
+      operations: [],
+      balances: {
+        OSCH: {
+          price: 0,
+          sumprice: 0,
+          ico: oschICon
+        },
+        HOUR: {
+          price: 0,
+          sumprice: 0,
+          ico: hourICon
+        },
+        TIME: {
+          price: 0,
+          sumprice: 0,
+          ico: timeICon
+        },
+        arr: ["OSCH"]
+      },
       walletBaseMsg: {
         oschServer: "",
         keypair: "",
         secret: "",
         publicKey: ""
       },
-      account: "",
+
+      initState: false,
+      account: {
+        isActive: false
+      },
       sonRouter: [
         {
           page: 1,
@@ -91,19 +133,18 @@ export default {
           iconActive: "../../static/img/index_code_default@2x.png"
         }
       ],
-      price: 0,
-      page: 1
+      page: 1,
+      limit: 200
     };
   },
-  
   filters: {
     numFilter(value) {
       let transformVal = Number(value).toFixed(3);
-      let realVal = transformVal.substring(0, transformVal.length - 1);
-      return Number(realVal);
+      //let realVal = transformVal.substring(0, transformVal.length - 1);
+      return Number(transformVal);
     }
   },
-  created() {
+  created: function() {
     const _this = this;
     /**
      * 存储基本信息
@@ -115,27 +156,99 @@ export default {
     Network.use(new Network(_this.horizonSecret));
     this.walletBaseMsg.oschServer = new Server(_this.horizonUrl);
     this.walletBaseMsg.keypair = Keypair.fromSecret(_this.walletBaseMsg.secret);
-    this.walletBaseMsg.publicKey = StrKey.encodeEd25519PublicKey(this.walletBaseMsg.keypair.rawPublicKey());
-    const { oschServer, keypair, publicKey } = this.walletBaseMsg;
-    oschServer
-      .loadAccount(publicKey)
-      .then(function(account){
-        _this.account = account;
-      }).catch(err => {
-        this.$Message.error('请求失败');
-        this.$router.push("/created/");
-      })
-  },
-  mounted() {
-
+    this.walletBaseMsg.publicKey = StrKey.encodeEd25519PublicKey(
+      this.walletBaseMsg.keypair.rawPublicKey()
+    );
+    this.loadData();
   },
   methods: {
+    loadData: async function() {
+      const _this = this;
+      const { oschServer, keypair, publicKey } = this.walletBaseMsg;
+      await oschServer
+        .loadAccount(publicKey)
+        .then(function(account) {
+          _this.account = account;
+          _this.account.isActive = true;
+          //找到账户信息
+          for (var item of account.balances) {
+            item.balance = parseInt(item.balance);
+            if (item.asset_type == "native") {
+              _this.balances["OSCH"] = Object.assign(
+                _this.balances["OSCH"],
+                item
+              );
+            } else {
+              const type = item.asset_code.toUpperCase();
+              _this.balances[type] = Object.assign(_this.balances[type], item);
+              _this.balances[type].isActive = true;
+              _this.balances.arr.push(type);
+            }
+          }
+         ;
+        })
+        .catch(err => {
+          console.log(err);
+          _this.$message.error("请求失败");
+          _this.account.isActive = false;
+          _this.initState = true;
+        });
+      // 获取历史交易
+      await oschServer
+        .operations()
+        .forAccount(publicKey)
+        .limit(this.limit)
+        .call()
+        .then(function(page) {
+          _this.dealData(page.records);
+        });
+         _this.initState = true
+      this.$axios
+        .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
+        .then(res => {
+          _this.balances["OSCH"].price = res.data.result.price;
+          _this.balances["OSCH"].sumprice =
+            res.data.result.price * this.balances["OSCH"].balance;
+        });
+    },
+    dealData(page) {
+      const { publicKey } = this.walletBaseMsg;
+      const nPage = page.map(item => {
+        item.num = parseFloat(item.num).toFixed(3);
+        if (item.type == "payment") {
+          if (item.asset_type == "native") {
+            item.asset = "OSCH";
+          } else {
+            item.asset = item.asset_code.toUpperCase();
+          }
+          if (item.from == publicKey) {
+            item.num = "-" + parseFloat(item.amount).toFixed(2);
+          } else {
+            item.num = "+" + parseFloat(item.amount).toFixed(2);
+          }
+        } else if (item.type == "create_account") {
+          item.num = parseFloat(item.starting_balance).toFixed(2); //交易数量
+          item.to = item.funder; //目标地址
+          item.asset = "OSCH"; //交易币种
+          item.from = item.account;
+          if (item.funder == publicKey) {
+            item.num = "-" + parseFloat(item.starting_balance).toFixed(2);
+          } else {
+            item.num = "+" + parseFloat(item.starting_balance).toFixed(2);
+          }
+        } else if (item.type == "change_trust") {
+          (item.num = "-" + "10.00"), //交易数量
+            (item.to = item.asset_issuer), //目标地址
+            (item.asset = item.asset_code), //交易币种
+            (item.activeType = item.type), //交易类型 （交易、创建账户等）
+            (item.from = item.asset_issuer);
+        }
+        return item;
+      });
+      this.operations = nPage;
+    },
     goPage(val) {
       this.page = val;
-    },
-    showPrice(data) {
-      this.price = data;
-      this.price.toFixed(2);
     }
   }
 };
