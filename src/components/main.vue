@@ -37,9 +37,11 @@
         ></VWallet>
         <VAsset
           v-if="page==2"
+          :account="account"
           :balances="balances"
           :walletBaseMsg="walletBaseMsg"
           :operations="operations"
+          :transaction="transaction"
         ></VAsset>
         <VPayments
           v-if="page==3"
@@ -134,7 +136,8 @@ export default {
         }
       ],
       page: 1,
-      limit: 200
+      limit: 200,
+      transaction: {}
     };
   },
   filters: {
@@ -160,8 +163,35 @@ export default {
       this.walletBaseMsg.keypair.rawPublicKey()
     );
     this.loadData();
+    this.transactionMetBuild();
   },
   methods: {
+    transactionMetBuild: function() {
+      this.transaction = operation => {
+        const _this = this;
+        const { TransactionBuilder, Operation, Keypair, Asset } = OschSdk;
+        const { secret, oschServer } = this.walletBaseMsg;
+        return new Promise(function(resolve, reject) {
+          var transaction = new TransactionBuilder(_this.account, {
+            fee: "100000000"
+          })
+            .addOperation(operation)
+            .setTimeout(30)
+            .build();
+          transaction.sign(Keypair.fromSecret(secret));
+          oschServer
+            .submitTransaction(transaction)
+            .then(function(res) {
+              console.log("success");
+              resolve(res);
+            })
+            .catch(function(err) {
+              console.log("failure");
+              reject(err);
+            });
+        });
+      };
+    },
     loadData: async function() {
       const _this = this;
       const { oschServer, keypair, publicKey } = this.walletBaseMsg;
@@ -185,7 +215,6 @@ export default {
               _this.balances.arr.push(type);
             }
           }
-         ;
         })
         .catch(err => {
           console.log(err);
@@ -202,7 +231,7 @@ export default {
         .then(function(page) {
           _this.dealData(page.records);
         });
-         _this.initState = true
+      _this.initState = true;
       this.$axios
         .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
         .then(res => {

@@ -96,26 +96,23 @@ export default {
       currpage: 1,
       pagesize: 10,
       input: [],
-      output: [],
-      osch: [],
-      time: [],
-      hour: []
+      output: []
     };
   },
-  components: {},
-  computed: {},
   mounted: function() {
-    this.getPage();
-    console.log(this.wArrPage);
+    this.filterOuputInput();
     this.tab = this.wArrPage.length;
   },
   watch: {
     wArrPage(val) {
       this.tab = val.length;
+      this.filterOuputInput();
     }
   },
   methods: {
-    getPage: function() {
+    filterOuputInput: function() {
+      this.output = [];
+      this.input = [];
       for (var i = 0; i < this.wArrPage.length; i++) {
         var num = this.wArrPage[i].num;
         if (num.substr(0, 1) == "+") {
@@ -124,16 +121,6 @@ export default {
         }
         if (num.substr(0, 1) == "-") {
           this.output.push(this.wArrPage[i]);
-        }
-      }
-      //拿到数据列表然后筛选出翻入各自币种之中
-      for (var osc of this.wArrPage) {
-        if (osc.asset == "OSCH") {
-          this.osch.push(osc);
-        } else if (osc.asset == "TIME") {
-          this.time.push(osc);
-        } else if (osc.asset == "HOUR") {
-          this.hour.push(osc);
         }
       }
     },
