@@ -46,6 +46,7 @@
         <VPayments
           v-if="page==3"
           :walletBaseMsg="walletBaseMsg"
+          :balances="balances"
           :account="account"
           @goPage="goPage"
         ></VPayments>
@@ -64,10 +65,7 @@ import VWallet from "./Wallet";
 import VAsset from "./Assets";
 import VPayments from "./Payments";
 import VReceivables from "./innerList/receivables";
-
-import oschICon from "@/assets/img/u15.png";
-import hourICon from "@/assets/img/u259.png";
-import timeICon from "@/assets/img/u269.png";
+import config from "../config";
 export default {
   components: {
     VHeader,
@@ -80,31 +78,13 @@ export default {
   data() {
     return {
       operations: [],
-      balances: {
-        OSCH: {
-          price: 0,
-          sumprice: 0,
-          ico: oschICon
-        },
-        HOUR: {
-          price: 0,
-          sumprice: 0,
-          ico: hourICon
-        },
-        TIME: {
-          price: 0,
-          sumprice: 0,
-          ico: timeICon
-        },
-        arr: ["OSCH"]
-      },
+      balances: config.assetList,
       walletBaseMsg: {
         oschServer: "",
         keypair: "",
         secret: "",
         publicKey: ""
       },
-
       initState: false,
       account: {
         isActive: false
@@ -113,26 +93,26 @@ export default {
         {
           page: 1,
           mess: "钱包信息",
-          icon: "../../static/img/index_message@2x.png",
-          iconActive: "../../static/img/index_message_default@2x.png"
+          icon: require("@/assets/img/index_message@2x.png"),
+          iconActive: require("@/assets/img/index_message_default@2x.png")
         },
         {
           page: 2,
           mess: "资产",
-          icon: "../../static/img/index_pressed@2x.png",
-          iconActive: "../../static/img/index_zc_default@2x.png"
+          icon: require("@/assets/img/index_pressed@2x.png"),
+          iconActive: require("@/assets/img/index_zc_default@2x.png")
         },
         {
           page: 3,
           mess: "转账",
-          icon: "../../static/img/money.png",
-          iconActive: "../../static/img/money1.png"
+          icon: require("@/assets/img/money.png"),
+          iconActive: require("@/assets/img/money1.png")
         },
         {
           page: 4,
           mess: "收款",
-          icon: "../../static/img/index_code_pressed@2x.png",
-          iconActive: "../../static/img/index_code_default@2x.png"
+          icon: require("@/assets/img/index_code_pressed@2x.png"),
+          iconActive: require("@/assets/img/index_code_default@2x.png")
         }
       ],
       page: 1,
@@ -167,6 +147,7 @@ export default {
   },
   methods: {
     transactionMetBuild: function() {
+      //对transaction的交易封装
       this.transaction = operation => {
         const _this = this;
         const { TransactionBuilder, Operation, Keypair, Asset } = OschSdk;
@@ -182,11 +163,9 @@ export default {
           oschServer
             .submitTransaction(transaction)
             .then(function(res) {
-              console.log("success");
               resolve(res);
             })
             .catch(function(err) {
-              console.log("failure");
               reject(err);
             });
         });
@@ -212,7 +191,7 @@ export default {
               const type = item.asset_code.toUpperCase();
               _this.balances[type] = Object.assign(_this.balances[type], item);
               _this.balances[type].isActive = true;
-              _this.balances.arr.push(type);
+              _this.balances.activeArr.push(type);
             }
           }
         })
@@ -220,18 +199,17 @@ export default {
           console.log(err);
           _this.$message.error("请求失败");
           _this.account.isActive = false;
-          _this.initState = true;
         });
       // 获取历史交易
-      await oschServer
+      const listOpeartionData = oschServer
         .operations()
         .forAccount(publicKey)
         .limit(this.limit)
         .call()
         .then(function(page) {
           _this.dealData(page.records);
+          _this.initState = true;
         });
-      _this.initState = true;
       this.$axios
         .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
         .then(res => {
@@ -309,7 +287,6 @@ export default {
 .img {
   padding-left: 60px;
 }
-
 .coinName {
   margin-top: 19px;
   font-size: 16px;

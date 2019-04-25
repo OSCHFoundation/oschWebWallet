@@ -11,10 +11,14 @@ const hourObj = new Asset(
   "hour",
   "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74"
 );
+const oschObj = Asset.native()
 const config = {
   assetList: {
     OSCH: {
-      ico: oschICon
+      price: 0,
+      sumprice: 0,
+      ico: oschICon,
+      obj: oschObj
     },
     TIME: {
       asset_code: "time",
@@ -25,10 +29,11 @@ const config = {
     HOUR: {
       asset_code: "hour",
       asset_issuer: "GA2KXCLNAECHU37B66DZISGFZG73JUYFEDNS3U7Q2O7LJORDYWSZ4W74",
-      obj: timeObj,
+      obj: hourObj,
       ico: hourICon
     },
-    arr: ["OSCH", "TIME", "HOUR"]
+    arr: ["OSCH", "TIME", "HOUR"],
+    activeArr: ["OSCH"]
   }
 };
 export default config;

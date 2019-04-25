@@ -13,7 +13,7 @@
         <div class="coinList">
           <div
             class="coin"
-            v-for="item in balances.arr"
+            v-for="item in balances.activeArr"
             @click="selectAsset(item, balances[item].balance)"
           >
             <div class="coin-left">
@@ -129,22 +129,10 @@ import OschSdk from "osch-sdk";
 import select from "@/assets/img/set.png";
 import noSelect from "@/assets/img/set1.png";
 export default {
-  props: ["walletBaseMsg", "account"],
+  props: ["walletBaseMsg", "account", "balances"],
   components: {},
   data() {
     return {
-      balances: {
-        OSCH: {
-          ico: "../../../static/img/u15.png"
-        },
-        HOUR: {
-          ico: "../../../static/img/u259.png"
-        },
-        TIME: {
-          ico: "../../../static/img/u269.png"
-        },
-        arr: ["OSCH"]
-      },
       toAccount: {
         public: "",
         isActive: false,
@@ -194,9 +182,11 @@ export default {
         this.$message.error("目标账户格式不对");
         return;
       }
+      //查看目标账户
       await oschServer
         .loadAccount(_this.toAccount.public)
         .then(function(account) {
+          console.log(account);
           _this.toAccount.isActive = true;
           for (var item of account.balances) {
             if (item.asset_code) {
@@ -212,6 +202,8 @@ export default {
       if (_this.selectType === "OSCH") {
         _this.toAccount.isValid = true;
       } else {
+          console.log(_this.toAccount.trustArr);
+
         let isTrust = _this.toAccount.trustArr.find(item => {
           if (item.toUpperCase() === _this.selectType) {
             return true;
@@ -304,13 +296,7 @@ export default {
       const transaction = new TransactionBuilder(_this.account, trueFee);
       let operationObj;
       if (_this.toAccount.isActive) {
-        let assetObj;
-        if (_this.selectType == "OSCH") {
-          assetObj = Asset.native();
-        } else {
-          const { asset_code, asset_issuer } = this.balances[this.selectType];
-          assetObj = new Asset(asset_code, asset_issuer);
-        }
+        const assetObj = this.balances[this.selectType].obj;
         operationObj = Operation.payment({
           destination: _this.toAccount.public,
           asset: assetObj,
@@ -346,28 +332,8 @@ export default {
   },
   created() {
     const _this = this;
-    const { Config, Network, Server, StrKey, Keypair } = OschSdk;
-    const { publicKey, secret, oschServer } = this.walletBaseMsg;
-    //找到账户信息
-    for (var item of this.account.balances) {
-      item.balance = parseInt(item.balance);
-      if (item.asset_type == "native") {
-        this.balances["OSCH"] = {
-          ...this.balances["OSCH"],
-          ...item
-        };
-      } else {
-        const type = item.asset_code.toUpperCase();
-        this.balances[type] = {
-          ...this.balances[type],
-          ...item
-        };
-        this.balances.arr.push(type);
-      }
-    }
     this.allCoin = this.balances["OSCH"].balance;
-  },
-  mounted() {}
+  }
 };
 </script>
 <style  lang="scss" scoped>

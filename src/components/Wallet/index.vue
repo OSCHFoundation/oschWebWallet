@@ -31,7 +31,7 @@
         <img class="question" src="@/assets/img/u897.png" alt>
       </div>
       <div class="coinList">
-        <div class="coin" v-for="item in balances.arr">
+        <div class="coin" v-for="item in balances.activeArr">
           <div class="coinImg">
             <div class="bao">
               <img :src="balances[item].ico" width="40" height="40">
@@ -110,7 +110,7 @@ export default {
       const { StrKey, Keypair } = OschSdk;
       const { oschServer, publicKey } = this.walletBaseMsg;
       var _this = this;
-      _this.promiseFee = _this.balances.arr.length * 10 + 10; //最低保证金
+      _this.promiseFee = _this.balances.activeArr.length * 10 + 10; //最低保证金
     }
   },
   mounted() {

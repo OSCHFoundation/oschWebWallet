@@ -18,7 +18,7 @@
     <div class="coinList">
       <div
         v-bind:class="{coin:true,back: activeAsset == item}"
-        v-for="item in balances.arr"
+        v-for="item in balances.activeArr"
         @click="switchAsset(item)"
       >
         <div class="coinImg">
@@ -89,7 +89,7 @@ export default {
   computed: {
     showTokenlist: function() {
       return this.balancesList.arr.filter(item => {
-        return this.balances.arr.every(item1 => {
+        return this.balances.activeArr.every(item1 => {
           return item != item1;
         });
       });
@@ -140,7 +140,7 @@ export default {
           .then(res => {
             loading.close();
             _this.$message.success("取消成功");
-            _this.balances.arr = _this.balances.arr.filter(item => {
+            _this.balances.activeArr = _this.balances.activeArr.filter(item => {
               return item != type;
             });
             _this.switchAsset("OSCH");
