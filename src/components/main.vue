@@ -8,7 +8,7 @@
         </div>
         <div class="coinName">
           <span>钱包</span>
-          <p class="cash">≈ ￥ {{balances['OSCH'].price | numFilter}}</p>
+          <p class="cash">≈ ￥ {{balances['OSCH'].sumprice | numFilter}}</p>
         </div>
         <div class="operationList">
           <ul class="opList">
@@ -56,7 +56,6 @@
     <VFooter></VFooter>
   </div>
 </template>
-
 <script>
 import OschSdk from "osch-sdk";
 import VHeader from "./innerList/header";
@@ -64,7 +63,8 @@ import VFooter from "./innerList/footer";
 import VWallet from "./Wallet";
 import VAsset from "./Assets";
 import VPayments from "./Payments";
-import VReceivables from "./innerList/receivables";
+import VReceivables from "./Receivables";
+import { merge } from "lodash";
 import config from "../config";
 export default {
   components: {
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       operations: [],
-      balances: config.assetList,
+      balances: {},
       walletBaseMsg: {
         oschServer: "",
         keypair: "",
@@ -129,6 +129,7 @@ export default {
   },
   created: function() {
     const _this = this;
+    this.balances = merge(this.balances, config.assetList);
     /**
      * 存储基本信息
      */
@@ -145,6 +146,9 @@ export default {
     this.loadData();
     this.transactionMetBuild();
   },
+  // beforeDestroy: function(){
+  //   this.balances = "";
+  // },
   methods: {
     transactionMetBuild: function() {
       //对transaction的交易封装
@@ -197,26 +201,31 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          _this.$message.error("请求失败");
           _this.account.isActive = false;
         });
       // 获取历史交易
-      const listOpeartionData = oschServer
-        .operations()
-        .forAccount(publicKey)
-        .limit(this.limit)
-        .call()
-        .then(function(page) {
-          _this.dealData(page.records);
-          _this.initState = true;
-        });
-      this.$axios
-        .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
-        .then(res => {
-          _this.balances["OSCH"].price = res.data.result.price;
-          _this.balances["OSCH"].sumprice =
-            res.data.result.price * this.balances["OSCH"].balance;
-        });
+      if (_this.account.isActive) {
+        const listOpeartionData = oschServer
+          .operations()
+          .forAccount(publicKey)
+          .order("desc")
+          .limit(this.limit)
+          .call()
+          .then(function(page) {
+            _this.dealData(page.records);
+            _this.initState = true;
+          });
+        this.$axios
+          .get("http://wallet.myoschain.com/oschPrice/v1/listOschPrice")
+          .then(res => {
+            _this.balances["OSCH"].price = res.data.result.price;
+            _this.balances["OSCH"].sumprice =
+              res.data.result.price * this.balances["OSCH"].balance;
+          });
+      } else {
+        _this.sonRouter.splice(2,1);
+        _this.initState = true;
+      }
     },
     dealData(page) {
       const { publicKey } = this.walletBaseMsg;

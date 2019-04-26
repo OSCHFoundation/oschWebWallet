@@ -61,6 +61,7 @@ import hourCoin from "../../../static/img/u259.png";
 import TransTable from "../TransTable";
 import OschSdk from "osch-sdk";
 import config from "../../config";
+import { merge } from "lodash";
 export default {
   props: [
     "coinPrice",
@@ -75,7 +76,7 @@ export default {
   },
   data() {
     return {
-      balancesList: config.assetList,
+      balancesList: {},
       activeAsset: "OSCH", //当前选中的资产
       activeAssetsArr: [], //选中资产列表
       filterOperation: [], //分为osch，time，hour等操作
@@ -183,6 +184,9 @@ export default {
     closeClick() {
       this.open = false;
     }
+  },
+  created(){
+    this.balancesList =  merge(this.balancesList, config.assetList);
   },
   mounted() {
     const { Asset } = OschSdk;

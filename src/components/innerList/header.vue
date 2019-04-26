@@ -3,19 +3,18 @@
     <div class="mask" v-show="number == 0">
       <div class="maskBackground">
         <div class="close" @click="close">
-          <img src="../../../static/img/cancel@2x.png" width="16" height="16" alt>
+          <img src="@/assets/img/cancel@2x.png" width="16" height="16" alt>
         </div>
         <p class="code-title">下载App</p>
         <div class="code" id="qrcode3"></div>
       </div>
     </div>
-    <img class="logo" src="../../../static/img/logo.png" width="180" height="40" @click="back">
+    <img class="logo" src="@/assets/img/logo.png" width="180" height="40" @click="back">
     <div class="headerList">
       <ul>
         <li @click="numb(3)">
           <span @click="download">下载App</span>
         </li>
-
         <li v-bind:class="{butn:li1==1}" @click="numb(1)">
           <router-link to="/help" :class="{font:true,co:clas ==1}">帮助</router-link>
         </li>
@@ -23,21 +22,21 @@
           <router-link to="/created" :class="{font:true,co:clas == 2}">创建/登录</router-link>
         </li>
         <li v-bind:class="{butn:li1==2,imghover:true}" v-if="login == 2" >
-          <img src="../../../static/img/index_tx@2x.png" width="32" height="32" class="Personal">
+          <img src="@/assets/img/index_tx@2x.png" width="32" height="32" class="Personal">
            <ol class="PersonalCenter">
           <li @click="come">我的钱包</li>
-          <li>
-          <span to="/" @click="out" class="outin">退出</span>
+          <li  @click="out" >
+          <span class="outin">退出</span>
           </li>
         </ol>
         </li>
-       
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import config from "../../config"
 import QRCode from "qrcodejs2";
 export default {
   components: {},
@@ -101,7 +100,6 @@ export default {
       // location.reload();
     }
   },
-  created() {},
   watch: {
     uesr: function(newString, oldString) {}
   },

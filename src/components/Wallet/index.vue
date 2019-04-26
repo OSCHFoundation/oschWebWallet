@@ -114,9 +114,9 @@ export default {
     }
   },
   mounted() {
+    this.qrcode6(this.walletBaseMsg.publicKey);
     if (this.account.isActive) {
       this.init();
-      this.qrcode6(this.walletBaseMsg.publicKey);
     }
   }
 };

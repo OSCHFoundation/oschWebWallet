@@ -186,7 +186,6 @@ export default {
       await oschServer
         .loadAccount(_this.toAccount.public)
         .then(function(account) {
-          console.log(account);
           _this.toAccount.isActive = true;
           for (var item of account.balances) {
             if (item.asset_code) {
@@ -202,8 +201,6 @@ export default {
       if (_this.selectType === "OSCH") {
         _this.toAccount.isValid = true;
       } else {
-          console.log(_this.toAccount.trustArr);
-
         let isTrust = _this.toAccount.trustArr.find(item => {
           if (item.toUpperCase() === _this.selectType) {
             return true;
@@ -289,7 +286,6 @@ export default {
       const { publicKey, secret, oschServer } = this.walletBaseMsg;
       //开机计时
       this.addProgress();
-
       this.close = false;
       //判断选择类型
       //当valid的值为1是,则进行转账交易
