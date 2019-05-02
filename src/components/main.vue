@@ -146,9 +146,6 @@ export default {
     this.loadData();
     this.transactionMetBuild();
   },
-  // beforeDestroy: function(){
-  //   this.balances = "";
-  // },
   methods: {
     transactionMetBuild: function() {
       //对transaction的交易封装
@@ -193,9 +190,14 @@ export default {
               );
             } else {
               const type = item.asset_code.toUpperCase();
-              _this.balances[type] = Object.assign(_this.balances[type], item);
-              _this.balances[type].isActive = true;
-              _this.balances.activeArr.push(type);
+              if (_this.balances[type]) {
+                _this.balances[type] = Object.assign(
+                  _this.balances[type],
+                  item
+                );
+                _this.balances[type].isActive = true;
+                _this.balances.activeArr.push(type);
+              }
             }
           }
         })
@@ -223,7 +225,7 @@ export default {
               res.data.result.price * this.balances["OSCH"].balance;
           });
       } else {
-        _this.sonRouter.splice(2,1);
+        _this.sonRouter.splice(2, 1);
         _this.initState = true;
       }
     },
