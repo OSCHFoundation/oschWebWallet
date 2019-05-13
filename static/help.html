@@ -12,14 +12,8 @@
         body,p,dl,dd,ul,ol,pre,form,input,textarea,th,td,select{margin:0;padding:0;}
         em{font-style:normal}
         li{list-style:none}
-        html,body{
-            background-color: #232324
-        }
-        
-        .dv {
-            width: 100%;
-            height: 100%;
-        }
+        html,body{ background-color: #232324 }
+        .dv { width: 100%; height: 100%; }
         .header {
             width: 100%;
             height: 4rem;
@@ -56,7 +50,7 @@
           color: #B3B3B3;
             display: none;
         }
-        .showInner img{ width: 100%; }
+        .showInner img{ width: 90%; margin: 5px auto; display: block;  }
         .showInner p{ margin: 10px; }
         .showInner p em{ font-weight: bold; }
         .listPanel img {
@@ -183,7 +177,7 @@
                         可以发送工单到 <a href="support@consenlabs.com">support@consenlabs.com</a> 联系我们。</p>
                 </div>
             </div>
-            <div class="inner">
+            <div class="inner" id="coldwallet">
                 <div class="listPanel">如何设置观察钱包？
                     <img class="img" src="./img/list.png">
                 </div>
@@ -203,6 +197,13 @@
                     <img src="./img/coldwallet2.png" alt="">
                     <p><em>第三步 </em>热钱包： 接着第一步操作，扫码未联网地址二维码->点击同意服务隐私条款->点击导入->成功导入</p>
                     <img src="../img/coldwallet4.jpeg" alt="">
+                </div>
+            </div>
+            <div class="inner">
+                <div class="listPanel">如何使用冷钱包交易？
+                    <img class="img" src="./img/list.png">
+                </div>
+                <div class="showInner">
                     <h4>冷钱包交易签名</h4>
                     <p>我们使用osch转账为例子</p>
                     <p><em>第一步 </em>热钱包：第 1 步 热钱包: 进入 OSCH 转账界面, 输入转账信息 -> 下一步 -> 生成 “冷钱包扫描” 二维码 </p>
@@ -220,6 +221,18 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
+        const type = location.search.split('?')[1].split('=')[1];
+        
+        if(type == 'coldwallet'){
+            $("#coldwallet").children('.showInner').show();
+            if( $("#coldwallet").children('.showInner').is(':visible')){
+                $("#coldwallet").children('.listPanel').children('.img').attr('src','./img/colorDown.png')
+                $("#coldwallet").siblings().children('.listPanel').children('.img').attr('src','./img/list.png')
+            }
+            $("#coldwallet").siblings().children('.showInner').slideUp();
+            $body = (window.opera) ? (document.compatMode == "CSS1Compat" ? $('html') : $('body')) : $('html,body');
+            $body.animate({scrollTop: $("#coldwallet").offset().top}, 50);
+        }
         $('.inner').on('click', function () {
             $(this).children('.showInner').slideDown();
             if( $(this).children('.showInner').is(':visible')){
