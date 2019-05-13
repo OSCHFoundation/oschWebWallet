@@ -123,8 +123,7 @@ export default {
   filters: {
     numFilter(value) {
       let transformVal = Number(value).toFixed(3);
-      //let realVal = transformVal.substring(0, transformVal.length - 1);
-      return Number(transformVal);
+      return transformVal;
     }
   },
   created: function() {

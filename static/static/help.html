@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <style>
-        html,body {
-            padding: 0;
-            margin: 0;
+        body,p,dl,dd,ul,ol,pre,form,input,textarea,th,td,select{margin:0;padding:0;}
+        em{font-style:normal}
+        li{list-style:none}
+        html,body{
             background-color: #232324
         }
+        
         .dv {
             width: 100%;
             height: 100%;
@@ -54,6 +56,9 @@
           color: #B3B3B3;
             display: none;
         }
+        .showInner img{ width: 100%; }
+        .showInner p{ margin: 10px; }
+        .showInner p em{ font-weight: bold; }
         .listPanel img {
             float: right;
             width: 1.2rem;
@@ -176,6 +181,38 @@
                         openwallet
                         中没有价格显示,
                         可以发送工单到 <a href="support@consenlabs.com">support@consenlabs.com</a> 联系我们。</p>
+                </div>
+            </div>
+            <div class="inner">
+                <div class="listPanel">如何设置观察钱包？
+                    <img class="img" src="./list.png">
+                </div>
+                <div class="showInner">
+                    <ul>
+                        <li>1.两部没有 Root 刷机过，你认为非常安全的手机</li>
+                        <li>2.两部手机都从官网下载最新的钱包openwallet</li>
+                        <li>3. 将其中一部手机关闭 Wifi，并开启飞行模式，作为冷钱包。这部手机一定要断网, 因为是存有你私钥的设备</li>
+                    </ul>
+                    <h4>设置观察钱包：</h4>
+                    <p>如果你想使用冷钱包功能，首先要观察该钱包。</p>
+                    <p>注: 使用你的联网手机是热钱包，用来观察钱包，未联网手机作为冷钱包用作离线签名授权</p>
+                    <p><em>第一步 </em>热钱包: 点击 “导入钱包” -> 选择第三项 “观察” -> 点击右上角的扫描按钮，扫描第 二 步钱包地址的二维码</p>
+                    <img src="../img/coldwallet0.jpeg" alt="">
+                    <img src="../img/coldwallet1.jpeg" alt="">
+                    <p><em>第二步 </em>冷钱包：选择你想观察钱包的公钥二维码，如图</p>
+                    <img src="../img/coldwallet2.png" alt="">
+                    <p><em>第三步 </em>热钱包： 接着第一步操作，扫码未联网地址二维码->点击同意服务隐私条款->点击导入->成功导入</p>
+                    <img src="../img/coldwallet4.jpeg" alt="">
+                    <h4>冷钱包交易签名</h4>
+                    <p>我们使用osch转账为例子</p>
+                    <p><em>第一步 </em>热钱包：第 1 步 热钱包: 进入 OSCH 转账界面, 输入转账信息 -> 下一步 -> 生成 “冷钱包扫描” 二维码 </p>
+                    <img src="../img/coldwallet5.jpeg" alt="">
+                    <p><em>第 二 步 </em> 冷钱包: 使用 openwallet 内的 “扫一扫” 功能扫描第 1 步生成的 ”冷钱包扫描” 二维码 -> 点击 “授权签名” -> 输入密码 -> 生成”签名成功” 的二维码</p>
+                    <img src="../img/coldwallet7.png" alt="">
+                    <img src="../img/coldwallet6.jpeg" alt="">
+                   <p><em>第 三 步</em> 热钱包: 点击第 1 步中 ”冷钱包扫描” 页面的 “下一步” 按钮 -> 点击 “扫描冷钱包签名数据” 二维码 -> 扫描第 2 步冷钱包生成的 “签名成功” 的二维码 -> 发送交易 -> 完成交易</p>
+                   <img src="../img/ coldwallet10.jpeg" alt="">
+                   <img src="../img/ coldwallet11.jpeg" alt="">
                 </div>
             </div>
         </div>

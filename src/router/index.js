@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Created from '../components/Created'
 import Privacy from '../components/HelpList/Privacy.vue'
-//import Help from '../components/HelpList'
 Vue.use(Router)
 
 export default new Router({
