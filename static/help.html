@@ -221,8 +221,11 @@
 </body>
 <script type="text/javascript">
     $(document).ready(function () {
-        const type = location.search.split('?')[1].split('=')[1];
-        
+        let type;
+        let hashData = location.search.split('?');
+        if(hashData.length>1 && hashData[1].split("=").length > 1){
+            type = hashData[1].split('=')[1];
+        }
         if(type == 'coldwallet'){
             $("#coldwallet").children('.showInner').show();
             if( $("#coldwallet").children('.showInner').is(':visible')){
